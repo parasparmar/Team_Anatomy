@@ -1,0 +1,4 @@
+C:\Users\pparm001\Documents\Visual Studio 2012\Projects\Team_Anatomy\Team_Anatomy\bin\Team_Anatomy.dll
+C:\Users\pparm001\Documents\Visual Studio 2012\Projects\Team_Anatomy\Team_Anatomy\bin\Team_Anatomy.pdb
+C:\Users\pparm001\Documents\Visual Studio 2012\Projects\Team_Anatomy\Team_Anatomy\obj\Debug\Team_Anatomy.dll
+C:\Users\pparm001\Documents\Visual Studio 2012\Projects\Team_Anatomy\Team_Anatomy\obj\Debug\Team_Anatomy.pdb
