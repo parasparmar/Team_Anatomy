@@ -39,19 +39,22 @@ public class Helper
 
 
         // ------------------------- Procedure for Execute Sql Query/Stored Procedure -------------------------
-        public void create_rst(ref SqlCommand cmd, string sql_string, string operation)
+        public void ExecuteDMLCommand(ref SqlCommand cmd, string sql_string, string operation)
         {
             open_db();
             try
             {
-                cmd = new SqlCommand(sql_string, mcon);
+                //cmd = new SqlCommand(sql_string, mcon);
+                cmd.Connection = mcon;
                 if (operation == "E")
                 {
                     cmd.ExecuteNonQuery();
                 }
                 else if (operation == "S")
                 {
+                    
                     cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.ExecuteNonQuery();
                 }
             }
             catch (Exception e)
@@ -113,7 +116,7 @@ public class Helper
 
            try
             {
-                create_rst(ref cmd, sp_name, "S");
+                ExecuteDMLCommand(ref cmd, sp_name, "S");
                 //----------------------- Addning Muiltipal Parameters with there values by split using '#'.
                 if (parameters.Trim() != "")
                 {
@@ -170,7 +173,7 @@ public class Helper
             DataSet ds = new DataSet();
             try
             {
-                 create_rst(ref cmd, sp_name, tran_type);
+                 ExecuteDMLCommand(ref cmd, sp_name, tran_type);
                 //----------------------- Addning Muiltipal Parameters with there values by split using '#' only if it is stored procedure.
                  if (tran_type == "S")
                  {
@@ -230,7 +233,7 @@ public class Helper
              DataSet ds = new DataSet();
              try
              {
-                 create_rst(ref cmd, sql_string, "E");
+                 ExecuteDMLCommand(ref cmd, sql_string, "E");
                  dap.SelectCommand = cmd;
                  dap.Fill(ds);
                  //------------------------  Add blank row in gridview if no record found ---- else bind gridview

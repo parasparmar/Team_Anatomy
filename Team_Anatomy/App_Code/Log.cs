@@ -17,7 +17,7 @@ public static class Log
         Helper sub_class = new Helper();
         myURL = context.Current.Request.Url.ToString();
         SqlCommand cmd = new SqlCommand();
-        sub_class.create_rst(ref cmd, "[Debug].[sp_errors_login]", "S");
+        sub_class.ExecuteDMLCommand(ref cmd, "[Debug].[sp_errors_login]", "S");
         cmd.Parameters.Add("@ExceptionMsg", SqlDbType.VarChar, 100).Value = exdb.Message.ToString();
         cmd.Parameters.Add("@ExceptionType", SqlDbType.VarChar, 100).Value = exdb.GetType().Name.ToString();
         cmd.Parameters.Add("@ExceptionSource", SqlDbType.NVarChar).Value = exdb.StackTrace.ToString();
