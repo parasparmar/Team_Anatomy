@@ -1,13 +1,11 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="profile.aspx.cs" Inherits="profile" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="headPlaceHolder" runat="Server">
-    <!-- Select2 -->
-    <link rel="stylesheet" href="/AdminLTE/bower_components/select2/dist/css/select2.min.css">
+    
 </asp:Content>
 <%--<asp:Content ID="Content2" ContentPlaceHolderID="headmenu" runat="Server">
 </asp:Content>--%>
 <asp:Content ID="Content3" ContentPlaceHolderID="leftmenu" runat="Server">
- 
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="pageheader" runat="Server">
     <h1>Profile Information
@@ -24,7 +22,7 @@
             <!-- Profile Image -->
             <div class="box box-primary">
                 <div class="box-body box-profile">
-                    <asp:Image ID="imgbtnProfilePhoto" CssClass="profile-user-img img-responsive img-circle" runat="server" />
+                    <asp:Image ID="imgbtnUserImage" CssClass="profile-user-img img-responsive img-circle" runat="server" />
                     <h3 class="profile-username text-center">
                         <asp:Label ID="lblName" runat="server"></asp:Label>
                     </h3>
@@ -58,7 +56,7 @@
                         </li>
                     </ul>
 
-                    <a href="#" class="btn btn-primary btn-block"><b>Request Rectification</b></a>
+                    <%--<a href="#" class="btn btn-primary btn-block"><b>Request Rectification</b></a>--%>
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -120,29 +118,31 @@
                             </a>
 
                         </li>
-                        <li class="list-group-item">
-                            <strong>Skills</strong>
-                            <p>
-                                <span class="label label-danger">UI Design</span>
-                                <span class="label label-success">Coding</span>
-                                <span class="label label-info">Javascript</span>
-                                <span class="label label-warning">PHP</span>
-                                <span class="label label-primary">Node.js</span>
-                            </p>
-                        </li>
+                        
                     </ul>
-                    <a href="#" class="btn btn-primary btn-block"><b>Request Rectification</b></a>
+                    <%-- <a href="#" class="btn btn-primary btn-block"><b>Request Rectification</b></a>--%>
                 </div>
                 <!-- /.box-body -->
             </div>
             <!-- /.box -->
         </div>
+
+        <%--        <asp:Panel ID="resultofsave" runat="server" Visible="true" CssClass="col-md-8">
+            <div class="alert alert-success alert-dismissible">
+                <button class="close" aria-hidden="true" type="button" data-dismiss="alert">×</button>
+                <h4><i class="icon fa fa-check"></i>
+                    <asp:Literal ID="ltlresultofsave" Text="Saved Successfully!" runat="server"></asp:Literal></h4>
+                <asp:Label ID="lblresultofsave" Text="Your data has been saved successfully." runat="server"></asp:Label>
+            </div>
+        </asp:Panel>--%>
+
         <div class="col-md-8">
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#personal" data-toggle="tab">Personal</a></li>
                     <li><a href="#transport" data-toggle="tab">Transport</a></li>
                     <li><a href="#work_experience" data-toggle="tab">Work Experience</a></li>
+                    <li><a href="#profile_image" data-toggle="tab">Profile Image</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="personal">
@@ -241,7 +241,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-sm-offset-2 col-sm-10">                                    
+                                <div class="col-sm-offset-2 col-sm-10">
                                     <asp:Button ID="btnPersonalSubmit" runat="server" CssClass="btn btn-danger" Text="Submit" OnClick="btnPersonalSubmit_Click" />
                                 </div>
                             </div>
@@ -319,8 +319,8 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
-                                    <asp:Button ID="btnTransportSubmit" CssClass="btn btn-danger" runat="server" Text="Submit"  OnClick="btnPersonalSubmit_Click" />
-                                    
+                                    <asp:Button ID="btnTransportSubmit" CssClass="btn btn-danger" runat="server" Text="Submit" OnClick="btnPersonalSubmit_Click" />
+
                                 </div>
                             </div>
                         </div>
@@ -346,8 +346,8 @@
 
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-rocket"></i></span>
-                                        <asp:DropDownList ID="tbSkill_Set_1" CssClass="form-control select2" multiple="multiple" Style="width: 100%" runat="server">                                            
-                                        </asp:DropDownList>
+                                        <select ID="tbSkill_Set_1" class="form-control select2" SelectionMode="multiple" multiple="true" Style="width: 100%" runat="server">
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -358,7 +358,7 @@
                                 <div class="col-sm-10">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-fighter-jet"></i></span>
-                                        <asp:TextBox ID="tbSkill_Set_2" CssClass="form-control" runat="server"></asp:TextBox>
+                                        <select ID="tbSkill_Set_2" class="form-control select2" SelectionMode="multiple" multiple="true" Style="width: 100%" runat="server"></select>
                                     </div>
                                 </div>
                             </div>
@@ -369,18 +369,40 @@
                                 <div class="col-sm-10">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-bicycle"></i></span>
-                                        <asp:TextBox ID="tbSkill_Set_3" CssClass="form-control" runat="server"></asp:TextBox>
+                                        <select ID="tbSkill_Set_3" class="form-control select2" SelectionMode="multiple" multiple="true" Style="width: 100%" runat="server"></select>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
-                                    <asp:Button ID="btnExperienceSubmit" CssClass="btn btn-danger" runat="server" Text="Submit"  OnClick="btnPersonalSubmit_Click" />                                    
+                                    <asp:Button ID="btnExperienceSubmit" CssClass="btn btn-danger" runat="server" Text="Submit" OnClick="btnPersonalSubmit_Click" />
                                 </div>
                             </div>
                         </div>
                     </div>
                     <!-- /.tab-pane -->
+
+                    <div class="tab-pane" id="profile_image">
+
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label for="tbSkill_Set_3" class="col-sm-2 control-label">Change Profile Image</label>
+                                <div class="col-sm-10">
+                                    <div class="input-group">
+                                        <asp:FileUpload ID="fileUploadNewProfileImage" runat="server" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    The user profile image can also be updated simply by clicking on it and providing the new image.
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <!-- /.tab-pane Edit Profile Image-->
                 </div>
                 <!-- /.tab-content -->
             </div>
@@ -402,6 +424,43 @@
             })
             //Initialize Select2 Elements
             $("[class*='select2']").select2();
+
+            $('#imgbtnUserImage').click(function () {
+                $('input[type=file]').trigger('click');
+
+            });
+
+            $('input[type=file]').change(function () {
+                var vals = $(this).val();
+                var fileName = vals.length ? vals.split('\\').pop() : '';
+                var fileExtension = fileName.split('.').pop();
+                var fileUpload = $(this).get(0);
+                var files = fileUpload.files;
+                var data = new FormData();
+                var myID = $("#lblNTID").val() + "_0." + fileExtension;
+                for (var i = 0; i < files.length; i++) {
+                    data.append(files[i].name, files[i], "pparm001_0.jpg");
+                }
+
+                //  
+
+                // $('input[type=text]').val(val);
+                //alert(filePath.toString());
+
+                $.ajax({
+                    url: "FileUploadHandler.ashx",
+                    type: "POST",
+                    data: data,
+                    contentType: false,
+                    processData: false,
+                    success: function (result) { alert(result); },
+                    error: function (err) { alert(err.statusText) }
+                });
+
+
+
+            });
+
         });
     </script>
 

@@ -7,12 +7,17 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.Sql;
 using System.Data.SqlClient;
+using System.Text;
+using System.Web.Services;
+
 
 public partial class profile : System.Web.UI.Page
 {
     string myID;
     protected void Page_Load(object sender, EventArgs e)
     {
+
+
         if (!Page.IsPostBack)
         {
             intialize_me();
@@ -20,12 +25,18 @@ public partial class profile : System.Web.UI.Page
 
     }
 
+    protected bool my_permissions()
+    {
+
+
+        return true;
+    }
+
     protected void intialize_me()
     {
         try
         {
             myID = PageExtensionMethods.getMyWindowsID().ToString();
-
             EmployeeTableAdapters.dtaEmployee dtaEmp = new EmployeeTableAdapters.dtaEmployee();
             Employee.dtEmployeeDataTable dtEmp = new Employee.dtEmployeeDataTable();
             dtaEmp.Fill(dtEmp, myID);
@@ -52,7 +63,8 @@ public partial class profile : System.Web.UI.Page
             lblContactNumber.Text = dr.Contact_Number;  //dr["Contact_Number"].ToString();
             if (!dr.IsUserImageNull())
             {
-                imgbtnProfilePhoto.ImageUrl = "/sitel/user_images/" + dr.UserImage;
+                imgbtnUserImage.ImageUrl = "/sitel/user_images/" + dr.UserImage;
+
             }
             lblSupervisor.Text = dr.Supervisor; //dr["Supervisor"].ToString();
             lblEmployee_Role.Text = dr.Employee_Role; // dr["Employee_Role"].ToString();
@@ -80,11 +92,46 @@ public partial class profile : System.Web.UI.Page
             tbPermanent_Address_City.Text = dr.Permanent_Address_City;
             /////---------------Work Experience
             tbTotal_Work_Experience.Text = dr.Total_Work_Experience;
-            tbSkill_Set_1.Text = dr.Skill_Set_1;
-            tbSkill_Set_2.Text = dr.Skill_Set_2;
-            tbSkill_Set_3.Text = dr.Skill_Set_3;
+
+            StringBuilder j = new StringBuilder(dr.Skill_Set_1);
+            string[] tbSkill_Set_1Items = j.ToString().Split(Convert.ToChar(","));
+
+            for (int i = 0; i < tbSkill_Set_1Items.Length; i++)
+            {
+                tbSkill_Set_1.Items.Add(new ListItem(tbSkill_Set_1Items[i]));
+                tbSkill_Set_1.Items[i].Selected = true;
+            }
+            j.Clear();
+            
+            
+            j.Append(dr.Skill_Set_2);
+
+            string[] tbSkill_Set_2Items = j.ToString().Split(Convert.ToChar(","));
+            for (int i = 0; i < tbSkill_Set_2Items.Length; i++)
+            {
+                tbSkill_Set_2.Items.Add(new ListItem(tbSkill_Set_2Items[i]));
+                tbSkill_Set_2.Items[i].Selected = true;
+            }
+            j.Clear();
 
 
+            j.Append(dr.Skill_Set_3);
+            string[] tbSkill_Set_3Items = j.ToString().Split(Convert.ToChar(","));
+
+            for (int i = 0; i < tbSkill_Set_3Items.Length; i++)
+            {
+                tbSkill_Set_3.Items.Add(new ListItem(tbSkill_Set_3Items[i]));
+                tbSkill_Set_3.Items[i].Selected = true;
+            }
+
+            string[] arrSkills = { "Access", "Accounting", "Administration", "Analysis", "Analytics", "ASP", "Aspect", "Automation", "Avaya CMS", "Back Office", "Basic German Language", "Blue Pumkin", "BO", "BP", "BTP", "Budget", "Business Analytics", "C", "C++", "Call Centre", "Capacity Planning", "Capman", "Client management", "CMS", "Communication", "Computer", "Cooking", "Coordination", "CRA", "Customer Service", "Development", "Dialler", "DotNet", "End to End Forecast", "Excel", "EXCEL Advanced", "EXCEL Basic", "EXCEL VBA", "External Clients Management", "Extra Innovation Activities for User Friendly Data Efficiency", "Finance", "Finance(Essbase)", "Financial", "Financial Reporting", "Forecast", "Forecasting", "Forecasting & Planning", "Formation", "GCC", "GCC & Analytics", "Genesys Platform", "German Language", "Hands On Expertise In Analytics", "Hardware", "IEX", "Internal and external clients management", "Invoices", "JAVASCRIPT", "JQUERY", "Kronos", "Language", "Languages", "Layout", "Leadership", "LINUX", "Logical Reasoning", "Macros & Formula", "Management", "Manpower Planning", "MCSC", "MIS", "MIS - Analyst", "MIS - Operations", "MIS - Reporting", "MIS & Reporting", "MIS Excel", "MIS Reporting", "MS Access", "MS Excel", "MS Office", "MS SQL", "MSCS", "NA", "networking", "Office", "Operations", "Ops Team Lead", "Oracle", "People Management", "Planning", "Programming Languages", "Project Management", "Projects Management", "Real Time", "Real Time Management", "Real time Reports", "Recording Macro", "Reporting", "Reports", "Resource Planning", "Rostering", "RTA", "RTA Analyst", "RTA)", "Sales", "SAP Knowlegde for Analysys", "Scheduling", "Scheduling & Rostering", "Scheduling in Excel", "Scheduling WFM Support", "Seat Utilization", "Sizing", "Skill Development", "Spanish", "Spanish Language Expert", "SQL", "Staffing", "Stakeholder Management", "Strategy", "Team Management", "Technical Support", "VB", "VBA", "VBA Automation", "Visual Basic", "WFC", "WFM", "Writing" };
+            foreach (string i in arrSkills)
+            {
+                tbSkill_Set_1.Items.Add(i);
+                tbSkill_Set_2.Items.Add(i);
+                tbSkill_Set_3.Items.Add(i);
+
+            }
 
 
 
@@ -97,9 +144,6 @@ public partial class profile : System.Web.UI.Page
 
 
     }
-
-
-
     protected void btnPersonalSubmit_Click(object sender, EventArgs e)
     {
         myID = Session["myID"].ToString();
@@ -165,9 +209,37 @@ public partial class profile : System.Web.UI.Page
         dr.City = tbAddress_City.Text;
         dr.Total_Work_Experience = tbTotal_Work_Experience.Text;
         dr.Highest_Qualificatin = tbHighest_Qualification.Text;
-        dr.Skill_Set_1 = tbSkill_Set_1.Text;
-        dr.Skill_Set_2 = tbSkill_Set_2.Text;
-        dr.Skill_Set_3 = tbSkill_Set_3.Text;
+
+
+        StringBuilder j = new StringBuilder();
+        string first = string.Empty;
+        j.Append(first);
+
+        // GET SELECTED ITEMS
+        for (int i = 0; i <= tbSkill_Set_1.Items.Count - 1; i++)
+        {
+            if (tbSkill_Set_1.Items[i].Selected)
+                j.Append("," + tbSkill_Set_1.Items[i].Text);
+        }
+
+        dr.Skill_Set_1 = j.ToString().Substring(1);
+
+        j.Clear();
+        for (int i = 0; i <= tbSkill_Set_1.Items.Count - 1; i++)
+        {
+            if (tbSkill_Set_2.Items[i].Selected)
+                j.Append("," + tbSkill_Set_2.Items[i].Text);
+        }
+        dr.Skill_Set_2 = j.ToString().Substring(1);
+
+        j.Clear();
+        for (int i = 0; i <= tbSkill_Set_1.Items.Count - 1; i++)
+        {
+            if (tbSkill_Set_3.Items[i].Selected)
+                j.Append("," + tbSkill_Set_3.Items[i].Text);
+        }
+        dr.Skill_Set_3 = j.ToString().Substring(1);
+
         dr.Updated_by = myID;
         dr.Update_Date = DateTime.Now;
         dr.UserImage = dr.UserImage;
@@ -224,7 +296,7 @@ public partial class profile : System.Web.UI.Page
             //    , Transport_User, Country, City, Site, Department, Sub_Department, Designation, Supervisor, Date_of_Joining, Employee_Role, Employee_Type
             //    , Employee_Status, Total_Work_Experience, Highest_Qualificatin, Skill_Set_1, Skill_Set_2, Skill_Set_3, Updated_by, Update_Date
             //    , Supervisor_ECN, UserImage);
-                
+
             //my.ExecuteDMLCommand(ref cmd, the_Procedure, "S");
 
         }
@@ -234,4 +306,15 @@ public partial class profile : System.Web.UI.Page
         }
 
     }
+    protected void changeProfileImage_Click(object sender, ImageClickEventArgs e)
+    {
+
+    }
+    protected void btnUploadNewProfileImage_Click(object sender, EventArgs e)
+    {
+
+    }
+
+
+
 }
