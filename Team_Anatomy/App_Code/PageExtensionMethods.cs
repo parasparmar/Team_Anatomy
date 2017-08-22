@@ -64,7 +64,7 @@ public static class PageExtensionMethods
 
     public static string getMyWindowsID()
     {
-        string myID = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+        string myID = System.Web.HttpContext.Current.User.Identity.Name;
         string[] stringSeparators = new string[] { "\\" };
         string[] result = myID.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
         return result[1];

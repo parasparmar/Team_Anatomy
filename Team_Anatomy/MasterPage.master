@@ -11,26 +11,26 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
-    <link rel="stylesheet" href="/AdminLTE/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="AdminLTE/bower_components/bootstrap/dist/css/bootstrap.min.css">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="/AdminLTE/bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="AdminLTE/bower_components/font-awesome/css/font-awesome.min.css">
     <!-- Ionicons -->
-    <link rel="stylesheet" href="/AdminLTE/bower_components/Ionicons/css/ionicons.min.css">
+    <link rel="stylesheet" href="AdminLTE/bower_components/Ionicons/css/ionicons.min.css">
     <!-- Theme style -->
     <!-- Select2 -->
-    <link rel="stylesheet" href="/AdminLTE/bower_components/select2/dist/css/select2.min.css">
+    <link rel="stylesheet" href="AdminLTE/bower_components/select2/dist/css/select2.min.css">
 
-    <link rel="stylesheet" href="/AdminLTE/dist/css/AdminLTE.css">
+    <link rel="stylesheet" href="AdminLTE/dist/css/AdminLTE.css">
     <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="AdminLTE/dist/css/skins/_all-skins.min.css">
     <!-- DataTables -->
-    <link rel="stylesheet" href="/AdminLTE/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="AdminLTE/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
 
 
 
     <!-- bootstrap datepicker -->
-    <link rel="stylesheet" href="/AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -135,7 +135,7 @@
             <asp:ScriptManager ID="scripts" runat="server"></asp:ScriptManager>
             <header class="main-header">
                 <!-- Logo -->
-                <a href="/Index.aspx" class="logo">
+                <a href="Index.aspx" class="logo">
                     <!-- mini logo for sidebar mini 50x50 pixels -->
                     <span class="logo-mini"><b>TA</b></span>
                     <!-- logo for regular state and mobile devices -->
@@ -467,7 +467,7 @@
 
         <footer class="main-footer">
             <div class="pull-left hidden-xs footer-left">
-                <span>Support Email: <strong><a href="mailto:gurdeep.singh@sitel.com?cc=paras.parmar@sitel.com; komal.trivedi@sitel.com&amp;subject=PACMAN%20Issue&amp;body=Hi%20Team%2C%0A%0AThis%20is%20my%20PACMAN%20Issue%3A%20%0A%0APasted%20below%20is%20a%20screenshot%20of%20the%20same.">SPEA</a></strong></span>
+                <span>Support Email: <strong><a href="mailto:gurdeep.singh@sitel.com?cc=paras.parmar@sitel.com; komal.trivedi@sitel.com&amp;subject=TeamAnatomy%20Issue&amp;body=Hi%20Team%2C%0A%0AThis%20is%20my%20TeamAnatomy%20Issue%3A%20%0A%0APasted%20below%20is%20a%20screenshot%20of%20the%20same.">SPEA</a></strong></span>
             </div>
             <!--Support Footer-->
             <div class="pull-right hidden-xs footer-right">
@@ -682,12 +682,12 @@
     </div>
 
     <!-- jQuery 3 -->
-    <script src="/AdminLTE/bower_components/jquery/dist/jquery.js"></script>
+    <script src="AdminLTE/bower_components/jquery/dist/jquery.js"></script>
     <!-- Bootstrap 3.3.7 -->
-    <script src="/AdminLTE/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="AdminLTE/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- DataTables -->
-    <script src="/AdminLTE/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="/AdminLTE/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="AdminLTE/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="AdminLTE/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 
     <script src="https://cdn.datatables.net/1.10.15/js/dataTables.jqueryui.min.js"></script>
 
@@ -696,18 +696,18 @@
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
 
 
-    <script type="text/javascript" src="/Sitel/jszip.js"></script>
+    <script type="text/javascript" src="Sitel/jszip.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
     <!-- bootstrap datepicker -->
-    <script src="/AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <script src="AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <!-- SlimScroll -->
-    <script src="/AdminLTE/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="AdminLTE/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
     <!-- FastClick -->
-    <script src="/AdminLTE/bower_components/fastclick/lib/fastclick.js"></script>
+    <script src="AdminLTE/bower_components/fastclick/lib/fastclick.js"></script>
     <!-- AdminLTE App -->
-    <script src="/AdminLTE/dist/js/adminlte.min.js"></script>
+    <script src="AdminLTE/dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
-    <script src="/AdminLTE/dist/js/demo.js"></script>
+    <script src="AdminLTE/dist/js/demo.js"></script>
     <script>
         $(document).ready(function () {
             $('.sidebar-menu').tree()

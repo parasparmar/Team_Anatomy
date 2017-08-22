@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="profile.aspx.cs" Inherits="profile" %>
-
+<%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="headPlaceHolder" runat="Server">
     
 </asp:Content>
@@ -415,7 +415,7 @@
 </asp:Content>
 <asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">
     <!-- Select2 -->
-    <script src="/AdminLTE/bower_components/select2/dist/js/select2.full.min.js"></script>
+    <script src="AdminLTE/bower_components/select2/dist/js/select2.full.min.js"></script>
     <script>
         $(function () {
             //Date picker
