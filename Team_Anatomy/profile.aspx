@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="profile.aspx.cs" Inherits="profile" %>
+
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="headPlaceHolder" runat="Server">
-    
 </asp:Content>
 <%--<asp:Content ID="Content2" ContentPlaceHolderID="headmenu" runat="Server">
 </asp:Content>--%>
@@ -118,7 +118,7 @@
                             </a>
 
                         </li>
-                        
+
                     </ul>
                     <%-- <a href="#" class="btn btn-primary btn-block"><b>Request Rectification</b></a>--%>
                 </div>
@@ -206,7 +206,7 @@
                                 <div class="col-sm-10">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-calendar-check-o"></i></span>
-                                        <asp:TextBox ID="tbAnniversary_Date" CssClass="form-control datepicker" runat="server"></asp:TextBox>
+                                        <asp:TextBox ID="tbAnniversaryDate" CssClass="form-control datepicker" runat="server"></asp:TextBox>
                                     </div>
 
                                 </div>
@@ -226,6 +226,15 @@
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
                                         <asp:TextBox ID="tbAlternate_Contact" CssClass="form-control" runat="server"></asp:TextBox>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="tb" class="col-sm-2 control-label">Emergency Contact Person</label>
+                                <div class="col-sm-10">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
+                                        <asp:TextBox ID="tbEmergencyContactPerson" CssClass="form-control" runat="server"></asp:TextBox>
                                     </div>
                                 </div>
                             </div>
@@ -346,7 +355,7 @@
 
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-rocket"></i></span>
-                                        <select ID="tbSkill_Set_1" class="form-control select2" SelectionMode="multiple" multiple="true" Style="width: 100%" runat="server">
+                                        <select id="tbSkill_Set_1" class="form-control select2" selectionmode="multiple" multiple="true" style="width: 100%" runat="server">
                                         </select>
                                     </div>
                                 </div>
@@ -358,7 +367,7 @@
                                 <div class="col-sm-10">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-fighter-jet"></i></span>
-                                        <select ID="tbSkill_Set_2" class="form-control select2" SelectionMode="multiple" multiple="true" Style="width: 100%" runat="server"></select>
+                                        <select id="tbSkill_Set_2" class="form-control select2" selectionmode="multiple" multiple="true" style="width: 100%" runat="server"></select>
                                     </div>
                                 </div>
                             </div>
@@ -369,7 +378,7 @@
                                 <div class="col-sm-10">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-bicycle"></i></span>
-                                        <select ID="tbSkill_Set_3" class="form-control select2" SelectionMode="multiple" multiple="true" Style="width: 100%" runat="server"></select>
+                                        <select id="tbSkill_Set_3" class="form-control select2" selectionmode="multiple" multiple="true" style="width: 100%" runat="server"></select>
                                     </div>
                                 </div>
                             </div>

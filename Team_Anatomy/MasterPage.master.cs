@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Configuration;
 using System.Data;
+using System.Data.Sql;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
@@ -15,6 +17,7 @@ public partial class MasterPage : System.Web.UI.MasterPage
 {
 
     string myID;
+    DataTable dt = new DataTable();
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!Page.IsPostBack)
@@ -28,15 +31,23 @@ public partial class MasterPage : System.Web.UI.MasterPage
         try
         {
             myID = PageExtensionMethods.getMyWindowsID().ToString();
+            string constr = ConfigurationManager.ConnectionStrings["constr"].ToString();
 
-            EmployeeTableAdapters.dtaEmployee dtaEmp = new EmployeeTableAdapters.dtaEmployee();
-            Employee.dtEmployeeDataTable dtEmp = new Employee.dtEmployeeDataTable();
-            dtaEmp.Fill(dtEmp, myID);            
-            Employee.dtEmployeeRow dr = (Employee.dtEmployeeRow)dtEmp.Rows[0];
-            lblName.Text = dr.First_Name + " " + dr.Last_Name;
-            lblNameDesignation.Text = dr.First_Name + " " + dr.Last_Name + " - " + dr.Designation;
-            lblDOJ.Text = dr.Date_of_Joining.ToString("dd-MMM-yyyy");
-            string UserImageURI = "~/Sitel/user_images/" + dr.UserImage;
+            using (SqlConnection cn = new SqlConnection(constr))
+            {
+                cn.Open();
+                string strSQL = "Exec WFMP.getEmployeeData @NT_ID = " + myID;
+                using (SqlDataAdapter a = new SqlDataAdapter(strSQL, cn))
+                {
+                    a.Fill(dt);
+                }
+            }
+            DataRow dr = dt.Rows[0];
+
+            lblName.Text = dr["First_Name"] + " " + dr["Last_Name"];
+            lblNameDesignation.Text = dr["First_Name"] + " " + dr["Last_Name"] + " - " + dr["DesignationId"];
+            lblDOJ.Text = Convert.ToDateTime(dr["DOJ"].ToString()).ToString("dd-MMM-yyyy");
+            string UserImageURI = "~/Sitel/user_images/" + dr["UserImage"];
             mediumUserImage.ImageUrl = UserImageURI;
             smallUserImage.ImageUrl = UserImageURI;
 
@@ -53,5 +64,5 @@ public partial class MasterPage : System.Web.UI.MasterPage
 
 
 
-    
+
 }
