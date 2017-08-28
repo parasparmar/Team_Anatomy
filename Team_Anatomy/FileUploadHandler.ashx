@@ -31,7 +31,7 @@ public class FileUploadHandler : IHttpHandler
 
             }
             context.Response.ContentType = "text/plain";
-            context.Response.Write("Upload Successful. Please refresh (F5) the page to see the changes.");
+            context.Response.Write("Upload Successful. The page will now refresh.");
         }
     }
 

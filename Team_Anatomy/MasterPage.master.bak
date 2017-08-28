@@ -25,7 +25,8 @@
        folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="AdminLTE/dist/css/skins/_all-skins.min.css">
     <!-- DataTables -->
-    <%--<link rel="stylesheet" href="/AdminLTE/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">--%>
+    <link rel="stylesheet" href="AdminLTE/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+
 
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/dataTables.jqueryui.min.css" />
@@ -129,7 +130,7 @@
     <!--Place any head based scripts used by the rest of the application here.-->
     <asp:ContentPlaceHolder ID="headPlaceHolder" runat="server"></asp:ContentPlaceHolder>
 </head>
-<body class="hold-transition skin-blue sidebar-mini  sidebar-collapse">
+<body class="hold-transition skin-red sidebar-mini fixed">
     <!-- Site wrapper -->
     <div class="wrapper">
         <form id="form1" runat="server">
@@ -237,32 +238,16 @@
                         <!-- sidebar menu: : style can be found in sidebar.less -->
                         <ul class="sidebar-menu" data-widget="tree">
                             <li class="header">MAIN NAVIGATION</li>
-                            <li>
-                                <a href="profile.aspx">
-                                    <i class="fa fa-user-plus"></i><span>My Profile</span>                                    
-                                </a>
-                            </li>
-                            <li>
-                                <a href="team.aspx">
-                                    <i class="fa fa-users"></i><span>My Team</span>                                    
-                                </a>
-                            </li>
-                            <li>
-                                <a href="movement.aspx">
-                                    <i class="fa fa-random"></i><span>Movement</span>                                    
-                                </a>
-                            </li>
-
-                            <li class="treeview">
+                            <li class="active treeview">
                                 <a href="#">
-                                    <i class="fa fa-dashboard"></i><span>My Information</span>
+                                    <i class="fa fa-dashboard"></i><span>Dashboard</span>
                                     <span class="pull-right-container">
                                         <i class="fa fa-angle-left pull-right"></i>
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li class="active"><a href="profile.aspx"><i class="fa fa-circle-o"></i>My Profile</a></li>
-                                    <li><a href="team.aspx"><i class="fa fa-circle-o"></i>My Team</a></li>
+                                    <li class="active"><a href="index.html"><i class="fa fa-circle-o"></i>Dashboard v1</a></li>
+                                    <li><a href="index2.html"><i class="fa fa-circle-o"></i>Dashboard v2</a></li>
                                 </ul>
                             </li>
                             <li class="treeview">

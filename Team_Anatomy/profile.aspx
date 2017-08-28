@@ -5,16 +5,22 @@
 </asp:Content>
 <%--<asp:Content ID="Content2" ContentPlaceHolderID="headmenu" runat="Server">
 </asp:Content>--%>
-<asp:Content ID="Content3" ContentPlaceHolderID="leftmenu" runat="Server">
-</asp:Content>
+<%--<asp:Content ID="Content3" ContentPlaceHolderID="leftmenu" runat="Server">
+</asp:Content>--%>
 <asp:Content ID="Content4" ContentPlaceHolderID="pageheader" runat="Server">
-    <h1>Profile Information
-    <small>View/ Edit and Save profile Information</small>
-    </h1>
     <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i>Home</a></li>
-        <li class="active"><a href="#">Profile Information</a></li>
+        <li><a href="index.aspx"><i class="iconfa-home"></i>Home</a></li>
+        <li class="active"><a href="profile.aspx"><i class="fa fa-user-plus"></i>Profile Information</a></li>
     </ol>
+
+    <div class="pageheader">
+        <div class="pageicon"><span class="fa fa-user-plus"></span></div>
+        <div class="pagetitle">
+            <h5>View / Edit and Save Profile Information</h5>
+            <h1>My Profile</h1>
+        </div>
+    </div>
+    <!--pageheader-->
 </asp:Content>
 <asp:Content ID="Content5" ContentPlaceHolderID="The_Body" runat="Server">
     <div class="row">
@@ -462,7 +468,10 @@
                     data: data,
                     contentType: false,
                     processData: false,
-                    success: function (result) { alert(result); },
+                    success: function (result) {
+                        alert(result);
+                        location.reload();
+                    },
                     error: function (err) { alert(err.statusText) }
                 });
 

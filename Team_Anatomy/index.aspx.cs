@@ -4,11 +4,32 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Data.Sql;
 
 public partial class index : System.Web.UI.Page
 {
+    string myID;
     protected void Page_Load(object sender, EventArgs e)
     {
-        Response.Redirect("profile.aspx", true);
+        myID = PageExtensionMethods.getMyWindowsID().ToString();
+        Session["myID"] = myID;
+        Helper my = new Helper();
+        DataTable dt = my.GetData("WFMP.getEmployeeData " + myID);
+        if (dt.Rows.Count > 0)
+        {
+            Session["dtEmp"] = dt;
+            Response.Redirect("movement.aspx", true);
+            
+        }
+        else
+        {
+
+            Response.Redirect("lockscreen.aspx", true);
+        }
+
+
+
     }
 }

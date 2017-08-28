@@ -29,8 +29,6 @@ public partial class profile : System.Web.UI.Page
 
     protected bool my_permissions()
     {
-
-
         return true;
     }
 
@@ -39,15 +37,7 @@ public partial class profile : System.Web.UI.Page
         try
         {
             myID = PageExtensionMethods.getMyWindowsID().ToString();
-            //EmployeeTableAdapters.dtaEmployee dtaEmp = new EmployeeTableAdapters.dtaEmployee();
-            //Employee.dtEmployeeDataTable dtEmp = new Employee.dtEmployeeDataTable();
-            //dtaEmp.Fill(dtEmp, myID);
-
-            //Employee.dtEmployeeRow dr = (Employee.dtEmployeeRow)dtEmp.Rows[0];
-
-
-
-
+            
             Helper my = new Helper();
             DataTable dtEmp = my.GetData("Exec WFMP.getEmployeeData '" + myID + "'");
             Session["Employee_Datatable"] = dtEmp;
@@ -246,14 +236,7 @@ public partial class profile : System.Web.UI.Page
         }
 
     }
-    protected void changeProfileImage_Click(object sender, ImageClickEventArgs e)
-    {
-
-    }
-    protected void btnUploadNewProfileImage_Click(object sender, EventArgs e)
-    {
-
-    }
+   
 
 
 

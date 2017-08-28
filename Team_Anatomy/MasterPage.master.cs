@@ -26,6 +26,8 @@ public partial class MasterPage : System.Web.UI.MasterPage
         }
     }
 
+   
+
     protected void intialize_me()
     {
         try
