@@ -51,20 +51,7 @@ public partial class movement : System.Web.UI.Page
 
     }
 
-    protected void gv_PreRender(object sender, EventArgs e)
-    {
-        GridView gv = (GridView)sender;
-        if (gv.Rows.Count > 0)
-        {
-            gv.UseAccessibleHeader = true;
-            gv.HeaderRow.TableSection = TableRowSection.TableHeader;
 
-            gv.HeaderStyle.BorderStyle = BorderStyle.None;
-
-            gv.BorderStyle = BorderStyle.None;
-            gv.BorderWidth = Unit.Pixel(1);
-        }
-    }
     protected void btnMgrMovement_Click(object sender, EventArgs e)
     {
         MovementHandler("mgr");
@@ -83,6 +70,7 @@ public partial class movement : System.Web.UI.Page
     }
     private void MovementHandler(string MovementType)
     {
+
         switch (MovementType)
         {
             //Employee is transferred across Reporting Managers
@@ -93,9 +81,6 @@ public partial class movement : System.Web.UI.Page
                 pnlMgrActions.Visible = true;
                 rdoDeptMovement.Checked = false;
                 rdoMgrMovement.Checked = true;
-                //fillTeamList(MyEmpID);
-                fillTeamList(923563);
-
                 break;
 
 
@@ -109,15 +94,13 @@ public partial class movement : System.Web.UI.Page
                 rdoMgrMovement.Checked = false;
 
                 // Fill the dropdowns ddlFromDept and ddlToDept, ddlFromDeptMgr and ddlToDeptMgr
-
                 strSQL = "select C.Id, C.Department  FROM [CWFM_Umang].[WFMP].[tblMaster] A ";
                 strSQL += " inner join CWFM_Umang..WFM_Employee_List B on A.Employee_ID=B.Employee_ID ";
                 strSQL += " Left join [CWFM_Umang].[WFMP].tblDepartment C on C.Department = B.Department ";
                 strSQL += " where A.Employee_ID = " + MyEmpID;
 
 
-                DataTable dtMyDept = my.GetData(strSQL);
-                ddlFromDept.DataSource = dtMyDept;
+                ddlFromDept.DataSource = my.GetData(strSQL);
                 ddlFromDept.DataTextField = "Department";
                 ddlFromDept.DataValueField = "Id";
                 ddlFromDept.DataBind();
@@ -130,46 +113,110 @@ public partial class movement : System.Web.UI.Page
                 ddlToDept.DataBind();
                 break;
 
+
             case "Push":
+                // Fill From Mgr Dropdown.
                 strSQL = "SELECT Distinct B.[Employee_ID],REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') as Name ";
                 strSQL += " FROM [CWFM_Umang].[WFMP].[tblMaster] A inner join [CWFM_Umang].[WFMP].[tblMaster] B on B.Employee_ID = A.RepMgrCode";
                 strSQL += " where B.Employee_ID = " + MyEmpID;
-                DataTable dtPushingMgr = my.GetData(strSQL);
-                ddlFromMgr.DataSource = dtPushingMgr;
+                strSQL += " order by REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') ASC";
+
+                ddlFromMgr.DataSource = my.GetData(strSQL);
                 ddlFromMgr.DataTextField = "Name";
                 ddlFromMgr.DataValueField = "Employee_ID";
                 ddlFromMgr.DataBind();
 
+                // Fill To Mgr Dropdown.
+                strSQL = "SELECT Distinct B.[Employee_ID],REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') as Name ";
+                strSQL += " FROM [CWFM_Umang].[WFMP].[tblMaster] A inner join [CWFM_Umang].[WFMP].[tblMaster] B on B.Employee_ID = A.RepMgrCode ";
+                strSQL += " where B.isReportingManager > 0 and B.Employee_ID <> " + MyEmpID;
+                strSQL += " order by REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') ASC";
+
+                ddlToMgr.DataSource = my.GetData(strSQL);
+                ddlToMgr.DataTextField = "Name";
+                ddlToMgr.DataValueField = "Employee_ID";
+                ListItem LI = new ListItem("Please Select", "0");
+                ddlToMgr.Items.Insert(0, LI);
+                ddlToMgr.DataBind();
+
+                btnSubmitPush.Visible = true;
+                btnSubmitPull.Visible = false;
+                ltlMovementTypeHeading.Text = "Reporting Manager Movement : Initiate Transfer Out";
+                ltlDirection.Text = "<i class=\"content-header pageicon fa fa-arrow-circle-right\" style=\"padding-top:10%\"></i>";
+
+                // The Left Side Gridview 
+                fillTeamList(MyEmpID, ref gv_LeftHandSideTeamList);
+                gv_RightHandSideTeamList.DataSource = null;
+                gv_RightHandSideTeamList.DataBind();
+                break;
+
+            case "Pull":
                 strSQL = "SELECT Distinct B.[Employee_ID],REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') as Name ";
                 strSQL += " FROM [CWFM_Umang].[WFMP].[tblMaster] A inner join [CWFM_Umang].[WFMP].[tblMaster] B on B.Employee_ID = A.RepMgrCode";
-                DataTable dtReceivingMgr = my.GetData(strSQL);
-                ddlToMgr.DataSource = dtReceivingMgr;
+                strSQL += " where B.Employee_ID = " + MyEmpID;
+
+                ddlToMgr.DataSource = my.GetData(strSQL);
                 ddlToMgr.DataTextField = "Name";
                 ddlToMgr.DataValueField = "Employee_ID";
                 ddlToMgr.DataBind();
 
-                break;
+                // Fill From Mgr Dropdown.
+                strSQL = "SELECT Distinct B.[Employee_ID],REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') as Name ";
+                strSQL += " FROM [CWFM_Umang].[WFMP].[tblMaster] A inner join [CWFM_Umang].[WFMP].[tblMaster] B on B.Employee_ID = A.RepMgrCode";
+                strSQL += " where B.isReportingManager > 0 and B.Employee_ID <> " + MyEmpID;
+                strSQL += " order by REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') ASC";
 
-            case "Pull":
+                ddlFromMgr.DataSource = my.GetData(strSQL);
+                ddlFromMgr.DataTextField = "Name";
+                ddlFromMgr.DataValueField = "Employee_ID";
+                ListItem LI2 = new ListItem("Please Select", "0");
+                ddlFromMgr.Items.Insert(0, LI2);
+                ddlFromMgr.DataBind();
 
 
+                btnSubmitPush.Visible = false;
+                btnSubmitPull.Visible = true;
+                ltlMovementTypeHeading.Text = "Reporting Manager Movement : Request Transfer In";
+                //ltlDirection.Text = "<i class=\"content-header pageicon fa fa-arrow-circle-left\" style=\"padding-top:10%\"></i>";
+                ltlDirection.Text = "<i class=\"content-header pageicon fa fa-arrow-circle-right\" style=\"padding-top:10%\"></i>";
+                fillTeamList(MyEmpID, ref gv_RightHandSideTeamList);
+                gv_LeftHandSideTeamList.DataSource = null;
+                gv_LeftHandSideTeamList.DataBind();
                 break;
 
             default:
+
                 break;
         }
+
+
+
+
+
+
     }
-    private void fillTeamList(int EmpCode)
+
+    private void fillTeamList(int EmpCode, string gvTeamList)
     {
         if (dt.Rows.Count > 0)
         {
-            Helper my = new Helper();
-            DataRow dr = dt.Rows[0];
-            //Convert.ToInt32(dr["Employee_Id"].ToString());
-            //923563;
-            DataTable dtMyTeam = my.GetData("Exec [WFMP].[TeamList] " + EmpCode);
-            gv_TeamList.DataSource = dtMyTeam;
-            gv_TeamList.DataBind();
+            GridView v = (GridView)Page.FindControlRecursive(gvTeamList);
+            v.DataSource = my.GetData("Exec [WFMP].[TeamList] " + EmpCode);
+            v.DataBind();
+        }
+        else
+        {
+
+        }
+    }
+
+    private void fillTeamList(int EmpCode, ref GridView gvTeamList)
+    {
+        if (dt.Rows.Count > 0)
+        {
+
+            gvTeamList.DataSource = my.GetData("Exec [WFMP].[TeamList] " + EmpCode);
+            gvTeamList.DataBind();
         }
         else
         {
@@ -183,5 +230,32 @@ public partial class movement : System.Web.UI.Page
     protected void btnMgrPull_Click(object sender, EventArgs e)
     {
         MovementHandler("Pull");
+    }
+    protected void ddlToMgr_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        int EmpCode = Convert.ToInt32(ddlToMgr.SelectedValue.ToString());
+        fillTeamList(EmpCode, ref gv_RightHandSideTeamList);
+
+        //gv_RightHandSideTeamList.Columns[2].Visible = false;
+    }
+    protected void ddlFromMgr_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        int EmpCode = Convert.ToInt32(ddlFromMgr.SelectedValue.ToString());
+        fillTeamList(EmpCode, ref gv_LeftHandSideTeamList);
+        //gv_LeftHandSideTeamList.Columns[2].Visible = false;
+        
+    }
+
+    protected void gv_PreRender(object sender, EventArgs e)
+    {
+        GridView gv = (GridView)sender;
+        if (gv.Rows.Count > 0)
+        {
+            gv.UseAccessibleHeader = true;
+            gv.HeaderRow.TableSection = TableRowSection.TableHeader;
+            gv.HeaderStyle.BorderStyle = BorderStyle.None;
+            gv.BorderStyle = BorderStyle.None;
+            gv.BorderWidth = Unit.Pixel(1);
+        }
     }
 }
