@@ -4,6 +4,8 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="headPlaceHolder" runat="Server">
     <link href="Sitel/plugins/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet" />
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link rel="stylesheet" href="AdminLTE/plugins/iCheck/all.css">
 </asp:Content>
 
 
@@ -39,36 +41,66 @@
                         </div>
                         <div class="box-body">
                             <div class="row">
-                                <div class="col-md-4">
-                                    <div class="input-group">
+                                <div class="col-md-3">
+                                    <div id="divDepMovement" runat="server" class="input-group">
                                         <span class="input-group-addon">
-                                            <asp:RadioButton ID="rdoDeptMovement" runat="server" GroupName="Movement"
+                                            <asp:RadioButton ID="rdoDeptMovement" runat="server" GroupName="Movement" CssClass="flat-red"
                                                 OnCheckedChanged="rdoDeptMovement_CheckedChanged" AutoPostBack="true" />
                                         </span>
-                                        <asp:Button ID="btnDeptMovement" CssClass="btn btn-primary btn-flat" Text="Department Movement"
+                                        <asp:Button ID="btnDeptMovement" CssClass="btn btn-primary btn-flat  form-control" Text="Department Movement"
                                             OnClick="btnDeptMovement_Click" runat="server" />
                                     </div>
-                                </div>
-                                <div class="col-md-8">
                                     <div class="form-group">
-                                        <div class="input-group">
+                                        <div id="divMgrMovement" runat="server" class="input-group">
                                             <span class="input-group-addon">
-                                                <asp:RadioButton ID="rdoMgrMovement" runat="server" GroupName="Movement"
+                                                <asp:RadioButton ID="rdoMgrMovement" runat="server" CssClass="flat-red" GroupName="Movement"
                                                     OnCheckedChanged="rdoMgrMovement_CheckedChanged" AutoPostBack="true" />
                                             </span>
-                                            <asp:Button ID="btnMgrMovement" CssClass="btn btn-info btn-flat"
+                                            <asp:Button ID="btnMgrMovement" CssClass="btn btn-info btn-flat  form-control"
                                                 Text="Reporting Manager Movement" OnClick="btnMgrMovement_Click" runat="server" />
                                         </div>
-                                       <asp:Panel ID="pnlMgrActions" CssClass="span" Visible="false" runat="server">
-                                        <input type="checkbox" checked runat="server" ID="cbxTransferDirection" class="checkbox2ToggleSwitch" data-toggle="toggle" data-off="Transfer In" data-on="Transfer Out" />
-                                        <asp:Button ID="btnMgrPush" runat="server" CssClass="btn btn-primary btn-flat" Text="Initiate Transfer Out" OnClick="btnMgrPush_Click" />
-                                        <asp:Button ID="btnMgrPull" runat="server" CssClass="btn btn-info btn-flat" Text="Request Transfer In" OnClick="btnMgrPull_Click" />
-                                    </asp:Panel>
-                                            
-                                       
                                     </div>
-
-                                    
+                                </div>
+                                <div class="col-md-3">
+                                    <asp:Panel ID="pnlMgrActions" CssClass="span" Visible="false" runat="server">
+                                        <%--<input type="checkbox" checked runat="server" id="cbxTransferDirection" class="checkbox2ToggleSwitch" data-toggle="toggle" data-off="Transfer In" data-on="Transfer Out" />--%>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <asp:RadioButton ID="btnMgrPush" runat="server" OnCheckedChanged="btnMgrPush_Click" CssClass="flat-red" GroupName="TransferDirection" AutoPostBack="true" />
+                                            </span>
+                                            <asp:Button ID="btnMgrPush2" CssClass="btn btn-info btn-flat form-control" Text="Initiate Transfer Out" OnClick="btnMgrPush_Click" runat="server" />
+                                        </div>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <asp:RadioButton ID="btnMgrPull" runat="server" OnCheckedChanged="btnMgrPull_Click" CssClass="flat-red" GroupName="TransferDirection" AutoPostBack="true" />
+                                            </span>
+                                            <asp:Button ID="btnMgrPull2" CssClass="btn btn-info btn-flat  form-control" Text="Request Transfer In" OnClick="btnMgrPull_Click" runat="server" />
+                                        </div>
+                                    </asp:Panel>
+                                </div>
+                                <div class="col-md-3">
+                                    <asp:Panel ID="pnlEffectiveDate" CssClass="span" Visible="false" runat="server">
+                                        <div class="form-group">
+                                            <label>Effective Date (As On)</label>
+                                            <asp:TextBox ID="tbEffectiveDate" CssClass="form-control datepicker" runat="server"></asp:TextBox>
+                                        </div>
+                                    </asp:Panel>
+                                </div>
+                                <div class="col-md-3">
+                                    <asp:Panel ID="pnlReset" CssClass="span" Visible="true" runat="server">
+                                        <div class="input-group">
+                                            <label>Reset</label>
+                                            <asp:Button ID="btnReset" CssClass="btn btn-primary btn-flat form-control" Text="Reset" Visible="false" OnClick="btnReset_Click" runat="server" />
+                                        </div>
+                                        <div class="input-group">
+                                            <label>Submit</label>
+                                            <asp:Button ID="btnSubmitPush" runat="server" CssClass="btn btn-primary btn-flat form-control" Visible="false" Text="Submit Transfer Out Request" />
+                                        </div>
+                                        <div class="input-group">
+                                            <label>Submit</label>
+                                            <asp:Button ID="btnSubmitPull" runat="server" CssClass="btn btn-info btn-flat form-control" Visible="false" Text="Submit Transfer In Request" />
+                                        </div>
+                                    </asp:Panel>
                                 </div>
 
                             </div>
@@ -110,7 +142,7 @@
                                                         </asp:DropDownList>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-1">
+                                                <div class="col-md-2">
                                                     <asp:Literal ID="ltlDirection" Text="" runat="server"></asp:Literal>
                                                 </div>
                                                 <div class="col-md-5">
@@ -123,24 +155,18 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-5">
                                                     <div class="form-group">
-                                                        <label>My Team</label>
-                                                        <asp:GridView ID="gv_LeftHandSideTeamList" runat="server" CssClass="table table-condensed table-responsive datatable display compact hover stripe" AutoGenerateColumns="false"
+                                                        <asp:GridView ID="gv_LeftHandSideTeamList" runat="server" CssClass="table table-condensed table-responsive" AutoGenerateColumns="false"
                                                             OnPreRender="gv_PreRender" ShowHeader="true" Style="border: none">
                                                             <Columns>
                                                                 <asp:TemplateField HeaderText="Selection">
                                                                     <ItemTemplate>
-                                                                        <asp:CheckBox ID="cbMyTeamListID" CssClass="" runat="server" />
+                                                                        <asp:CheckBox ID="cbMyTeamListID" CssClass="flat-red" runat="server" />
                                                                     </ItemTemplate>
                                                                 </asp:TemplateField>
                                                                 <asp:BoundField DataField="Employee_ID" HeaderText="Employee Id" />
                                                                 <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                                <asp:TemplateField HeaderText="Effective Date(As on)">
-                                                                    <ItemTemplate>
-                                                                        <asp:TextBox ID="tbEffectiveDate" CssClass="form-control datepicker" runat="server" Visible="true"></asp:TextBox>
-                                                                    </ItemTemplate>
-                                                                </asp:TemplateField>
                                                             </Columns>
                                                             <EmptyDataTemplate>
                                                                 <h5>No Team Members found.</h5>
@@ -150,26 +176,24 @@
                                                     </div>
                                                 </div>
                                                 <!---LHS Team---->
-                                                <div class="col-md-6">
-                                                    <label>His Team</label>
+                                                <div class="col-md-2">
+                                                </div>
+                                                <div class="col-md-5">
+
                                                     <div class="form-group">
                                                         <asp:GridView ID="gv_RightHandSideTeamList" runat="server"
-                                                            CssClass="table table-condensed table-responsive datatable display compact hover stripe"
+                                                            CssClass="table table-condensed table-responsive"
                                                             AutoGenerateColumns="false"
                                                             OnPreRender="gv_PreRender" ShowHeader="true" Style="border: none">
                                                             <Columns>
                                                                 <asp:TemplateField HeaderText="Selection">
                                                                     <ItemTemplate>
-                                                                        <asp:CheckBox ID="cbHisTeamListID" runat="server" />
+                                                                        <asp:CheckBox ID="cbHisTeamListID" CssClass="flat-red" runat="server" />
                                                                     </ItemTemplate>
                                                                 </asp:TemplateField>
                                                                 <asp:BoundField DataField="Employee_ID" HeaderText="Employee Id" />
                                                                 <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                                <asp:TemplateField HeaderText="Effective Date(As on)">
-                                                                    <ItemTemplate>
-                                                                        <asp:TextBox ID="tbEffectiveDate" CssClass="form-control datepicker" runat="server" Visible="true"></asp:TextBox>
-                                                                    </ItemTemplate>
-                                                                </asp:TemplateField>
+
                                                             </Columns>
                                                             <EmptyDataTemplate>
                                                                 <h5>No Team Members found.</h5>
@@ -186,12 +210,6 @@
                                 </div>
                             </div>
                             <div class="box-footer">
-                                <div class="input-group">
-                                    <span class="input-group-btn">
-                                        <asp:Button ID="btnSubmitPush" runat="server" CssClass="btn btn-primary btn-flat" Text="Submit Transfer Out Request" />
-                                        <asp:Button ID="btnSubmitPull" runat="server" CssClass="btn btn-info btn-flat" Text="Submit Transfer In Request" />
-                                    </span>
-                                </div>
                             </div>
                             <!-- /.box-footer-->
                         </div>
@@ -207,28 +225,35 @@
             <asp:AsyncPostBackTrigger ControlID="rdoDeptMovement" EventName="CheckedChanged" />
             <asp:AsyncPostBackTrigger ControlID="rdoMgrMovement" EventName="CheckedChanged" />
             <asp:AsyncPostBackTrigger ControlID="ddlToMgr" EventName="SelectedIndexChanged" />
+            <asp:AsyncPostBackTrigger ControlID="btnMgrPush" EventName="CheckedChanged" />
+            <asp:AsyncPostBackTrigger ControlID="btnMgrPush2" EventName="Click" />
+            <asp:AsyncPostBackTrigger ControlID="btnMgrPull" EventName="CheckedChanged" />
+            <asp:AsyncPostBackTrigger ControlID="btnMgrPull2" EventName="Click" />
+
         </Triggers>
     </asp:UpdatePanel>
-    
+
 </asp:Content>
 <asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">
     <!-- Select2 -->
     <script src="AdminLTE/bower_components/select2/dist/js/select2.full.min.js"></script>
     <script src="Sitel/plugins/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
+
     <script>
-        $(function () {
+        function pluginsInitializer() {
             //Initialize Select2 Elements
-            $('.select2').select2();
-            //Date picker
-            $("[class*='datepicker']").datepicker({
-                autoclose: true
-            })
-            $('.checkbox2ToggleSwitch').bootstrapToggle({
-                on: 'Transfer Out',
-                off: 'Transfer In'
+            $('.select2').select2({
+
             });
+            //Date picker
+            $(".datepicker").datepicker({
+                autoclose: true,
+                format: 'dd-M-yyyy'
+            });
+        }
 
-
+        $(function () {
+            pluginsInitializer();
         });
 
         //On UpdatePanel Refresh
@@ -236,16 +261,7 @@
         if (prm != null) {
             prm.add_endRequest(function (sender, e) {
                 if (sender._postBackSettings.panelsToUpdate != null) {
-                    //Initialize Select2 Elements
-                    $('.select2').select2();
-                    //Date picker
-                    $("[class*='datepicker']").datepicker({
-                        autoclose: true
-                    })
-                    $('.checkbox2ToggleSwitch').bootstrapToggle({
-                        on: 'Transfer Out',
-                        off: 'Transfer In'
-                    });
+                    pluginsInitializer();
                 }
             });
         };

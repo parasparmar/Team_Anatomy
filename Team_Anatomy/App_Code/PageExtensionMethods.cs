@@ -70,5 +70,18 @@ public static class PageExtensionMethods
         return result[1];
     }
 
-    
+
 }
+public static class MovementType
+{
+    public static String Manager { get { return "Manager"; } }
+    public static String Department { get { return "Department"; } }
+    public static String TransferOut { get { return "TransferOut"; } }
+    public static String TransferIn { get { return "TransferIn"; } }
+
+    public static bool HasProperty(this Type obj, string propertyName)
+    {
+        return obj.GetProperty(propertyName) != null;
+    }
+}
+

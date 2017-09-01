@@ -42,6 +42,68 @@
     <!-- Google Font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
+    
+    <style type="text/css">
+
+        /************************************************************************/
+        /* PSEUDO-TOGGLE BUTTON MADE OF ASP.NET CHECKBOX AND CSS3*/
+        div.divToggleButton input[type=checkbox]
+        {
+            display: none;
+            white-space: nowrap;
+        }
+        div.divToggleButton label
+        {
+            display: block;
+            float: left;
+            cursor: pointer;
+        }
+
+        /* set the size of the pseudo-toggle button control */
+        div.divToggleButton input[type=checkbox]:checked + label::before,
+        div.divToggleButton input[type=checkbox]:not(:checked) + label::before,
+        div.divToggleButton input[type=checkbox] + label
+        {
+            width: 40pt;
+            height: 40pt;
+            line-height: 40pt;
+        }
+
+        /* additional styling: rounded border, gradient */
+        div.divToggleButton input[type=checkbox] + label
+        {
+            vertical-align: middle;
+            text-align:center;
+            font-size: 16pt;
+            font-family:Arial, Calibri;
+            border: 1px solid #bdbdbd;
+            border-radius: 5px;
+            background: #f0f0f0;
+            /* gradient style (optional)*/
+            background-image: -moz-linear-gradient(top, #fdfdfd, #f9f9f9 50%, #e5e5e5 50%, #fdfdfd);
+            background-image: -webkit-gradient(linear, center top, center bottom,
+            from(#fdfdfd), color-stop(0.5, #f9f9f9), color-stop(0.5, #e5e5e5 ), to(#fdfdfd));
+            background-image: linear-gradient(to bottom, #fdfdfd, #f9f9f9 50%, #e5e5e5 50%, #fdfdfd);
+        }
+
+        /* content to display and style pertinent to unchecked state*/
+        div.divToggleButton input[type=checkbox]:not(:checked) + label::before
+        {
+            content: "Transfer In";
+            color: #303030;
+            opacity: 0.6;
+        }
+
+        /* content to display and style pertinent to checked state*/
+        div.divToggleButton input[type=checkbox]:checked + label::before
+        {
+            content         : "Transfer Out";
+            color           : #000090;
+            font-weight     : bold;
+        }
+        /************************************************************************/
+    </style>
+
     <style type="text/css">
         /**Paras Modified 31-03-2017 */
         /*** Legacy Headers Styled as per current design ***/
