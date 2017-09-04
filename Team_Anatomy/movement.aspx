@@ -6,6 +6,21 @@
     <link href="Sitel/plugins/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet" />
     <!-- iCheck for checkboxes and radio inputs -->
     <link rel="stylesheet" href="AdminLTE/plugins/iCheck/all.css">
+    <style>
+        .border-between > [class*='col-']:before {
+            background: #e3e3e3;
+            bottom: 0;
+            content: " ";
+            left: 0;
+            position: absolute;
+            width: 1px;
+            top: 0;
+        }
+
+        .border-between > [class*='col-']:first-child:before {
+            display: none;
+        }
+    </style>
 </asp:Content>
 
 
@@ -62,45 +77,32 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <asp:Panel ID="pnlMgrActions" CssClass="span" Visible="false" runat="server">
-                                        <%--<input type="checkbox" checked runat="server" id="cbxTransferDirection" class="checkbox2ToggleSwitch" data-toggle="toggle" data-off="Transfer In" data-on="Transfer Out" />--%>
-                                        <div class="input-group">
-                                            <span class="input-group-addon">
-                                                <asp:RadioButton ID="btnMgrPush" runat="server" OnCheckedChanged="btnMgrPush_Click" CssClass="flat-red" GroupName="TransferDirection" AutoPostBack="true" />
-                                            </span>
-                                            <asp:Button ID="btnMgrPush2" CssClass="btn btn-info btn-flat form-control" Text="Initiate Transfer Out" OnClick="btnMgrPush_Click" runat="server" />
-                                        </div>
-                                        <div class="input-group">
-                                            <span class="input-group-addon">
-                                                <asp:RadioButton ID="btnMgrPull" runat="server" OnCheckedChanged="btnMgrPull_Click" CssClass="flat-red" GroupName="TransferDirection" AutoPostBack="true" />
-                                            </span>
-                                            <asp:Button ID="btnMgrPull2" CssClass="btn btn-info btn-flat  form-control" Text="Request Transfer In" OnClick="btnMgrPull_Click" runat="server" />
-                                        </div>
-                                    </asp:Panel>
-                                </div>
-                                <div class="col-md-3">
                                     <asp:Panel ID="pnlEffectiveDate" CssClass="span" Visible="false" runat="server">
                                         <div class="form-group">
-                                            <label>Effective Date (As On)</label>
+                                            <label>Effective From</label>
                                             <asp:TextBox ID="tbEffectiveDate" CssClass="form-control datepicker" runat="server"></asp:TextBox>
                                         </div>
                                     </asp:Panel>
                                 </div>
                                 <div class="col-md-3">
-                                    <asp:Panel ID="pnlReset" CssClass="span" Visible="true" runat="server">
+                                    <asp:Panel ID="pnlMgrActions" CssClass="span" Visible="false" runat="server">
+                                        <%--<input type="checkbox" checked runat="server" id="cbxTransferDirection" class="checkbox2ToggleSwitch" data-toggle="toggle" data-off="Transfer In" data-on="Transfer Out" />--%>
                                         <div class="input-group">
-                                            <label>Reset</label>
-                                            <asp:Button ID="btnReset" CssClass="btn btn-primary btn-flat form-control" Text="Reset" Visible="false" OnClick="btnReset_Click" runat="server" />
+                                            <span class="input-group-addon">
+                                                <asp:RadioButton ID="rdobtnMgrPush" runat="server" OnCheckedChanged="btnMgrPush_Click" CssClass="flat-red" GroupName="TransferDirection" AutoPostBack="true" />
+                                            </span>
+                                            <asp:Button ID="btnMgrPush2" CssClass="btn btn-info btn-flat form-control" Text="Initiate Transfer Out" OnClick="btnMgrPush_Click" runat="server" />
                                         </div>
                                         <div class="input-group">
-                                            <label>Submit</label>
-                                            <asp:Button ID="btnSubmitPush" runat="server" CssClass="btn btn-primary btn-flat form-control" Visible="false" Text="Submit Transfer Out Request" />
-                                        </div>
-                                        <div class="input-group">
-                                            <label>Submit</label>
-                                            <asp:Button ID="btnSubmitPull" runat="server" CssClass="btn btn-info btn-flat form-control" Visible="false" Text="Submit Transfer In Request" />
+                                            <span class="input-group-addon">
+                                                <asp:RadioButton ID="rdobtnMgrPull" runat="server" OnCheckedChanged="btnMgrPull_Click" CssClass="flat-red" GroupName="TransferDirection" AutoPostBack="true" />
+                                            </span>
+                                            <asp:Button ID="btnMgrPull2" CssClass="btn btn-info btn-flat  form-control" Text="Request Transfer In" OnClick="btnMgrPull_Click" runat="server" />
                                         </div>
                                     </asp:Panel>
+                                </div>
+
+                                <div class="col-md-3">
                                 </div>
 
                             </div>
@@ -123,101 +125,107 @@
                                 </div>
                             </div>
                             <div class="box-body">
-                                <div class="form-group">
-                                    <div class="col-md-12">
-                                        <asp:Panel ID="pnlDeptMovement" runat="server" CssClass="box-body" Visible="false">
-                                            <asp:DropDownList ID="ddlFromDept" runat="server" CssClass="form-control select2" Style="width: 100%;"></asp:DropDownList>
-                                            <asp:DropDownList ID="ddlToDept" runat="server" CssClass="form-control select2" Style="width: 100%;"></asp:DropDownList>
-                                            <asp:DropDownList ID="ddlFromDeptMgr" runat="server" CssClass="form-control select2" Style="width: 100%;"></asp:DropDownList>
-                                            <asp:DropDownList ID="ddlToDeptMgr" runat="server" CssClass="form-control select2" Style="width: 100%;"></asp:DropDownList>
-                                        </asp:Panel>
-                                        <!--Choose Dep and Teams---->
-                                        <asp:Panel ID="pnlMgrMovement" runat="server" CssClass="box-body" Visible="false">
-                                            <div class="row">
-                                                <div class="col-md-5">
-                                                    <asp:Label Text="From" ID="lblFromMgr" runat="server"></asp:Label>
-                                                    <div class="form-group">
-                                                        <asp:DropDownList ID="ddlFromMgr" runat="server" CssClass="form-control select2" Style="width: 100%;" OnSelectedIndexChanged="ddlFromMgr_SelectedIndexChanged"
-                                                            AutoPostBack="true">
-                                                        </asp:DropDownList>
-                                                    </div>
+
+                                <div class="col-md-12">
+                                    <asp:Panel ID="pnlDeptMovement" runat="server" CssClass="box-body" Visible="false">
+                                        <asp:DropDownList ID="ddlFromDept" runat="server" CssClass="form-control select2" Style="width: 100%;"></asp:DropDownList>
+                                        <asp:DropDownList ID="ddlToDept" runat="server" CssClass="form-control select2" Style="width: 100%;"></asp:DropDownList>
+                                        <asp:DropDownList ID="ddlFromDeptMgr" runat="server" CssClass="form-control select2" Style="width: 100%;"></asp:DropDownList>
+                                        <asp:DropDownList ID="ddlToDeptMgr" runat="server" CssClass="form-control select2" Style="width: 100%;"></asp:DropDownList>
+                                    </asp:Panel>
+                                    <!--Choose Dep and Teams---->
+                                    <asp:Panel ID="pnlMgrMovement" runat="server" CssClass="box-body" Visible="false">
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <asp:Label Text="From" ID="lblFromMgr" runat="server"></asp:Label>
+                                                <div class="form-group">
+                                                    <asp:DropDownList ID="ddlFromMgr" runat="server" CssClass="form-control select2" Style="width: 100%;" OnSelectedIndexChanged="ddlFromMgr_SelectedIndexChanged"
+                                                        AutoPostBack="true">
+                                                    </asp:DropDownList>
                                                 </div>
-                                                <div class="col-md-2">
-                                                    <asp:Literal ID="ltlDirection" Text="" runat="server"></asp:Literal>
-                                                </div>
-                                                <div class="col-md-5">
-                                                    <asp:Label Text="To" ID="lblToMgr" runat="server"></asp:Label>
-                                                    <div class="form-group">
-                                                        <asp:DropDownList ID="ddlToMgr" runat="server" CssClass="form-control select2" Style="width: 100%;" OnSelectedIndexChanged="ddlToMgr_SelectedIndexChanged"
-                                                            OnTextChanged="ddlToMgr_SelectedIndexChanged" AutoPostBack="true">
-                                                        </asp:DropDownList>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label style="color: transparent; margin: 0">Submit</label>
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <asp:Button ID="btnSubmit" runat="server" CssClass="btn btn-info btn-flat  form-control" disabled="disabled" Text="Submit" OnClick="btnSubmit_Click" />
+                                                        <span class="input-group-addon"><i class='fa fa-arrow-circle-right'></i></span>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-5">
-                                                    <div class="form-group">
-                                                        <asp:GridView ID="gv_LeftHandSideTeamList" runat="server" CssClass="table table-condensed table-responsive" AutoGenerateColumns="false"
-                                                            OnPreRender="gv_PreRender" ShowHeader="true" Style="border: none">
-                                                            <Columns>
-                                                                <asp:TemplateField HeaderText="Selection">
-                                                                    <ItemTemplate>
-                                                                        <asp:CheckBox ID="cbMyTeamListID" CssClass="flat-red" runat="server" />
-                                                                    </ItemTemplate>
-                                                                </asp:TemplateField>
-                                                                <asp:BoundField DataField="Employee_ID" HeaderText="Employee Id" />
-                                                                <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                            </Columns>
-                                                            <EmptyDataTemplate>
-                                                                <h5>No Team Members found.</h5>
-                                                            </EmptyDataTemplate>
-
-                                                        </asp:GridView>
-                                                    </div>
+                                            <div class="col-md-5">
+                                                <asp:Label Text="To" ID="lblToMgr" runat="server"></asp:Label>
+                                                <div class="form-group">
+                                                    <asp:DropDownList ID="ddlToMgr" runat="server" CssClass="form-control select2" Style="width: 100%;" OnSelectedIndexChanged="ddlToMgr_SelectedIndexChanged"
+                                                        OnTextChanged="ddlToMgr_SelectedIndexChanged" AutoPostBack="true">
+                                                    </asp:DropDownList>
                                                 </div>
-                                                <!---LHS Team---->
-                                                <div class="col-md-2">
-                                                </div>
-                                                <div class="col-md-5">
-
-                                                    <div class="form-group">
-                                                        <asp:GridView ID="gv_RightHandSideTeamList" runat="server"
-                                                            CssClass="table table-condensed table-responsive"
-                                                            AutoGenerateColumns="false"
-                                                            OnPreRender="gv_PreRender" ShowHeader="true" Style="border: none">
-                                                            <Columns>
-                                                                <asp:TemplateField HeaderText="Selection">
-                                                                    <ItemTemplate>
-                                                                        <asp:CheckBox ID="cbHisTeamListID" CssClass="flat-red" runat="server" />
-                                                                    </ItemTemplate>
-                                                                </asp:TemplateField>
-                                                                <asp:BoundField DataField="Employee_ID" HeaderText="Employee Id" />
-                                                                <asp:BoundField DataField="Name" HeaderText="Name" />
-
-                                                            </Columns>
-                                                            <EmptyDataTemplate>
-                                                                <h5>No Team Members found.</h5>
-                                                            </EmptyDataTemplate>
-
-                                                        </asp:GridView>
-                                                    </div>
-                                                </div>
-                                                <!---RHS Team---->
                                             </div>
-                                        </asp:Panel>
-                                        <!--Choose Mgr Teams---->
-                                    </div>
+
+                                        </div>
+                                        <div class="row border-between">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <asp:GridView ID="gv_LeftHandSideTeamList" runat="server" CssClass="table table-condensed table-responsive" AutoGenerateColumns="false"
+                                                        OnPreRender="gv_PreRender" ShowHeader="true" Style="border: none">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Selection">
+                                                                <HeaderTemplate>
+                                                                    <asp:CheckBox ID="cbCheckAll" runat="server" />
+                                                                </HeaderTemplate>
+                                                                <ItemTemplate>
+                                                                    <asp:CheckBox ID="cbMyTeamListID" runat="server" />
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                            <asp:BoundField DataField="Employee_ID" HeaderText="Employee Id" />
+                                                            <asp:BoundField DataField="Name" HeaderText="Name" />
+                                                            <asp:BoundField DataField="MovementType" HeaderText="Movement Type" />
+                                                            <asp:BoundField DataField="MovementState" HeaderText="Status" />
+                                                        </Columns>
+                                                        <EmptyDataTemplate>
+                                                            <h5>No Team Members found.</h5>
+                                                        </EmptyDataTemplate>
+
+                                                    </asp:GridView>
+                                                </div>
+                                            </div>
+                                            <!---LHS Team---->
+
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <asp:GridView ID="gv_RightHandSideTeamList" runat="server"
+                                                        CssClass="table table-condensed table-responsive"
+                                                        AutoGenerateColumns="false"
+                                                        OnPreRender="gv_PreRender" ShowHeader="true" Style="border: none">
+                                                        <Columns>
+                                                            <asp:BoundField DataField="Employee_ID" HeaderText="Employee Id" />
+                                                            <asp:BoundField DataField="Name" HeaderText="Name" />
+                                                            <asp:BoundField DataField="MovementType" HeaderText="Movement Type" />
+                                                            <asp:BoundField DataField="MovementState" HeaderText="Status" />
+                                                        </Columns>
+                                                        <EmptyDataTemplate>
+                                                            <h5>No Team Members found.</h5>
+                                                        </EmptyDataTemplate>
+
+                                                    </asp:GridView>
+                                                </div>
+                                            </div>
+                                            <!---RHS Team---->
+                                    </asp:Panel>
+                                    <!--Choose Mgr Teams---->
                                 </div>
+
                             </div>
                             <div class="box-footer">
                             </div>
-                            <!-- /.box-footer-->
                         </div>
-                        <!--tabcontent-->
+                        <!-- /.box-footer-->
                     </div>
-                    <!-- /.col -->
+                    <!--tabcontent-->
                 </div>
-                <!---LHS Panel---->
+                <!-- /.col -->
+            </div>
+            <!---LHS Panel---->
         </ContentTemplate>
         <Triggers>
             <asp:AsyncPostBackTrigger ControlID="btnDeptMovement" EventName="Click" />
@@ -225,11 +233,12 @@
             <asp:AsyncPostBackTrigger ControlID="rdoDeptMovement" EventName="CheckedChanged" />
             <asp:AsyncPostBackTrigger ControlID="rdoMgrMovement" EventName="CheckedChanged" />
             <asp:AsyncPostBackTrigger ControlID="ddlToMgr" EventName="SelectedIndexChanged" />
-            <asp:AsyncPostBackTrigger ControlID="btnMgrPush" EventName="CheckedChanged" />
+            <asp:AsyncPostBackTrigger ControlID="rdobtnMgrPush" EventName="CheckedChanged" />
             <asp:AsyncPostBackTrigger ControlID="btnMgrPush2" EventName="Click" />
-            <asp:AsyncPostBackTrigger ControlID="btnMgrPull" EventName="CheckedChanged" />
+            <asp:AsyncPostBackTrigger ControlID="rdobtnMgrPull" EventName="CheckedChanged" />
             <asp:AsyncPostBackTrigger ControlID="btnMgrPull2" EventName="Click" />
-
+            <asp:AsyncPostBackTrigger ControlID="tbEffectiveDate" EventName="TextChanged" />
+            <asp:PostBackTrigger ControlID="btnSubmit" />
         </Triggers>
     </asp:UpdatePanel>
 
@@ -250,7 +259,54 @@
                 autoclose: true,
                 format: 'dd-M-yyyy'
             });
+
+            $("#cbCheckAll").change(function () {
+                var xChk = $(this).prop('checked');
+                $('[id*="cbMyTeamListID"]').each(function () {
+                    if ($(this).is(':disabled')) {
+                    }
+                    else {
+                        $(this).prop('checked', xChk);
+                    }
+                });
+
+                if (xChk == true && $('[id*="cbMyTeamListID"]:checked').length > 0) {
+                    xChk = true;
+                }
+                ToggleButton(xChk);
+            });
+
+            var xChk = false;
+            $('[id*="cbMyTeamListID"]').change(function () {
+                if ($('[id*="cbMyTeamListID"]:checked').length <= 0) {
+                    xChk = false;
+                };
+                if ($(this).prop('checked') == true && $('[id*="cbMyTeamListID"]:checked').length > 0) {
+                    xChk = true;
+                }
+                ToggleButton(xChk);
+            });
+
+            $('#tbEffectiveDate').change(function () {
+                var xChk = false;
+                if ($('#tbEffectiveDate').val().length > 0 && $('[id*="cbMyTeamListID"]:checked').length > 0) {
+                    xChk = true;
+                }
+                ToggleButton(xChk);
+            })
+
+            function ToggleButton(xChk) {
+                $("#btnSubmit").attr('disabled', 'disabled');
+
+                if (xChk == true && $('#tbEffectiveDate').val().length > 0) {
+                    $("#btnSubmit").removeAttr('disabled');
+                }
+                else {
+                    $("#btnSubmit").attr('disabled', 'disabled');
+                }
+            }
         }
+
 
         $(function () {
             pluginsInitializer();

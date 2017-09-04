@@ -6,118 +6,177 @@ using System.Web.UI.WebControls;
 using System.Configuration;
 using context = System.Web.HttpContext;
 using System.Web;
-
+using CD;
 
 public class Helper
+{
+    public System.Data.SqlClient.SqlConnection mcon;
+
+    public string getConnectionString()
     {
-        public System.Data.SqlClient.SqlConnection mcon;
-                
-        // ------------------------- Open Database Connection -------------------------
-        public void open_db()
+        EDCryptor xEDCryptor = new EDCryptor();
+        string xString = ConfigurationManager.ConnectionStrings["constr"].ToString();
+        xString = xEDCryptor.DeCrypt(xString);
+        return xString;
+    }
+
+    // ------------------------- Open Database Connection -------------------------
+    public void open_db()
+    {
+        mcon = new SqlConnection(getConnectionString());
+        try
         {
-            mcon = new SqlConnection((string)System.Configuration.ConfigurationManager.ConnectionStrings["constr"].ToString());
-            try
+            mcon.Open();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("{0} Exception Caught", e);
+            Log.thisException(e);
+        }
+    }
+
+    // ------------------------- Close  Database Connection -------------------------
+    public void close_conn()
+    {
+        if (mcon.State == ConnectionState.Open)
+        {
+            mcon.Close();
+            mcon.Dispose();
+        }
+    }
+
+
+    // ------------------------- Procedure for Execute Sql Query/Stored Procedure -------------------------
+    public void ExecuteDMLCommand(ref SqlCommand cmd, string sql_string, string operation)
+    {
+        open_db();
+        try
+        {
+            //cmd = new SqlCommand(sql_string, mcon);
+            cmd.Connection = mcon;
+            if (operation == "E")
             {
-                mcon.Open();
+                cmd.ExecuteNonQuery();
             }
-            catch (Exception e)
+            else if (operation == "S")
             {
-                Console.WriteLine("{0} Exception Caught",e);
-                Log.thisException(e);
+
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.ExecuteNonQuery();
             }
         }
-
-        // ------------------------- Close  Database Connection -------------------------
-        public void close_conn()
+        catch (Exception e)
         {
-            if (mcon.State == ConnectionState.Open)
-            {
-                mcon.Close();
-                mcon.Dispose();
-            }
+            Log.thisException(e);
+        }
+        finally
+        {
+
+            // Paras 29-03-2017 : Don't close the connection here.
+            //close_conn();
         }
 
+    }
 
-        // ------------------------- Procedure for Execute Sql Query/Stored Procedure -------------------------
-        public void ExecuteDMLCommand(ref SqlCommand cmd, string sql_string, string operation)
+
+    // ------------------------- Function for return datatable -------------------------
+    public DataTable GetData(string sql)
+    {
+        using (SqlConnection mcon = new SqlConnection(getConnectionString()))
         {
-            open_db();
-            try
-            {
-                //cmd = new SqlCommand(sql_string, mcon);
-                cmd.Connection = mcon;
-                if (operation == "E")
-                {
-                    cmd.ExecuteNonQuery();
-                }
-                else if (operation == "S")
-                {
-                    
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            catch (Exception e)
-            {
-                Log.thisException(e);
-            }
-            finally {
-
-                // Paras 29-03-2017 : Don't close the connection here.
-                //close_conn();
-            }
-      
-        }
-
-           
-        // ------------------------- Function for return datatable -------------------------
-        public DataTable GetData(string sql)
-        {
-            //open_db();
-            //DataTable worktable = new DataTable();
-            //SqlDataAdapter dap = new System.Data.SqlClient.SqlDataAdapter(new System.Data.SqlClient.SqlCommand(sql, mcon));
-            //DataSet ds = new DataSet();
-            //dap.Fill(ds);
-            //worktable = ds.Tables[0];
-            ////close_conn();
-            //return worktable;
-
-            using (SqlConnection mcon = new SqlConnection(ConfigurationManager.ConnectionStrings["constr"].ToString()))
-            {
-                DataTable worktable = new DataTable();
-                SqlDataAdapter dap = new System.Data.SqlClient.SqlDataAdapter(new System.Data.SqlClient.SqlCommand(sql, mcon));
-                DataSet ds = new DataSet();
-                dap.Fill(ds);
-                worktable = ds.Tables[0];
-                //close_conn();
-                return worktable;
-            }
-            
-        }
-
-        // ------------------------- Function for return datatable -------------------------
-        public DataSet return_dataset(string sql)
-        {
-            open_db();
             DataTable worktable = new DataTable();
             SqlDataAdapter dap = new System.Data.SqlClient.SqlDataAdapter(new System.Data.SqlClient.SqlCommand(sql, mcon));
             DataSet ds = new DataSet();
             dap.Fill(ds);
+            worktable = ds.Tables[0];
             //close_conn();
-            return ds;
+            return worktable;
         }
 
-        // ------------------------- Procedure For fill ListBox with default item -------------------------
-       public void fill_listbox(ref ListBox list_name,string sp_name,string datatextfeild, string datavaluefeild, string defaultitem,string parameters)
-       {
-           SqlCommand cmd = new SqlCommand();
-           SqlDataAdapter dap = new SqlDataAdapter();
-           DataSet ds = new DataSet();
+    }
 
-           try
+    // ------------------------- Function for return datatable -------------------------
+    public DataSet return_dataset(string sql)
+    {
+        open_db();
+        DataTable worktable = new DataTable();
+        SqlDataAdapter dap = new System.Data.SqlClient.SqlDataAdapter(new System.Data.SqlClient.SqlCommand(sql, mcon));
+        DataSet ds = new DataSet();
+        dap.Fill(ds);
+        //close_conn();
+        return ds;
+    }
+
+    // ------------------------- Procedure For fill ListBox with default item -------------------------
+    public void fill_listbox(ref ListBox list_name, string sp_name, string datatextfeild, string datavaluefeild, string defaultitem, string parameters)
+    {
+        SqlCommand cmd = new SqlCommand();
+        SqlDataAdapter dap = new SqlDataAdapter();
+        DataSet ds = new DataSet();
+
+        try
+        {
+            ExecuteDMLCommand(ref cmd, sp_name, "S");
+            //----------------------- Addning Muiltipal Parameters with there values by split using '#'.
+            if (parameters.Trim() != "")
             {
-                ExecuteDMLCommand(ref cmd, sp_name, "S");
-                //----------------------- Addning Muiltipal Parameters with there values by split using '#'.
+                string[] multiple_parameter = parameters.Split(',');
+                foreach (string p_value in multiple_parameter)
+                {
+                    string para_name = p_value.Split('#')[0];
+                    string para_value = p_value.Split('#')[1];
+                    cmd.Parameters.AddWithValue("@" + para_name, para_value);
+                }
+            }
+
+            dap.SelectCommand = cmd;
+            dap.Fill(ds);
+
+            if (defaultitem != "")
+            {
+                DataRow dr = ds.Tables[0].NewRow();
+                dr[0] = 0;
+                dr[1] = defaultitem;
+                ds.Tables[0].Rows.Add(dr);
+            }
+            list_name.DataSource = ds.Tables[0];
+            list_name.DataTextField = datatextfeild;
+            list_name.DataValueField = datavaluefeild;
+            list_name.DataBind();
+
+
+            //--------------------------------------------
+            if (defaultitem != "")
+            {
+                list_name.SelectedValue = "0";
+            }
+        }
+        catch (Exception e)
+        {
+            Log.thisException(e);
+        }
+        finally
+        {
+            dap.Dispose();
+            ds.Dispose();
+            close_conn();
+        }
+
+    }
+
+
+    // ------------------------- Procedure For fill dropdownlist with default item -------------------------
+    public void fill_dropdown(ref DropDownList drp_name, string sp_name, string datatextfeild, string datavaluefeild, string defaultitem, string parameters, string tran_type)
+    {
+        SqlCommand cmd = new SqlCommand();
+        SqlDataAdapter dap = new SqlDataAdapter();
+        DataSet ds = new DataSet();
+        try
+        {
+            ExecuteDMLCommand(ref cmd, sp_name, tran_type);
+            //----------------------- Addning Muiltipal Parameters with there values by split using '#' only if it is stored procedure.
+            if (tran_type == "S")
+            {
                 if (parameters.Trim() != "")
                 {
                     string[] multiple_parameter = parameters.Split(',');
@@ -128,161 +187,102 @@ public class Helper
                         cmd.Parameters.AddWithValue("@" + para_name, para_value);
                     }
                 }
-
-                dap.SelectCommand = cmd;
-                dap.Fill(ds);
-
-                if (defaultitem != "")
-                {
-                    DataRow dr = ds.Tables[0].NewRow();
-                    dr[0] = 0;
-                    dr[1] = defaultitem;
-                    ds.Tables[0].Rows.Add(dr);
-                }
-                list_name.DataSource = ds.Tables[0];
-                list_name.DataTextField = datatextfeild;
-                list_name.DataValueField = datavaluefeild;
-                list_name.DataBind();
-
-
-                //--------------------------------------------
-                if (defaultitem != "")
-                {
-                    list_name.SelectedValue="0";
-                }
             }
-            catch (Exception e)
+
+            dap.SelectCommand = cmd;
+            dap.Fill(ds);
+
+            if (defaultitem != "")
             {
-                Log.thisException(e);
+                DataRow dr = ds.Tables[0].NewRow();
+                dr[0] = 0;
+                dr[1] = defaultitem;
+                ds.Tables[0].Rows.Add(dr);
             }
-            finally
+            drp_name.DataSource = ds.Tables[0];
+            drp_name.DataTextField = datatextfeild;
+            drp_name.DataValueField = datavaluefeild;
+            drp_name.DataBind();
+
+
+            //--------------------------------------------
+            if (defaultitem != "")
             {
-                dap.Dispose();
-                ds.Dispose();
-                close_conn();
+                drp_name.SelectedValue = "0";
             }
-
-       }
-
-
-        // ------------------------- Procedure For fill dropdownlist with default item -------------------------
-        public void fill_dropdown(ref DropDownList drp_name, string sp_name,string datatextfeild, string datavaluefeild, string defaultitem,string parameters,string tran_type)
+        }
+        catch (Exception e)
         {
-            SqlCommand cmd = new SqlCommand();
-            SqlDataAdapter dap = new SqlDataAdapter();
-            DataSet ds = new DataSet();
-            try
+            Log.thisException(e);
+        }
+        finally
+        {
+            dap.Dispose();
+            ds.Dispose();
+            close_conn();
+        }
+
+    }
+
+
+    // ------------------------- Procedure For fill Gridview with Blank row -------------------------
+    public void fill_gridview(ref GridView gridname, string sql_string)
+    {
+        SqlCommand cmd = new SqlCommand();
+        SqlDataAdapter dap = new SqlDataAdapter();
+        DataSet ds = new DataSet();
+        try
+        {
+            ExecuteDMLCommand(ref cmd, sql_string, "E");
+            dap.SelectCommand = cmd;
+            dap.Fill(ds);
+            //------------------------  Add blank row in gridview if no record found ---- else bind gridview
+            if (ds.Tables[0].Rows.Count == 0)
             {
-                 ExecuteDMLCommand(ref cmd, sp_name, tran_type);
-                //----------------------- Addning Muiltipal Parameters with there values by split using '#' only if it is stored procedure.
-                 if (tran_type == "S")
-                 {
-                     if (parameters.Trim() != "")
-                     {
-                         string[] multiple_parameter = parameters.Split(',');
-                         foreach (string p_value in multiple_parameter)
-                         {
-                             string para_name = p_value.Split('#')[0];
-                             string para_value = p_value.Split('#')[1];
-                             cmd.Parameters.AddWithValue("@" + para_name, para_value);
-                         }
-                     }
-                 }
+                ds.Tables[0].Rows.Add(ds.Tables[0].NewRow());
+                gridname.DataSource = ds.Tables[0];
+                gridname.DataBind();
 
-                dap.SelectCommand = cmd;
-                dap.Fill(ds);
-
-                if (defaultitem != "")
-                {
-                    DataRow dr = ds.Tables[0].NewRow();
-                    dr[0] = 0;
-                    dr[1] = defaultitem;
-                    ds.Tables[0].Rows.Add(dr);
-                }
-                drp_name.DataSource = ds.Tables[0];
-                drp_name.DataTextField = datatextfeild;
-                drp_name.DataValueField = datavaluefeild;
-                drp_name.DataBind();
-
-
-                //--------------------------------------------
-                if (defaultitem != "")
-                {
-                    drp_name.SelectedValue = "0";
-                }
+                int columncount = gridname.Rows[0].Cells.Count;
+                gridname.Rows[0].Cells.Clear();
+                gridname.Rows[0].Cells.Add(new TableCell());
+                gridname.Rows[0].Cells[0].ColumnSpan = columncount;
+                gridname.Rows[0].Cells[0].Text = "No Items in List";
+                gridname.Rows[0].Cells[0].HorizontalAlign = HorizontalAlign.Center;
+                gridname.Rows[0].Cells[0].Font.Bold = true;
+                gridname.Rows[0].Cells[0].Font.Size = 8;
             }
-            catch (Exception e)
+            else
             {
-                Log.thisException(e);
+                gridname.DataSource = ds.Tables[0];
+                gridname.DataBind();
             }
-            finally
-            {
-                dap.Dispose();
-                ds.Dispose();
-                close_conn();
-            }
-            
-          }
-         
 
-        // ------------------------- Procedure For fill Gridview with Blank row -------------------------
-         public void fill_gridview(ref GridView gridname,string sql_string)
-         {
-             SqlCommand cmd = new SqlCommand();
-             SqlDataAdapter dap = new SqlDataAdapter();
-             DataSet ds = new DataSet();
-             try
-             {
-                 ExecuteDMLCommand(ref cmd, sql_string, "E");
-                 dap.SelectCommand = cmd;
-                 dap.Fill(ds);
-                 //------------------------  Add blank row in gridview if no record found ---- else bind gridview
-                 if (ds.Tables[0].Rows.Count == 0)
-                 {
-                     ds.Tables[0].Rows.Add(ds.Tables[0].NewRow());
-                     gridname.DataSource = ds.Tables[0];
-                     gridname.DataBind();
-
-                     int columncount = gridname.Rows[0].Cells.Count;
-                     gridname.Rows[0].Cells.Clear();
-                     gridname.Rows[0].Cells.Add(new TableCell());
-                     gridname.Rows[0].Cells[0].ColumnSpan = columncount;
-                     gridname.Rows[0].Cells[0].Text = "No Items in List";
-                     gridname.Rows[0].Cells[0].HorizontalAlign = HorizontalAlign.Center;
-                     gridname.Rows[0].Cells[0].Font.Bold = true;
-                     gridname.Rows[0].Cells[0].Font.Size = 8;
-                 }
-                 else
-                 {
-                     gridname.DataSource = ds.Tables[0];
-                     gridname.DataBind();
-                 }
-                    
-             }
-             catch (Exception e)
-             {
-                 Log.thisException(e);
-             }
-             finally
-             {
-                 cmd.Dispose();
-                 dap.Dispose();
-                 close_conn();
-             }
-         }
+        }
+        catch (Exception e)
+        {
+            Log.thisException(e);
+        }
+        finally
+        {
+            cmd.Dispose();
+            dap.Dispose();
+            close_conn();
+        }
+    }
 
 
-         // ------------------------- Display Page heading Name -------------------------
-         public void set_pageheading(string heading,Page pagename)
-         {
-             Label lblheading = (Label)pagename.Master.FindControl("lblheading");
-             if (lblheading != null)
-             {
-                 lblheading.Visible = true;
-                 lblheading.Text = heading;
-             }
-         }
+    // ------------------------- Display Page heading Name -------------------------
+    public void set_pageheading(string heading, Page pagename)
+    {
+        Label lblheading = (Label)pagename.Master.FindControl("lblheading");
+        if (lblheading != null)
+        {
+            lblheading.Visible = true;
+            lblheading.Text = heading;
+        }
+    }
 
 
-         
+
 }

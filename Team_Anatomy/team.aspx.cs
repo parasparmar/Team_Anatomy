@@ -25,7 +25,7 @@ public partial class team : System.Web.UI.Page
             Helper my = new Helper();
             DataRow dr = dt.Rows[0];
             int EmpCode = Convert.ToInt32(dr["Employee_Id"].ToString());
-            EmpCode = 923563;
+            
             DataTable dtMyTeam = my.GetData("Exec [WFMP].[TeamList] " + EmpCode);
             gv_TeamList.DataSource = dtMyTeam;
             gv_TeamList.DataBind();

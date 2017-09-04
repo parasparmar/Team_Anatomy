@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using System.Xml.Linq;
-
+using CD;
 public partial class MasterPage : System.Web.UI.MasterPage
 {
 
@@ -33,7 +33,9 @@ public partial class MasterPage : System.Web.UI.MasterPage
         try
         {
             myID = PageExtensionMethods.getMyWindowsID().ToString();
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ToString();
+            Helper my = new Helper();
+
+            string constr = my.getConnectionString();
 
             using (SqlConnection cn = new SqlConnection(constr))
             {

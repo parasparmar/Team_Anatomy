@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 using System.Data.Sql;
+using System.Globalization;
 
 public partial class movement : System.Web.UI.Page
 {
@@ -41,8 +42,8 @@ public partial class movement : System.Web.UI.Page
 
     }
 
-    
-   
+
+
     protected void btn_Submit_Click(object sender, EventArgs e)
     {
 
@@ -70,7 +71,7 @@ public partial class movement : System.Web.UI.Page
         MovementHandler(MovementType.Department);
     }
 
-   
+
     private void MovementHandler(string M)
     {
         if (typeof(MovementType).HasProperty(M))
@@ -148,20 +149,23 @@ public partial class movement : System.Web.UI.Page
                     ddlToMgr.Items.Insert(0, LI);
                     ddlToMgr.DataBind();
 
-                    divDepMovement.Visible = false;
+                  //  divDepMovement.Visible = false;
 
-                    btnSubmitPush.Visible = true;
-                    btnSubmitPull.Visible = false;
-                    btnMgrPush.Checked = true;
-                    btnMgrPull.Checked = false;
+                    btnSubmit.Visible = true;
+                    
+                    rdobtnMgrPush.Checked = true;
+                    rdobtnMgrPull.Checked = false;
 
                     ltlMovementTypeHeading.Text = "Reporting Manager Movement : Initiate Transfer Out";
-                    ltlDirection.Text = "<i class=\"content-header pageicon fa fa-arrow-circle-right\" style=\"padding-top:10%\"></i>";
+                    //ltlDirection.Text = "<i class=\"fa fa-arrow-circle-right\"></i>";
+
 
                     // The Left Side Gridview 
                     fillTeamList(MyEmpID, ref gv_LeftHandSideTeamList);
                     gv_RightHandSideTeamList.DataSource = null;
                     gv_RightHandSideTeamList.DataBind();
+                    //HideColumn(gv_RightHandSideTeamList, "Selection");
+                    //UnHideColumn(gv_LeftHandSideTeamList, "Selection");
                     break;
 
                 case "TransferIn":
@@ -187,18 +191,21 @@ public partial class movement : System.Web.UI.Page
                     ddlFromMgr.Items.Insert(0, LI2);
                     ddlFromMgr.DataBind();
 
-                    divDepMovement.Visible = false;
+                   // divDepMovement.Visible = false;
 
-                    btnSubmitPush.Visible = false;
-                    btnSubmitPull.Visible = true;
-                    btnMgrPush.Checked = false;
-                    btnMgrPull.Checked = true;
+                   
+                    
+                    rdobtnMgrPush.Checked = false;
+                    rdobtnMgrPull.Checked = true;
                     ltlMovementTypeHeading.Text = "Reporting Manager Movement : Request Transfer In";
                     //ltlDirection.Text = "<i class=\"content-header pageicon fa fa-arrow-circle-left\" style=\"padding-top:10%\"></i>";
-                    ltlDirection.Text = "<i class=\"content-header pageicon fa fa-arrow-circle-right\" style=\"padding-top:10%\"></i>";
+                    //ltlDirection.Text = "<i class=\"content-header pageicon fa fa-arrow-circle-right\" style=\"padding-top:10%\"></i>";
+                    //ltlDirection.Text = "<i class=\"fa fa-arrow-circle-right\"></i>";
                     fillTeamList(MyEmpID, ref gv_RightHandSideTeamList);
                     gv_LeftHandSideTeamList.DataSource = null;
                     gv_LeftHandSideTeamList.DataBind();
+                    //HideColumn(gv_RightHandSideTeamList, "Selection");
+                    //UnHideColumn(gv_LeftHandSideTeamList, "Selection");
                     break;
 
                 default:
@@ -208,13 +215,24 @@ public partial class movement : System.Web.UI.Page
         }
     }
 
-    protected void ThisGrid_HideColumn(GridView sender, string ColumnToHide)
+    protected void HideColumn(GridView sender, string ColumnToHide)
     {
+        // Hides a column given its header text
         GridView ThisGrid = (GridView)sender;
         ((DataControlField)ThisGrid.Columns
                 .Cast<DataControlField>()
                 .Where(fld => fld.HeaderText == ColumnToHide)
                 .SingleOrDefault()).Visible = false;
+    }
+
+    protected void UnHideColumn(GridView sender, string ColumnToUnHide)
+    {
+        // Ensures visibility of a column given its header text.
+        GridView ThisGrid = (GridView)sender;
+        ((DataControlField)ThisGrid.Columns
+                .Cast<DataControlField>()
+                .Where(fld => fld.HeaderText == ColumnToUnHide)
+                .SingleOrDefault()).Visible = true;
     }
 
     private void fillTeamList(int EmpCode, string gvTeamList)
@@ -257,15 +275,19 @@ public partial class movement : System.Web.UI.Page
     {
         int EmpCode = Convert.ToInt32(ddlToMgr.SelectedValue.ToString());
         fillTeamList(EmpCode, ref gv_RightHandSideTeamList);
-        ThisGrid_HideColumn(gv_RightHandSideTeamList, "Selection");
-        //gv_RightHandSideTeamList.Columns[2].Visible = false;
+        // In both Push and Pull scenarios the Gridview from where the selection is initiated is placed on the LEFT.
+        // Hence, we need to ensure that the LEFT side always has a selection capability enabled.
+        // Correspondingly, the RIGHT side will have the selection capability disabled.
+
+        //HideColumn(gv_RightHandSideTeamList, "Selection");
+        //UnHideColumn(gv_LeftHandSideTeamList, "Selection");
+
     }
     protected void ddlFromMgr_SelectedIndexChanged(object sender, EventArgs e)
     {
         int EmpCode = Convert.ToInt32(ddlFromMgr.SelectedValue.ToString());
         fillTeamList(EmpCode, ref gv_LeftHandSideTeamList);
-       // ThisGrid_HideColumn(gv_LeftHandSideTeamList, "Selection");
-        //gv_LeftHandSideTeamList.Columns[2].Visible = false;
+
 
     }
 
@@ -284,4 +306,22 @@ public partial class movement : System.Web.UI.Page
 
 
 
+    
+    private bool isValidDateOfGivenFormat(string dateString, string format)
+    {
+        DateTime dateTime;
+        if (DateTime.TryParseExact(dateString, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+    protected void btnSubmit_Click(object sender, EventArgs e)
+    {
+
+    }
 }
