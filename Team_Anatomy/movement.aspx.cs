@@ -15,6 +15,7 @@ public partial class movement : System.Web.UI.Page
     Helper my = new Helper();
     string strSQL = string.Empty;
     int MyEmpID = 0;
+    TransferMode EmpTransferMode = TransferMode.NotSpecified;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -42,7 +43,14 @@ public partial class movement : System.Web.UI.Page
 
     }
 
-
+    public enum TransferMode : int
+    {
+        NotSpecified = 0,
+        ManagerTransferOut = 1,
+        ManagerTransferIn = 2,
+        DepartmentTransferOut = 3,
+        DepartmentTransferIn = 4,
+    }
 
     protected void btn_Submit_Click(object sender, EventArgs e)
     {
@@ -149,10 +157,10 @@ public partial class movement : System.Web.UI.Page
                     ddlToMgr.Items.Insert(0, LI);
                     ddlToMgr.DataBind();
 
-                  //  divDepMovement.Visible = false;
+                    //  divDepMovement.Visible = false;
 
                     btnSubmit.Visible = true;
-                    
+
                     rdobtnMgrPush.Checked = true;
                     rdobtnMgrPull.Checked = false;
 
@@ -191,10 +199,10 @@ public partial class movement : System.Web.UI.Page
                     ddlFromMgr.Items.Insert(0, LI2);
                     ddlFromMgr.DataBind();
 
-                   // divDepMovement.Visible = false;
+                    // divDepMovement.Visible = false;
 
-                   
-                    
+
+
                     rdobtnMgrPush.Checked = false;
                     rdobtnMgrPull.Checked = true;
                     ltlMovementTypeHeading.Text = "Reporting Manager Movement : Request Transfer In";
@@ -240,7 +248,7 @@ public partial class movement : System.Web.UI.Page
         if (dt.Rows.Count > 0)
         {
             GridView v = (GridView)Page.FindControlRecursive(gvTeamList);
-            v.DataSource = my.GetData("Exec [WFMP].[TeamList] " + EmpCode);
+            v.DataSource = my.GetData("Exec [WFMP].[Transfer_TeamList] " + EmpCode);
             v.DataBind();
         }
         else
@@ -254,7 +262,7 @@ public partial class movement : System.Web.UI.Page
         if (dt.Rows.Count > 0)
         {
 
-            gvTeamList.DataSource = my.GetData("Exec [WFMP].[TeamList] " + EmpCode);
+            gvTeamList.DataSource = my.GetData("Exec [WFMP].[Transfer_TeamList] " + EmpCode);
             gvTeamList.DataBind();
         }
         else
@@ -306,7 +314,7 @@ public partial class movement : System.Web.UI.Page
 
 
 
-    
+
     private bool isValidDateOfGivenFormat(string dateString, string format)
     {
         DateTime dateTime;
@@ -322,6 +330,216 @@ public partial class movement : System.Web.UI.Page
     }
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
+        if (rdobtnMgrPull.Checked) { EmpTransferMode = TransferMode.ManagerTransferIn; }
+        if (rdobtnMgrPush.Checked) { EmpTransferMode = TransferMode.ManagerTransferIn; }
+        if (rdoDeptMovement.Checked && rdobtnMgrPull.Checked) { EmpTransferMode = TransferMode.DepartmentTransferIn; }
+        if (rdoDeptMovement.Checked && rdobtnMgrPush.Checked) { EmpTransferMode = TransferMode.DepartmentTransferOut; }
+        GridView gv = new GridView();
+        DropDownList ddlFromManager = new DropDownList();
+        DropDownList ddlToManager = new DropDownList();
+        int TypeOfMovement = 0;
+
+
+        switch (EmpTransferMode)
+        {
+            case TransferMode.ManagerTransferIn:
+                gv = gv_LeftHandSideTeamList;
+                ddlFromManager = ddlFromMgr;
+                ddlToManager = ddlToMgr;
+                TypeOfMovement = (int)TransferMode.ManagerTransferIn;
+
+                break;
+            case TransferMode.ManagerTransferOut:
+                gv = gv_LeftHandSideTeamList;
+                ddlFromManager = ddlFromMgr;
+                ddlToManager = ddlToMgr;
+                TypeOfMovement = (int)TransferMode.ManagerTransferOut;
+
+                break;
+
+            case TransferMode.DepartmentTransferIn:
+                break;
+            case TransferMode.DepartmentTransferOut:
+                break;
+        }
+
+        Transferee M = new Transferee();
+        int Employee_Id = Convert.ToInt32(my.GetData("Select top 1 [Employee_ID] from [CWFM_Umang].[WFMP].[tblMaster] where [ntName] = '" + M.UpdatedBy + "'").Rows[0]["Employee_ID"].ToString());
+        string ntID = PageExtensionMethods.getMyWindowsID();
+        DateTime D = Convert.ToDateTime(tbEffectiveDate.Text.ToString());
+
+        foreach (GridViewRow gvrow in gv.Rows)
+        {
+            CheckBox checkbox = gvrow.FindControl("cbMyTeamListID") as CheckBox;
+            if (checkbox.Checked)
+            {
+
+                M.EmpId = Convert.ToInt32(gv.DataKeys[gvrow.RowIndex].Value.ToString());
+                M.FromMgr = Convert.ToInt32(ddlFromManager.SelectedValue.ToString());
+                M.ToMgr = Convert.ToInt32(ddlToMgr.SelectedValue.ToString());
+                M.Types = TypeOfMovement;
+                M.State = 1;
+                M.Comments = String.Empty;
+                M.EffectiveDate = D;
+                M.UpdatedBy = ntID;
+                M.UpdaterID = Employee_Id;
+                M.UpdatedOn = DateTime.Now;
+                M.IsValid = true;
+                switch (TypeOfMovement)
+                {
+                    case 1:
+                        M.InitiateTransferIn();
+                        break;
+                    case 2:
+                        M.InitiateTransferOut();
+                        break;
+
+                }
+            }
+
+        }
+    }
+
+
+}
+
+class Transferee
+{
+
+
+    public int FromMgr { get; set; }
+    public int ToMgr { get; set; }
+    public int EmpId { get; set; }
+    public int Types { get; set; }
+    public int State { get; set; }
+    public string Comments { get; set; }
+    public DateTime EffectiveDate { get; set; }
+    public int UpdaterID { get; set; }
+    public string UpdatedBy { get; set; }
+    public DateTime UpdatedOn { get; set; }
+    public bool IsValid { get; set; }
+    private Helper my = new Helper();
+
+    public Transferee() { }
+
+    //public enum State
+    //{
+    //   string strSQL = "SELECT * FROM [CWFM_Umang].[WFMP].[tblMovementTypes]";
+
+    //}
+
+    public bool IsEligibleForTransfer(Transferee M)
+    {
+
+        return false;
+    }
+
+    public int InitiateTransferOut()
+    {
+        // 1. Check if Employee Movement exists in the table
+        string strSQL = "select * from [CWFM_Umang].[WFMP].[tbltrans_Movement] A where EmpId =" + EmpId;
+        DataTable dt = my.GetData(strSQL);
+        int rowcount = dt.Rows.Count;
+        // Movement record Does not exist
+        if (rowcount == 0)
+        {
+            //If EmpID does not exist in [tbltrans_Movement], InsertToDB.
+            rowcount = InsertToDB();
+            return rowcount;
+        }
+        else if (rowcount > 0)
+        {
+            // Prior movement exists for this employee.
+            // Check if the state is approved (4) or declined (3) or pending (2) or initiated (1) or null(0)
+           
+
+
+
+
+        }
+
+
+
+
+        //3. If EmpID exists in [tbltrans_Movement] with State = 4 ("Approved")  for that EmpID. Then UpdateToDB.
+        // Also deactivate all prior rows.
+        //4. An Employee cannot be transferred out or in if the State field is anything other than null or "Approved"
+        // Hence only if the selected EmpID exists in [tbltrans_Movement] with State = "Approved" and date = max date for EmpID. Then UpdateToDB
+        // -- Find Latest valid Movement entry for this employee id
+
+        strSQL = "SELECT * FROM [CWFM_Umang].[WFMP].[tbltrans_Movement] A where EmpId = " + EmpId;
+        strSQL += " and IsValid=1 or (EmpId = " + EmpId + " and state like '%Approved%' and IsValid=1)";
+        strSQL += " order by A.EffectiveDate desc";
+        dt = my.GetData(strSQL);
+        if (dt.Rows.Count == 0)
+        {
+            InsertToDB();
+        }
+        else if (dt.Rows.Count > 0)
+        {
+            UpdateToDB();
+        }
+
+        return 0;
+    }
+
+    public int InitiateTransferIn()
+    {
+
+        // If EmpID does not exist in [tbltrans_Movement], InsertToDB.
+
+
+
+        return 0;
+    }
+
+
+
+
+    private int InsertToDB()
+    {
+        string strSQL = "INSERT INTO [CWFM_Umang].[WFMP].[tbltrans_Movement]([FromMgr],[ToMgr],[EmpId],[Type] ";
+        strSQL += " ,[State],[Comments],[EffectiveDate],[UpdaterID],[UpdatedBy],[UpdatedOn],[IsValid]) ";
+        strSQL += " VALUES (@FromMgr,@ToMgr,@EmpId,@Type,@State,@Comments,@EffectiveDate,@UpdaterID,@UpdatedBy,@UpdatedOn,@IsValid)";
+
+
+        SqlCommand cmd = new SqlCommand(strSQL);
+        cmd.Parameters.AddWithValue("@FromMgr", FromMgr);
+        cmd.Parameters.AddWithValue("@ToMgr", ToMgr);
+        cmd.Parameters.AddWithValue("@EmpId", EmpId);
+        cmd.Parameters.AddWithValue("@Type", Types);
+        cmd.Parameters.AddWithValue("@State", State);
+        cmd.Parameters.AddWithValue("@Comments", Comments);
+        cmd.Parameters.AddWithValue("@EffectiveDate", EffectiveDate);
+        cmd.Parameters.AddWithValue("@UpdatedBy", UpdatedBy);
+        cmd.Parameters.AddWithValue("@UpdatedOn", UpdatedOn);
+        cmd.Parameters.AddWithValue("@IsValid", IsValid);
+        return my.ExecuteDMLCommand(ref cmd, strSQL, "E");
+
 
     }
+
+    private int UpdateToDB()
+    {
+        string strSQL = "UPDATE [CWFM_Umang].[WFMP].[tbltrans_Movement]";
+        strSQL += " SET  [State] = @State, [Comments] = @Comments, [UpdaterID] = @UpdaterID , [UpdatedBy] = @UpdatedBy ";
+        strSQL += " , [UpdatedOn] = @UpdatedOn ,[IsValid] = @IsValid ";
+        strSQL += " WHERE [EmpId] = @EmpId and [FromMgr] = @FromMgr and [ToMgr] = @ToMgr and [Type] = @Type and [EffectiveDate] = @EffectiveDate";
+
+        SqlCommand cmd = new SqlCommand(strSQL);
+        cmd.Parameters.AddWithValue("@FromMgr", FromMgr);
+        cmd.Parameters.AddWithValue("@ToMgr", ToMgr);
+        cmd.Parameters.AddWithValue("@EmpId", EmpId);
+        cmd.Parameters.AddWithValue("@Type", Types);
+        cmd.Parameters.AddWithValue("@State", State);
+        cmd.Parameters.AddWithValue("@Comments", Comments);
+        cmd.Parameters.AddWithValue("@EffectiveDate", EffectiveDate);
+        cmd.Parameters.AddWithValue("@UpdaterID", UpdaterID);
+        cmd.Parameters.AddWithValue("@UpdatedBy", UpdatedBy);
+        cmd.Parameters.AddWithValue("@UpdatedOn", UpdatedOn);
+        cmd.Parameters.AddWithValue("@IsValid", IsValid);
+        return my.ExecuteDMLCommand(ref cmd, strSQL, "E");
+
+    }
+
 }

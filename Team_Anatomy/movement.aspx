@@ -43,7 +43,7 @@
     <asp:UpdatePanel ID="UpdatePanel1" runat="server" EnableViewState="true" UpdateMode="Conditional">
         <ContentTemplate>
             <div class="row-fluid">
-                <div class="col-md-12">
+                <div class="col-md-8">
                     <!-- Custom Tabs -->
                     <div class="box box-solid box-primary" style="height: auto;">
                         <div class="box-header with-border">
@@ -56,7 +56,7 @@
                         </div>
                         <div class="box-body">
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-5">
                                     <div id="divDepMovement" runat="server" class="input-group">
                                         <span class="input-group-addon">
                                             <asp:RadioButton ID="rdoDeptMovement" runat="server" GroupName="Movement" CssClass="flat-red"
@@ -76,7 +76,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <asp:Panel ID="pnlEffectiveDate" CssClass="span" Visible="false" runat="server">
                                         <div class="form-group">
                                             <label>Effective From</label>
@@ -84,7 +84,7 @@
                                         </div>
                                     </asp:Panel>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-5">
                                     <asp:Panel ID="pnlMgrActions" CssClass="span" Visible="false" runat="server">
                                         <%--<input type="checkbox" checked runat="server" id="cbxTransferDirection" class="checkbox2ToggleSwitch" data-toggle="toggle" data-off="Transfer In" data-on="Transfer Out" />--%>
                                         <div class="input-group">
@@ -101,10 +101,6 @@
                                         </div>
                                     </asp:Panel>
                                 </div>
-
-                                <div class="col-md-3">
-                                </div>
-
                             </div>
                         </div>
                         <!--tabcontent-->
@@ -167,7 +163,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <asp:GridView ID="gv_LeftHandSideTeamList" runat="server" CssClass="table table-condensed table-responsive" AutoGenerateColumns="false"
-                                                        OnPreRender="gv_PreRender" ShowHeader="true" Style="border: none">
+                                                        OnPreRender="gv_PreRender" ShowHeader="true" Style="border: none" DataKeyNames="Employee_ID">
                                                         <Columns>
                                                             <asp:TemplateField HeaderText="Selection">
                                                                 <HeaderTemplate>
@@ -196,7 +192,8 @@
                                                     <asp:GridView ID="gv_RightHandSideTeamList" runat="server"
                                                         CssClass="table table-condensed table-responsive"
                                                         AutoGenerateColumns="false"
-                                                        OnPreRender="gv_PreRender" ShowHeader="true" Style="border: none">
+                                                        OnPreRender="gv_PreRender" ShowHeader="true" Style="border: none"
+                                                         DataKeyNames="Employee_ID">
                                                         <Columns>
                                                             <asp:BoundField DataField="Employee_ID" HeaderText="Employee Id" />
                                                             <asp:BoundField DataField="Name" HeaderText="Name" />

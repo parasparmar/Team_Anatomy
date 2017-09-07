@@ -47,35 +47,38 @@ public class Helper
 
 
     // ------------------------- Procedure for Execute Sql Query/Stored Procedure -------------------------
-    public void ExecuteDMLCommand(ref SqlCommand cmd, string sql_string, string operation)
+    public int ExecuteDMLCommand(ref SqlCommand cmd, string sql_string, string operation)
     {
         open_db();
+        int returnValue = 0;
         try
         {
             //cmd = new SqlCommand(sql_string, mcon);
             cmd.Connection = mcon;
             if (operation == "E")
             {
-                cmd.ExecuteNonQuery();
+                returnValue = cmd.ExecuteNonQuery();
             }
             else if (operation == "S")
             {
 
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.ExecuteNonQuery();
+                returnValue = cmd.ExecuteNonQuery();
             }
         }
         catch (Exception e)
         {
             Log.thisException(e);
+            
         }
         finally
         {
-
+            
             // Paras 29-03-2017 : Don't close the connection here.
             //close_conn();
-        }
 
+        }
+        return returnValue;
     }
 
 
@@ -161,7 +164,7 @@ public class Helper
             ds.Dispose();
             close_conn();
         }
-
+        
     }
 
 
