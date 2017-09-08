@@ -124,10 +124,71 @@
 
                                 <div class="col-md-12">
                                     <asp:Panel ID="pnlDeptMovement" runat="server" CssClass="box-body" Visible="false">
-                                        <asp:DropDownList ID="ddlFromDept" runat="server" CssClass="form-control select2" Style="width: 100%;"></asp:DropDownList>
-                                        <asp:DropDownList ID="ddlToDept" runat="server" CssClass="form-control select2" Style="width: 100%;"></asp:DropDownList>
-                                        <asp:DropDownList ID="ddlFromDeptMgr" runat="server" CssClass="form-control select2" Style="width: 100%;"></asp:DropDownList>
-                                        <asp:DropDownList ID="ddlToDeptMgr" runat="server" CssClass="form-control select2" Style="width: 100%;"></asp:DropDownList>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <asp:DropDownList ID="ddlDepartmentManager" runat="server" CssClass="form-control select2" Style="width: 100%;" OnSelectedIndexChanged="ddlDepartmentManager_SelectedIndexChanged"
+                                                        AutoPostBack="true">
+                                                    </asp:DropDownList>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <asp:DropDownList ID="ddlFunctionId" runat="server"
+                                                        CssClass="form-control select2" Style="width: 100%;"
+                                                        OnSelectedIndexChanged="ddlFunctionId_SelectedIndexChanged">
+                                                    </asp:DropDownList>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <asp:DropDownList ID="ddlFromDept" runat="server" CssClass="form-control select2" Style="width: 100%;"></asp:DropDownList>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <asp:DropDownList ID="ddlToDept" runat="server"
+                                                        CssClass="form-control select2" Style="width: 100%;"
+                                                        OnSelectedIndexChanged="ddlToDept_SelectedIndexChanged">
+                                                    </asp:DropDownList>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <asp:DropDownList ID="ddlDepartmentID" runat="server"
+                                                        CssClass="form-control select2" Style="width: 100%;"
+                                                        OnSelectedIndexChanged="ddlDepartmentID_SelectedIndexChanged">
+                                                    </asp:DropDownList>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <asp:DropDownList ID="ddlLOBID" runat="server"
+                                                        CssClass="form-control select2" Style="width: 100%;"
+                                                        OnSelectedIndexChanged="ddlLOBID_SelectedIndexChanged">
+                                                    </asp:DropDownList>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <asp:DropDownList ID="ddlSkillSet" runat="server"
+                                                        CssClass="form-control select2" Style="width: 100%;"
+                                                        OnSelectedIndexChanged="ddlSkillSet_SelectedIndexChanged">
+                                                    </asp:DropDownList>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <asp:DropDownList ID="ddlSubSkillSet" runat="server"
+                                                        CssClass="form-control select2" Style="width: 100%;"
+                                                        OnSelectedIndexChanged="ddlSubSkillSet_SelectedIndexChanged">
+                                                    </asp:DropDownList>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </asp:Panel>
                                     <!--Choose Dep and Teams---->
                                     <asp:Panel ID="pnlMgrMovement" runat="server" CssClass="box-body" Visible="false">
@@ -144,7 +205,7 @@
                                                 <label style="color: transparent; margin: 0">Submit</label>
                                                 <div class="form-group">
                                                     <div class="input-group">
-                                                        <asp:Button ID="btnSubmit" runat="server" CssClass="btn btn-info btn-flat  form-control" disabled="disabled" Text="Submit" OnClick="btnSubmit_Click" />
+                                                        <asp:Button ID="btnSubmit" runat="server" CssClass="btn btn-info btn-flat  form-control" Text="Submit" OnClick="btnSubmit_Click" />
                                                         <span class="input-group-addon"><i class='fa fa-arrow-circle-right'></i></span>
                                                     </div>
                                                 </div>
@@ -163,7 +224,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <asp:GridView ID="gv_LeftHandSideTeamList" runat="server" CssClass="table table-condensed table-responsive" AutoGenerateColumns="false"
-                                                        OnPreRender="gv_PreRender" ShowHeader="true" Style="border: none" DataKeyNames="Employee_ID">
+                                                        OnPreRender="gv_PreRender" ShowHeader="true" Style="border: none" DataKeyNames="Employee_ID" OnRowDataBound="gv_LeftHandSideTeamList_RowDataBound">
                                                         <Columns>
                                                             <asp:TemplateField HeaderText="Selection">
                                                                 <HeaderTemplate>
@@ -175,8 +236,7 @@
                                                             </asp:TemplateField>
                                                             <asp:BoundField DataField="Employee_ID" HeaderText="Employee Id" />
                                                             <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                            <asp:BoundField DataField="MovementType" HeaderText="Movement Type" />
-                                                            <asp:BoundField DataField="MovementState" HeaderText="Status" />
+                                                            <asp:BoundField DataField="State" HeaderText="Status" />
                                                         </Columns>
                                                         <EmptyDataTemplate>
                                                             <h5>No Team Members found.</h5>
@@ -193,12 +253,11 @@
                                                         CssClass="table table-condensed table-responsive"
                                                         AutoGenerateColumns="false"
                                                         OnPreRender="gv_PreRender" ShowHeader="true" Style="border: none"
-                                                         DataKeyNames="Employee_ID">
+                                                        DataKeyNames="Employee_ID">
                                                         <Columns>
                                                             <asp:BoundField DataField="Employee_ID" HeaderText="Employee Id" />
                                                             <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                            <asp:BoundField DataField="MovementType" HeaderText="Movement Type" />
-                                                            <asp:BoundField DataField="MovementState" HeaderText="Status" />
+                                                            <asp:BoundField DataField="State" HeaderText="Status" />
                                                         </Columns>
                                                         <EmptyDataTemplate>
                                                             <h5>No Team Members found.</h5>
@@ -235,6 +294,7 @@
             <asp:AsyncPostBackTrigger ControlID="rdobtnMgrPull" EventName="CheckedChanged" />
             <asp:AsyncPostBackTrigger ControlID="btnMgrPull2" EventName="Click" />
             <asp:AsyncPostBackTrigger ControlID="tbEffectiveDate" EventName="TextChanged" />
+            <asp:AsyncPostBackTrigger ControlID="ddlDepartmentManager" EventName="SelectedIndexChanged" />
             <asp:PostBackTrigger ControlID="btnSubmit" />
         </Triggers>
     </asp:UpdatePanel>
