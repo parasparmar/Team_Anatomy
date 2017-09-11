@@ -69,11 +69,11 @@ public class Helper
         catch (Exception e)
         {
             Log.thisException(e);
-            
+
         }
         finally
         {
-            
+
             // Paras 29-03-2017 : Don't close the connection here.
             //close_conn();
 
@@ -81,6 +81,22 @@ public class Helper
         return returnValue;
     }
 
+    public DataTable GetDataTableViaProcedure(ref SqlCommand cmd)
+    {
+        DataTable dt = new DataTable();
+        using (SqlConnection cn = new SqlConnection(getConnectionString()))
+        {
+            cn.Open();
+            using (cmd)
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = cn;
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+            }
+        }
+        return dt;
+    }
 
     // ------------------------- Function for return datatable -------------------------
     public DataTable GetData(string sql)
@@ -164,7 +180,7 @@ public class Helper
             ds.Dispose();
             close_conn();
         }
-        
+
     }
 
 

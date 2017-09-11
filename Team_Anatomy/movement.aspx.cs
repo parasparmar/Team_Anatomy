@@ -42,7 +42,6 @@ public partial class movement : System.Web.UI.Page
 
 
     }
-
     public enum TransferMode : int
     {
         NotSpecified = 0,
@@ -52,16 +51,10 @@ public partial class movement : System.Web.UI.Page
         DepartmentTransferIn = 4,
     }
 
-    protected void btn_Submit_Click(object sender, EventArgs e)
-    {
-
-    }
     protected void btnReset_Click(object sender, EventArgs e)
     {
 
     }
-
-
     protected void btnMgrMovement_Click(object sender, EventArgs e)
     {
         MovementHandler(MovementType.Manager);
@@ -69,6 +62,28 @@ public partial class movement : System.Web.UI.Page
     protected void btnDeptMovement_Click(object sender, EventArgs e)
     {
         MovementHandler(MovementType.Department);
+
+        //ddlDepartmentManager.SelectedIndex = 0;
+        //if (ddlDepartmentManager.Items.Count > 1)
+        //{
+        ddlDepartmentManager.Items.Insert(0, new ListItem("---", "0"));
+        ddlDepartmentManager.SelectedIndex = 0;
+        //}
+
+        ddlFunctionId.Items.Insert(0, new ListItem("---", String.Empty));
+        ddlFunctionId.SelectedIndex = 0;
+
+        ddlDepartmentID.Items.Insert(0, new ListItem("---", String.Empty));
+        ddlDepartmentID.SelectedIndex = 0;
+
+        ddlLOBID.Items.Insert(0, new ListItem("---", String.Empty));
+        ddlLOBID.SelectedIndex = 0;
+
+        ddlSkillSet.Items.Insert(0, new ListItem("---", String.Empty));
+        ddlSkillSet.SelectedIndex = 0;
+
+        ddlSubSkillSet.Items.Insert(0, new ListItem("---", String.Empty));
+        ddlSubSkillSet.SelectedIndex = 0;
     }
     protected void rdoMgrMovement_CheckedChanged(object sender, EventArgs e)
     {
@@ -78,8 +93,6 @@ public partial class movement : System.Web.UI.Page
     {
         MovementHandler(MovementType.Department);
     }
-
-
     private void MovementHandler(string M)
     {
         if (typeof(MovementType).HasProperty(M))
@@ -104,15 +117,23 @@ public partial class movement : System.Web.UI.Page
                 case "Department":
                     ltlMovementTypeHeading.Text = "Department Movement";
                     pnlDeptMovement.Visible = true;
-                    pnlMgrMovement.Visible = true;
+                    pnlMgrMovement.Visible = false;
                     pnlMgrActions.Visible = false;
                     pnlEffectiveDate.Visible = true;
                     rdoDeptMovement.Checked = true;
                     rdoMgrMovement.Checked = false;
 
                     // Fill the dropdowns ddlFromDept and ddlToDept, ddlFromDeptMgr and ddlToDeptMgr
+                    string depmgrvalue = ddlDepartmentManager.SelectedValue.ToString();
+                    if (depmgrvalue == "0" || depmgrvalue == null || string.IsNullOrEmpty(depmgrvalue))
+                    {
+                        MyEmpID = 923563;
+                    }
+                    else
+                    {
+                        MyEmpID = Convert.ToInt32(depmgrvalue);
+                    }
 
-                    MyEmpID = 923563;
                     strSQL = "SELECT Employee_ID, dbo.toProperCase(First_Name)+' '+ dbo.toProperCase(Middle_Name)+' '+dbo.toProperCase(Last_Name) as Name";
                     strSQL += " FROM [CWFM_Umang].[WFMP].[tblMaster] where RepMgrCode = " + MyEmpID;
                     strSQL += " and IsReportingManager = 1 union ";
@@ -125,17 +146,13 @@ public partial class movement : System.Web.UI.Page
                     ddlDepartmentManager.DataValueField = "Employee_ID";
                     ddlDepartmentManager.DataBind();
 
-                    strSQL = "Select  B.TransID, B.[Function] from WFMP.tbldepartmentlinkmst A";
-                    strSQL += "  Inner join WFMP.tblFunction B on B.TransID = A.FunctionID";
-                    strSQL += " where B.Active = 1 and A.Active = 1";
-                    strSQL += " group by B.TransID, B.[Function]";
-                    strSQL += " order by B.[Function], B.TransID";
-
+                    strSQL = "Exec CWFM_UMANG.WFMP.GetDeptValues";
                     ddlFunctionId.DataSource = my.GetData(strSQL);
                     ddlFunctionId.DataTextField = "Function";
                     ddlFunctionId.DataValueField = "TransID";
                     ddlFunctionId.DataBind();
 
+                    //fillTeamList(MyEmpID, ref gv_DepMgrTeamList);
 
                     break;
 
@@ -183,6 +200,13 @@ public partial class movement : System.Web.UI.Page
                     gv_RightHandSideTeamList.DataBind();
                     //HideColumn(gv_RightHandSideTeamList, "Selection");
                     //UnHideColumn(gv_LeftHandSideTeamList, "Selection");
+
+                    if (ddlFromMgr.Items.Count > 1)
+                    {
+                        ddlToMgr.Items.Insert(0, new ListItem("---", "0"));
+                        ddlToMgr.SelectedIndex = 0;
+                    }
+
                     break;
 
                 case "TransferIn":
@@ -194,6 +218,8 @@ public partial class movement : System.Web.UI.Page
                     ddlToMgr.DataTextField = "Name";
                     ddlToMgr.DataValueField = "Employee_ID";
                     ddlToMgr.DataBind();
+
+
 
                     // Fill From Mgr Dropdown.
                     strSQL = "SELECT Distinct B.[Employee_ID],REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') as Name ";
@@ -207,6 +233,8 @@ public partial class movement : System.Web.UI.Page
                     ListItem LI2 = new ListItem("Please Select", "0");
                     ddlFromMgr.Items.Insert(0, LI2);
                     ddlFromMgr.DataBind();
+
+
 
                     // divDepMovement.Visible = false;
 
@@ -223,6 +251,10 @@ public partial class movement : System.Web.UI.Page
                     gv_LeftHandSideTeamList.DataBind();
                     //HideColumn(gv_RightHandSideTeamList, "Selection");
                     //UnHideColumn(gv_LeftHandSideTeamList, "Selection");
+
+                    ddlFromMgr.Items.Insert(0, new ListItem("---", "0"));
+                    ddlFromMgr.SelectedIndex = 0;
+
                     break;
 
                 default:
@@ -231,7 +263,6 @@ public partial class movement : System.Web.UI.Page
             }
         }
     }
-
     protected void HideColumn(GridView sender, string ColumnToHide)
     {
         // Hides a column given its header text
@@ -241,7 +272,6 @@ public partial class movement : System.Web.UI.Page
                 .Where(fld => fld.HeaderText == ColumnToHide)
                 .SingleOrDefault()).Visible = false;
     }
-
     protected void UnHideColumn(GridView sender, string ColumnToUnHide)
     {
         // Ensures visibility of a column given its header text.
@@ -251,7 +281,6 @@ public partial class movement : System.Web.UI.Page
                 .Where(fld => fld.HeaderText == ColumnToUnHide)
                 .SingleOrDefault()).Visible = true;
     }
-
     private void fillTeamList(int EmpCode, string gvTeamList)
     {
         if (dt.Rows.Count > 0)
@@ -265,7 +294,6 @@ public partial class movement : System.Web.UI.Page
 
         }
     }
-
     private void fillTeamList(int EmpCode, ref GridView gvTeamList)
     {
         if (dt.Rows.Count > 0)
@@ -291,29 +319,13 @@ public partial class movement : System.Web.UI.Page
     {
         int EmpCode = Convert.ToInt32(ddlToMgr.SelectedValue.ToString());
         fillTeamList(EmpCode, ref gv_RightHandSideTeamList);
-    }
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key", "pluginsInitializer()", true);
 
-    protected void ddlFromMgr_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        int EmpCode = Convert.ToInt32(ddlFromMgr.SelectedValue.ToString());
-        fillTeamList(EmpCode, ref gv_LeftHandSideTeamList);
     }
-
     protected void ddlToDept_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string Department = ddlToDept.SelectedValue.ToString();
-        strSQL = "";
-        if (dt.Rows.Count > 0)
-        {
 
-
-        }
-        else
-        {
-
-        }
     }
-
     protected void gv_PreRender(object sender, EventArgs e)
     {
         GridView gv = (GridView)sender;
@@ -326,10 +338,6 @@ public partial class movement : System.Web.UI.Page
             gv.BorderWidth = Unit.Pixel(1);
         }
     }
-
-
-
-
     private bool isValidDateOfGivenFormat(string dateString, string format)
     {
         DateTime dateTime;
@@ -343,12 +351,115 @@ public partial class movement : System.Web.UI.Page
         }
 
     }
+    protected void gv_LeftHandSideTeamList_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        GridViewRow gRow = e.Row;
+        if (gRow.RowIndex > 0)
+        {
+            string status = gRow.Cells[3].Text.ToString();
+            CheckBox cbTeamListID = (CheckBox)gRow.FindControl("cbMyTeamListID");
+            if (status.Length > 7)
+            {
+                string MyState = status.Substring(0, 7).ToLower();
+                if (MyState == "pending")
+                {
+                    cbTeamListID.Enabled = false;
+                }
+            }
+        }
+
+    }
+    protected void ddlDepartmentManager_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        MyEmpID = Convert.ToInt32(ddlDepartmentManager.SelectedValue.ToString());
+        fillTeamList(MyEmpID, ref gv_DepMgrTeamList);
+    }
+    protected void ddlFunctionId_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        
+        strSQL = "CWFM_UMANG.WFMP.GetDeptValues";
+
+        SqlCommand cmd = new SqlCommand(strSQL);
+        cmd.Parameters.AddWithValue("@FunctionID", Convert.ToInt32(ddlFunctionId.SelectedValue.ToString()));
+        //cmd.CommandType = CommandType.StoredProcedure;
+        DataTable dt = my.GetDataTableViaProcedure(ref cmd);
+
+        ddlDepartmentID.DataSource = dt;
+        ddlDepartmentID.DataTextField = dt.Columns[1].ColumnName;
+        ddlDepartmentID.DataValueField = dt.Columns[0].ColumnName;
+        ddlDepartmentID.DataBind();
+        ddlDepartmentID.Items.Insert(0, new ListItem("---", String.Empty));
+        ddlDepartmentID.SelectedIndex = 0;
+        ddlLOBID.SelectedIndex = 0;
+        ddlSkillSet.SelectedIndex = 0;
+        ddlSubSkillSet.SelectedIndex = 0;
+    }
+    protected void ddlDepartmentID_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        strSQL = "CWFM_UMANG.WFMP.GetDeptValues";
+        SqlCommand cmd = new SqlCommand(strSQL);
+        cmd.Parameters.AddWithValue("@FunctionID", ddlFunctionId.SelectedValue.ToString());
+        cmd.Parameters.AddWithValue("@DepartmentID", ddlDepartmentID.SelectedValue.ToString());
+        DataTable dt = my.GetDataTableViaProcedure(ref cmd);
+
+        ddlLOBID.DataSource = dt;
+        ddlLOBID.DataTextField = dt.Columns[1].ColumnName;
+        ddlLOBID.DataValueField = dt.Columns[0].ColumnName;
+        ddlLOBID.DataBind();
+        ddlLOBID.Items.Insert(0, new ListItem("---", String.Empty));
+        ddlLOBID.SelectedIndex = 0;
+    }
+    protected void ddlLOBID_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        strSQL = "CWFM_UMANG.WFMP.GetDeptValues";
+        SqlCommand cmd = new SqlCommand(strSQL);
+        cmd.Parameters.AddWithValue("@FunctionID", ddlFunctionId.SelectedValue.ToString());
+        cmd.Parameters.AddWithValue("@DepartmentID", ddlDepartmentID.SelectedValue.ToString());
+        cmd.Parameters.AddWithValue("@LOBID", ddlLOBID.SelectedValue.ToString());
+
+        DataTable dt = my.GetDataTableViaProcedure(ref cmd);
+
+        ddlSkillSet.DataSource = dt;
+        ddlSkillSet.DataTextField = dt.Columns[1].ColumnName;
+        ddlSkillSet.DataValueField = dt.Columns[0].ColumnName;
+        ddlSkillSet.DataBind();
+        ddlSkillSet.Items.Insert(0, new ListItem("---", String.Empty));
+        ddlSkillSet.SelectedIndex = 0;
+    }
+    protected void ddlSkillSet_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        strSQL = "CWFM_UMANG.WFMP.GetDeptValues";
+        SqlCommand cmd = new SqlCommand(strSQL);
+        cmd.Parameters.AddWithValue("@FunctionID", ddlFunctionId.SelectedValue.ToString());
+        cmd.Parameters.AddWithValue("@DepartmentID", ddlDepartmentID.SelectedValue.ToString());
+        cmd.Parameters.AddWithValue("@LOBID", ddlLOBID.SelectedValue.ToString());
+        cmd.Parameters.AddWithValue("@SkillSetID", ddlSkillSet.SelectedValue.ToString());
+
+        DataTable dt = my.GetDataTableViaProcedure(ref cmd);
+
+        ddlSubSkillSet.DataSource = dt;
+        ddlSubSkillSet.DataTextField = dt.Columns[1].ColumnName;
+        ddlSubSkillSet.DataValueField = dt.Columns[0].ColumnName;
+        ddlSubSkillSet.DataBind();
+        ddlSubSkillSet.Items.Insert(0, new ListItem("---", String.Empty));
+        ddlSubSkillSet.SelectedIndex = 0;
+    }
+    protected void ddlSubSkillSet_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+    }
+    protected void ddlFromMgr_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        int EmpCode = Convert.ToInt32(ddlFromMgr.SelectedValue.ToString());
+        fillTeamList(EmpCode, ref gv_LeftHandSideTeamList);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
+    }
+
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
         if (rdobtnMgrPull.Checked) { EmpTransferMode = TransferMode.ManagerTransferIn; }
         if (rdobtnMgrPush.Checked) { EmpTransferMode = TransferMode.ManagerTransferOut; }
-        if (rdoDeptMovement.Checked && rdobtnMgrPull.Checked) { EmpTransferMode = TransferMode.DepartmentTransferIn; }
-        if (rdoDeptMovement.Checked && rdobtnMgrPush.Checked) { EmpTransferMode = TransferMode.DepartmentTransferOut; }
+
 
         DropDownList ddlFromManager = ddlFromMgr;
         DropDownList ddlToManager = ddlToMgr;
@@ -362,18 +473,13 @@ public partial class movement : System.Web.UI.Page
             case TransferMode.ManagerTransferOut:
                 TypeOfMovement = (int)TransferMode.ManagerTransferOut;
                 break;
-            case TransferMode.DepartmentTransferIn:
-                break;
-            case TransferMode.DepartmentTransferOut:
-                break;
+
         }
 
         Transferee M = new Transferee();
         string ntID = PageExtensionMethods.getMyWindowsID();
         string strSQL = "Select top 1 [Employee_ID] from [CWFM_Umang].[WFMP].[tblMaster] where [ntName] = '" + ntID + "'";
-
         int Employee_Id = Convert.ToInt32(my.GetData(strSQL).Rows[0]["Employee_ID"].ToString());
-
         DateTime D = Convert.ToDateTime(tbEffectiveDate.Text.ToString());
 
         foreach (GridViewRow gvrow in gv_LeftHandSideTeamList.Rows)
@@ -381,7 +487,6 @@ public partial class movement : System.Web.UI.Page
             CheckBox checkbox = gvrow.FindControl("cbMyTeamListID") as CheckBox;
             if (checkbox.Checked)
             {
-
                 M.EmpId = Convert.ToInt32(gv_LeftHandSideTeamList.DataKeys[gvrow.RowIndex].Value.ToString());
                 M.FromMgr = Convert.ToInt32(ddlFromManager.SelectedValue.ToString());
                 M.ToMgr = Convert.ToInt32(ddlToMgr.SelectedValue.ToString());
@@ -402,27 +507,12 @@ public partial class movement : System.Web.UI.Page
     }
 
 
-    protected void gv_LeftHandSideTeamList_RowDataBound(object sender, GridViewRowEventArgs e)
-    {
-        GridViewRow gRow = e.Row;
-        if (gRow.RowIndex > 0)
-        {
-            string status = gRow.Cells[3].Text.ToString();
-            CheckBox cbTeamListID = (CheckBox)gRow.FindControl("cbMyTeamListID");
-            if (status.Length > 7)
-            {
-                string MyState = status.Substring(0, 7).ToLower();
-                if (MyState == "pending")
-                {
-                    cbTeamListID.Enabled = false;
-                }
-            }
-        }
 
-    }
 
     class Transferee
     {
+        public int FromDptLinkMstId { get; set; }
+        public int ToDptLinkMstId { get; set; }
         public int FromMgr { get; set; }
         public int ToMgr { get; set; }
         public int EmpId { get; set; }
@@ -437,7 +527,6 @@ public partial class movement : System.Web.UI.Page
         private Helper my = new Helper();
 
         public Transferee() { }
-
         public int InitiateTransfer()
         {
             //Check if Employee Movement exists in the table, if it does not, Insert to DB directly with State = 1
@@ -469,9 +558,7 @@ public partial class movement : System.Web.UI.Page
             }
             return rowcount;
         }
-
         public int ApproveTransfer() { return 0; }
-
         private int InsertToDB()
         {
             string strSQL = "INSERT INTO [CWFM_Umang].[WFMP].[tbltrans_Movement]([FromMgr],[ToMgr],[EmpId],[Type] ";
@@ -512,38 +599,89 @@ public partial class movement : System.Web.UI.Page
         }
 
     }
-    protected void ddlDepartmentManager_SelectedIndexChanged(object sender, EventArgs e)
+
+
+    protected void btnDepSubmit_Click(object sender, EventArgs e)
     {
+        if (rdoDeptMovement.Checked && rdobtnMgrPull.Checked) { EmpTransferMode = TransferMode.DepartmentTransferIn; }
+        if (rdoDeptMovement.Checked && rdobtnMgrPush.Checked) { EmpTransferMode = TransferMode.DepartmentTransferOut; }
+        int TypeOfMovement = 0;
+        int rowsAffected = 0;
+        switch (EmpTransferMode)
+        {
+            case TransferMode.DepartmentTransferIn:
+                TypeOfMovement = (int)TransferMode.DepartmentTransferOut;
+                break;
+
+            case TransferMode.DepartmentTransferOut:
+                TypeOfMovement = (int)TransferMode.DepartmentTransferOut;
+                break;
+        }
+
+        Transferee M = new Transferee();
+        string ntID = PageExtensionMethods.getMyWindowsID();
+        string strSQL = "Select top 1 [Employee_ID],[DPT] from [CWFM_Umang].[WFMP].[tblMaster] where [ntName] = '" + ntID + "'";
+        DataTable dt = my.GetData(strSQL);
+        int Employee_Id = Convert.ToInt32(dt.Rows[0]["Employee_ID"].ToString());
+        DateTime D = Convert.ToDateTime(tbEffectiveDate.Text.ToString());
+        int FromDptLinkMstId = Convert.ToInt32(dt.Rows[0]["DPT"].ToString());
+        int ToDptLinkMstId = 0;
+
+        using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
+        {
+            string mstQuery = "SELECT TransID FROM CWFM_Umang.WFMP.tblDepartmentLinkMst";
+            mstQuery += " where  FunctionID = @FunctionID  and DepartmentID = @DepartmentID and ";
+            mstQuery += " LOBID = @LOBID and SkillSetID = @SkillSetID and SubSkillSetID = @SubSkillSetID  and Active = 1";
+            cn.Open();
+            using (SqlCommand mstCmd = new SqlCommand(mstQuery, cn))
+            {
+                mstCmd.Parameters.AddWithValue("@FunctionID", ddlFunctionId.SelectedValue.ToString());
+                mstCmd.Parameters.AddWithValue("@DepartmentID", ddlDepartmentID.SelectedValue.ToString());
+                mstCmd.Parameters.AddWithValue("@LOBID", ddlLOBID.SelectedValue.ToString());
+                mstCmd.Parameters.AddWithValue("@SkillSetID", ddlSkillSet.SelectedValue.ToString());
+                mstCmd.Parameters.AddWithValue("@SubSkillSetID", ddlSubSkillSet.SelectedValue.ToString());
+                ToDptLinkMstId = Convert.ToInt32(mstCmd.ExecuteScalar());
+            }
+        }
+
+        foreach (GridViewRow gvrow in gv_DepMgrTeamList.Rows)
+        {
+            CheckBox checkbox = gvrow.FindControl("cbMyTeamListID") as CheckBox;
+            if (checkbox.Checked)
+            {
+                M.EmpId = Convert.ToInt32(gv_DepMgrTeamList.DataKeys[gvrow.RowIndex].Value.ToString());
+                M.FromMgr = Convert.ToInt32(ddlDepartmentManager.SelectedValue.ToString());
+                
+                M.Types = TypeOfMovement;
+                M.State = 0;
+                M.InitBy = Employee_Id;
+                M.EffectiveDate = D;
+                M.UpdaterID = Employee_Id;
+                M.UpdatedOn = DateTime.Now;
+                // Go...
+                rowsAffected = M.InitiateTransfer();
+            }
+
+        }
+
+        fillTeamList(Employee_Id, ref gv_DepMgrTeamList);
 
     }
-    protected void ddlFunctionId_SelectedIndexChanged(object sender, EventArgs e)
+    protected void gv_DepMgrTeamList_RowDataBound(object sender, GridViewRowEventArgs e)
     {
-        strSQL = "Select  B.TransID, B.[Function] from WFMP.tbldepartmentlinkmst A";
-        strSQL += "  Inner join WFMP.tblDepartment_Del B on B.ID = A.FunctionID";
-        strSQL += " where B.Active = 1 and A.Active = 1";
-        strSQL += " group by B.TransID, B.[Function]";
-        strSQL += " order by B.[Function], B.TransID";
-
-        ddlDepartmentID.DataSource = my.GetData(strSQL);
-        ddlDepartmentID.DataTextField = "Function";
-        ddlDepartmentID.DataValueField = "TransID";
-        ddlDepartmentID.DataBind();
+        GridViewRow gRow = e.Row;
+        if (gRow.RowIndex > 0)
+        {
+            string status = gRow.Cells[3].Text.ToString();
+            CheckBox cbTeamListID = (CheckBox)gRow.FindControl("cbMyTeamListID");
+            if (status.Length > 7)
+            {
+                string MyState = status.Substring(0, 7).ToLower();
+                if (MyState == "pending")
+                {
+                    cbTeamListID.Enabled = false;
+                }
+            }
+        }
     }
-    protected void ddlDepartmentID_SelectedIndexChanged(object sender, EventArgs e)
-    {
-
-    }
-    protected void ddlLOBID_SelectedIndexChanged(object sender, EventArgs e)
-    {
-
-    }
-    protected void ddlSkillSet_SelectedIndexChanged(object sender, EventArgs e)
-    {
-
-    }
-    protected void ddlSubSkillSet_SelectedIndexChanged(object sender, EventArgs e)
-    {
-
-    }
-
 }

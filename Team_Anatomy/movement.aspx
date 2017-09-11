@@ -127,60 +127,56 @@
                                         <div class="row">
                                             <div class="col-md-3">
                                                 <div class="form-group">
+                                                    Reporting Manager
                                                     <asp:DropDownList ID="ddlDepartmentManager" runat="server" CssClass="form-control select2" Style="width: 100%;" OnSelectedIndexChanged="ddlDepartmentManager_SelectedIndexChanged"
                                                         AutoPostBack="true">
                                                     </asp:DropDownList>
                                                 </div>
                                             </div>
+                                            <!-- ddlDepartmentManager-->
                                             <div class="col-md-3">
+                                                ddlFunctionId
                                                 <div class="form-group">
                                                     <asp:DropDownList ID="ddlFunctionId" runat="server"
                                                         CssClass="form-control select2" Style="width: 100%;"
-                                                        OnSelectedIndexChanged="ddlFunctionId_SelectedIndexChanged">
+                                                        OnSelectedIndexChanged="ddlFunctionId_SelectedIndexChanged" AutoPostBack="true">
                                                     </asp:DropDownList>
                                                 </div>
                                             </div>
-
+                                            <!-- ddlFunctionId-->
                                             <div class="col-md-3">
-                                                <div class="form-group">
-                                                    <asp:DropDownList ID="ddlFromDept" runat="server" CssClass="form-control select2" Style="width: 100%;"></asp:DropDownList>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-3">
-                                                <div class="form-group">
-                                                    <asp:DropDownList ID="ddlToDept" runat="server"
-                                                        CssClass="form-control select2" Style="width: 100%;"
-                                                        OnSelectedIndexChanged="ddlToDept_SelectedIndexChanged">
-                                                    </asp:DropDownList>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-3">
+                                                ddlDepartmentID
                                                 <div class="form-group">
                                                     <asp:DropDownList ID="ddlDepartmentID" runat="server"
                                                         CssClass="form-control select2" Style="width: 100%;"
-                                                        OnSelectedIndexChanged="ddlDepartmentID_SelectedIndexChanged">
+                                                        OnSelectedIndexChanged="ddlDepartmentID_SelectedIndexChanged" AutoPostBack="true">
                                                     </asp:DropDownList>
                                                 </div>
                                             </div>
+                                            <!-- ddlDepartmentID-->
                                             <div class="col-md-3">
+                                                ddlLOBID
                                                 <div class="form-group">
+
                                                     <asp:DropDownList ID="ddlLOBID" runat="server"
                                                         CssClass="form-control select2" Style="width: 100%;"
-                                                        OnSelectedIndexChanged="ddlLOBID_SelectedIndexChanged">
+                                                        OnSelectedIndexChanged="ddlLOBID_SelectedIndexChanged" AutoPostBack="true">
                                                     </asp:DropDownList>
                                                 </div>
                                             </div>
+                                            <!-- ddlLOBID-->
                                             <div class="col-md-3">
+                                                ddlSkillSet
                                                 <div class="form-group">
                                                     <asp:DropDownList ID="ddlSkillSet" runat="server"
                                                         CssClass="form-control select2" Style="width: 100%;"
-                                                        OnSelectedIndexChanged="ddlSkillSet_SelectedIndexChanged">
+                                                        OnSelectedIndexChanged="ddlSkillSet_SelectedIndexChanged" AutoPostBack="true">
                                                     </asp:DropDownList>
                                                 </div>
                                             </div>
+                                            <!-- ddlSkillSet-->
                                             <div class="col-md-3">
+                                                ddlSubSkillSet
                                                 <div class="form-group">
                                                     <asp:DropDownList ID="ddlSubSkillSet" runat="server"
                                                         CssClass="form-control select2" Style="width: 100%;"
@@ -188,7 +184,44 @@
                                                     </asp:DropDownList>
                                                 </div>
                                             </div>
+                                            <!-- ddlSubSkillSet-->
+                                            <div class="col-md-3">
+                                                <label style="color: transparent; margin: 0">Submit</label>
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <asp:Button ID="btnDepSubmit" runat="server" CssClass="btn btn-info btn-flat  form-control" Text="Submit" OnClick="btnDepSubmit_Click" />
+                                                        <span class="input-group-addon"><i class='fa fa-arrow-circle-right'></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
+                                        <div class="row border-between">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <asp:GridView ID="gv_DepMgrTeamList" runat="server" CssClass="table table-condensed table-responsive" AutoGenerateColumns="false"
+                                                        OnPreRender="gv_PreRender" ShowHeader="true" Style="border: none" DataKeyNames="Employee_ID" OnRowDataBound="gv_DepMgrTeamList_RowDataBound" >
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Selection">
+                                                                <HeaderTemplate>
+                                                                    <asp:CheckBox ID="cbCheckAll" runat="server" />
+                                                                </HeaderTemplate>
+                                                                <ItemTemplate>
+                                                                    <asp:CheckBox ID="cbMyTeamListID" runat="server" />
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                            <asp:BoundField DataField="Employee_ID" HeaderText="Employee Id" />
+                                                            <asp:BoundField DataField="Name" HeaderText="Name" />
+                                                            <asp:BoundField DataField="State" HeaderText="Status" />
+                                                        </Columns>
+                                                        <EmptyDataTemplate>
+                                                            <h5>No Team Members found.</h5>
+                                                        </EmptyDataTemplate>
+
+                                                    </asp:GridView>
+                                                </div>
+                                            </div>
+                                            <!---The Dep Mgr's Team---->
+                                        </div><!-- Team List for Department Movements-->
                                     </asp:Panel>
                                     <!--Choose Dep and Teams---->
                                     <asp:Panel ID="pnlMgrMovement" runat="server" CssClass="box-body" Visible="false">
@@ -196,7 +229,8 @@
                                             <div class="col-md-5">
                                                 <asp:Label Text="From" ID="lblFromMgr" runat="server"></asp:Label>
                                                 <div class="form-group">
-                                                    <asp:DropDownList ID="ddlFromMgr" runat="server" CssClass="form-control select2" Style="width: 100%;" OnSelectedIndexChanged="ddlFromMgr_SelectedIndexChanged"
+                                                    <asp:DropDownList ID="ddlFromMgr" runat="server" CssClass="form-control select2" Style="width: 100%;"
+                                                        OnSelectedIndexChanged="ddlFromMgr_SelectedIndexChanged"
                                                         AutoPostBack="true">
                                                     </asp:DropDownList>
                                                 </div>
@@ -213,8 +247,9 @@
                                             <div class="col-md-5">
                                                 <asp:Label Text="To" ID="lblToMgr" runat="server"></asp:Label>
                                                 <div class="form-group">
-                                                    <asp:DropDownList ID="ddlToMgr" runat="server" CssClass="form-control select2" Style="width: 100%;" OnSelectedIndexChanged="ddlToMgr_SelectedIndexChanged"
-                                                        OnTextChanged="ddlToMgr_SelectedIndexChanged" AutoPostBack="true">
+                                                    <asp:DropDownList ID="ddlToMgr" runat="server" CssClass="form-control select2" Style="width: 100%;"
+                                                        OnSelectedIndexChanged="ddlToMgr_SelectedIndexChanged"
+                                                        AutoPostBack="true">
                                                     </asp:DropDownList>
                                                 </div>
                                             </div>
@@ -289,12 +324,19 @@
             <asp:AsyncPostBackTrigger ControlID="rdoDeptMovement" EventName="CheckedChanged" />
             <asp:AsyncPostBackTrigger ControlID="rdoMgrMovement" EventName="CheckedChanged" />
             <asp:AsyncPostBackTrigger ControlID="ddlToMgr" EventName="SelectedIndexChanged" />
+            <asp:AsyncPostBackTrigger ControlID="ddlFromMgr" EventName="SelectedIndexChanged" />
             <asp:AsyncPostBackTrigger ControlID="rdobtnMgrPush" EventName="CheckedChanged" />
             <asp:AsyncPostBackTrigger ControlID="btnMgrPush2" EventName="Click" />
             <asp:AsyncPostBackTrigger ControlID="rdobtnMgrPull" EventName="CheckedChanged" />
             <asp:AsyncPostBackTrigger ControlID="btnMgrPull2" EventName="Click" />
             <asp:AsyncPostBackTrigger ControlID="tbEffectiveDate" EventName="TextChanged" />
             <asp:AsyncPostBackTrigger ControlID="ddlDepartmentManager" EventName="SelectedIndexChanged" />
+
+            <asp:AsyncPostBackTrigger ControlID="ddlFunctionId" EventName="SelectedIndexChanged" />
+            <asp:AsyncPostBackTrigger ControlID="ddlDepartmentId" EventName="SelectedIndexChanged" />
+            <asp:AsyncPostBackTrigger ControlID="ddlLOBID" EventName="SelectedIndexChanged" />
+            <asp:AsyncPostBackTrigger ControlID="ddlSkillSet" EventName="SelectedIndexChanged" />
+
             <asp:PostBackTrigger ControlID="btnSubmit" />
         </Triggers>
     </asp:UpdatePanel>
@@ -307,6 +349,7 @@
 
     <script>
         function pluginsInitializer() {
+            $("#btnSubmit").attr('disabled', 'disabled');
             //Initialize Select2 Elements
             $('.select2').select2({
 
