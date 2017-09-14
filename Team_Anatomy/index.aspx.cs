@@ -14,18 +14,17 @@ public partial class index : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         myID = PageExtensionMethods.getMyWindowsID().ToString();
+        //myID = "ktriv003";
         Session["myID"] = myID;
         Helper my = new Helper();
         DataTable dt = my.GetData("WFMP.getEmployeeData " + myID);
         if (dt.Rows.Count > 0)
         {
             Session["dtEmp"] = dt;
-            Response.Redirect("movement.aspx", true);
-            
+            Response.Redirect("roster.aspx", true);
         }
         else
         {
-
             Response.Redirect("lockscreen.aspx", true);
         }
 

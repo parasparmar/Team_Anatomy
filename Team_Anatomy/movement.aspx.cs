@@ -376,7 +376,7 @@ public partial class movement : System.Web.UI.Page
     }
     protected void ddlFunctionId_SelectedIndexChanged(object sender, EventArgs e)
     {
-        
+
         strSQL = "CWFM_UMANG.WFMP.GetDeptValues";
 
         SqlCommand cmd = new SqlCommand(strSQL);
@@ -454,7 +454,6 @@ public partial class movement : System.Web.UI.Page
         fillTeamList(EmpCode, ref gv_LeftHandSideTeamList);
         ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
     }
-
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
         if (rdobtnMgrPull.Checked) { EmpTransferMode = TransferMode.ManagerTransferIn; }
@@ -473,20 +472,23 @@ public partial class movement : System.Web.UI.Page
             case TransferMode.ManagerTransferOut:
                 TypeOfMovement = (int)TransferMode.ManagerTransferOut;
                 break;
-
         }
 
         Transferee M = new Transferee();
         string ntID = PageExtensionMethods.getMyWindowsID();
-        string strSQL = "Select top 1 [Employee_ID] from [CWFM_Umang].[WFMP].[tblMaster] where [ntName] = '" + ntID + "'";
+        string strSQL = "Select top 1 [Employee_ID],[DeptLinkId] from [CWFM_Umang].[WFMP].[tblMaster] where [ntName] = '" + ntID + "'";
         int Employee_Id = Convert.ToInt32(my.GetData(strSQL).Rows[0]["Employee_ID"].ToString());
         DateTime D = Convert.ToDateTime(tbEffectiveDate.Text.ToString());
+        int FromDptLinkMstId = Convert.ToInt32(dt.Rows[0]["DeptLinkId"].ToString());
+        int ToDptLinkMstId = FromDptLinkMstId;
 
         foreach (GridViewRow gvrow in gv_LeftHandSideTeamList.Rows)
         {
             CheckBox checkbox = gvrow.FindControl("cbMyTeamListID") as CheckBox;
             if (checkbox.Checked)
             {
+                M.FromDptLinkMstId = FromDptLinkMstId;
+                M.ToDptLinkMstId = ToDptLinkMstId;
                 M.EmpId = Convert.ToInt32(gv_LeftHandSideTeamList.DataKeys[gvrow.RowIndex].Value.ToString());
                 M.FromMgr = Convert.ToInt32(ddlFromManager.SelectedValue.ToString());
                 M.ToMgr = Convert.ToInt32(ddlToMgr.SelectedValue.ToString());
@@ -506,144 +508,37 @@ public partial class movement : System.Web.UI.Page
 
     }
 
-
-
-
-    class Transferee
-    {
-        public int FromDptLinkMstId { get; set; }
-        public int ToDptLinkMstId { get; set; }
-        public int FromMgr { get; set; }
-        public int ToMgr { get; set; }
-        public int EmpId { get; set; }
-        public int Types { get; set; }
-        public int State { get; set; }
-        public int InitBy { get; set; }
-        public DateTime EffectiveDate { get; set; }
-        public int UpdaterID { get; set; }
-        public DateTime UpdatedOn { get; set; }
-
-
-        private Helper my = new Helper();
-
-        public Transferee() { }
-        public int InitiateTransfer()
-        {
-            //Check if Employee Movement exists in the table, if it does not, Insert to DB directly with State = 1
-
-            DataTable dt;
-            int rowcount = 0;
-            string strSQL = "select * from CWFM_Umang.WFMP.tbltrans_Movement A";
-            strSQL += " where A.EmpId = " + EmpId + " and state=0";
-            dt = my.GetData(strSQL);
-            rowcount = dt.Rows.Count;
-            if (rowcount == 0)
-            {
-                // For this EmpID, Unfinished movements (not approved or not declined ones) donot exist.
-                rowcount = InsertToDB();
-            }
-            else if (rowcount > 0)
-            {
-                // Unfinished movements exist for this empID
-                // Check if the From and To Mgrs for the movement are the same as the ones in the row above.
-
-                bool SameFromMgr = false;
-                bool SameToMgr = false;
-                SameFromMgr = (FromMgr.ToString() == dt.Rows[0]["FromMgr"].ToString()) ? true : false;
-                SameToMgr = (ToMgr.ToString() == dt.Rows[0]["ToMgr"].ToString()) ? true : false;
-                if (SameFromMgr && SameToMgr)
-                {
-                    rowcount = UpdateToDB();
-                }
-            }
-            return rowcount;
-        }
-        public int ApproveTransfer() { return 0; }
-        private int InsertToDB()
-        {
-            string strSQL = "INSERT INTO [CWFM_Umang].[WFMP].[tbltrans_Movement]([FromMgr],[ToMgr],[EmpId],[Type] ";
-            strSQL += " ,[State],[InitBy],[EffectiveDate],[UpdaterID],[UpdatedOn]) ";
-            strSQL += " VALUES (@FromMgr,@ToMgr,@EmpId,@Type,@State,@InitBy,@EffectiveDate,@UpdaterID,@UpdatedOn)";
-
-            SqlCommand cmd = new SqlCommand(strSQL);
-            cmd.Parameters.AddWithValue("@FromMgr", FromMgr);
-            cmd.Parameters.AddWithValue("@ToMgr", ToMgr);
-            cmd.Parameters.AddWithValue("@EmpId", EmpId);
-            cmd.Parameters.AddWithValue("@Type", Types);
-            cmd.Parameters.AddWithValue("@State", State);
-            cmd.Parameters.AddWithValue("@InitBy", InitBy);
-            cmd.Parameters.AddWithValue("@EffectiveDate", EffectiveDate);
-            cmd.Parameters.AddWithValue("@UpdaterID", UpdaterID);
-            cmd.Parameters.AddWithValue("@UpdatedOn", UpdatedOn);
-
-            return my.ExecuteDMLCommand(ref cmd, strSQL, "E");
-        }
-        private int UpdateToDB()
-        {
-            string strSQL = "UPDATE [CWFM_Umang].[WFMP].[tbltrans_Movement]";
-            strSQL += " SET  [State] = @State, [UpdaterID] = @UpdaterID ";
-            strSQL += " , [UpdatedOn] = @UpdatedOn";
-            strSQL += " WHERE [EmpId] = @EmpId and [FromMgr] = @FromMgr and [ToMgr] = @ToMgr and [Type] = @Type and [EffectiveDate] = @EffectiveDate";
-
-            SqlCommand cmd = new SqlCommand(strSQL);
-            cmd.Parameters.AddWithValue("@FromMgr", FromMgr);
-            cmd.Parameters.AddWithValue("@ToMgr", ToMgr);
-            cmd.Parameters.AddWithValue("@EmpId", EmpId);
-            cmd.Parameters.AddWithValue("@Type", Types);
-            cmd.Parameters.AddWithValue("@State", State);
-            cmd.Parameters.AddWithValue("@EffectiveDate", EffectiveDate);
-            cmd.Parameters.AddWithValue("@UpdaterID", UpdaterID);
-            cmd.Parameters.AddWithValue("@UpdatedOn", UpdatedOn);
-
-            return my.ExecuteDMLCommand(ref cmd, strSQL, "E");
-        }
-
-    }
-
-
     protected void btnDepSubmit_Click(object sender, EventArgs e)
     {
+        Transferee M = new Transferee();
+
         if (rdoDeptMovement.Checked && rdobtnMgrPull.Checked) { EmpTransferMode = TransferMode.DepartmentTransferIn; }
         if (rdoDeptMovement.Checked && rdobtnMgrPush.Checked) { EmpTransferMode = TransferMode.DepartmentTransferOut; }
-        int TypeOfMovement = 0;
-        int rowsAffected = 0;
-        switch (EmpTransferMode)
-        {
-            case TransferMode.DepartmentTransferIn:
-                TypeOfMovement = (int)TransferMode.DepartmentTransferOut;
-                break;
+        int TypeOfMovement = (int)TransferMode.DepartmentTransferOut;
+        M.Types = TypeOfMovement;
 
-            case TransferMode.DepartmentTransferOut:
-                TypeOfMovement = (int)TransferMode.DepartmentTransferOut;
-                break;
-        }
-
-        Transferee M = new Transferee();
         string ntID = PageExtensionMethods.getMyWindowsID();
-        string strSQL = "Select top 1 [Employee_ID],[DPT] from [CWFM_Umang].[WFMP].[tblMaster] where [ntName] = '" + ntID + "'";
+        string strSQL = "Select top 1 [Employee_ID],[DeptLinkId] from [CWFM_Umang].[WFMP].[tblMaster] where [ntName] = '" + ntID + "'";
         DataTable dt = my.GetData(strSQL);
         int Employee_Id = Convert.ToInt32(dt.Rows[0]["Employee_ID"].ToString());
         DateTime D = Convert.ToDateTime(tbEffectiveDate.Text.ToString());
-        int FromDptLinkMstId = Convert.ToInt32(dt.Rows[0]["DPT"].ToString());
+        int FromDptLinkMstId = Convert.ToInt32(dt.Rows[0]["DeptLinkId"].ToString());
         int ToDptLinkMstId = 0;
 
-        using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
-        {
-            string mstQuery = "SELECT TransID FROM CWFM_Umang.WFMP.tblDepartmentLinkMst";
-            mstQuery += " where  FunctionID = @FunctionID  and DepartmentID = @DepartmentID and ";
-            mstQuery += " LOBID = @LOBID and SkillSetID = @SkillSetID and SubSkillSetID = @SubSkillSetID  and Active = 1";
-            cn.Open();
-            using (SqlCommand mstCmd = new SqlCommand(mstQuery, cn))
-            {
-                mstCmd.Parameters.AddWithValue("@FunctionID", ddlFunctionId.SelectedValue.ToString());
-                mstCmd.Parameters.AddWithValue("@DepartmentID", ddlDepartmentID.SelectedValue.ToString());
-                mstCmd.Parameters.AddWithValue("@LOBID", ddlLOBID.SelectedValue.ToString());
-                mstCmd.Parameters.AddWithValue("@SkillSetID", ddlSkillSet.SelectedValue.ToString());
-                mstCmd.Parameters.AddWithValue("@SubSkillSetID", ddlSubSkillSet.SelectedValue.ToString());
-                ToDptLinkMstId = Convert.ToInt32(mstCmd.ExecuteScalar());
-            }
-        }
+        // Locate the ToDptLinkMstId
+        string mstQuery = "[WFMP].[GetDeptValues]";
+        SqlCommand mstCmd = new SqlCommand();
+        mstCmd.CommandText = mstQuery;       
+        mstCmd.Parameters.AddWithValue("@FunctionID", ddlFunctionId.SelectedValue.ToString());
+        mstCmd.Parameters.AddWithValue("@DepartmentID", ddlDepartmentID.SelectedValue.ToString());
+        mstCmd.Parameters.AddWithValue("@LOBID", ddlLOBID.SelectedValue.ToString());
+        mstCmd.Parameters.AddWithValue("@SkillSetID", ddlSkillSet.SelectedValue.ToString());
+        mstCmd.Parameters.AddWithValue("@SubSkillSetID", ddlSubSkillSet.SelectedValue.ToString());
+        ToDptLinkMstId = Convert.ToInt32(my.GetDataTableViaProcedure(ref mstCmd).Rows[0]["TransId"].ToString());
 
+
+        List<Transferee> TransferList = new List<Transferee>();
+        int rowsAffected = 0;
         foreach (GridViewRow gvrow in gv_DepMgrTeamList.Rows)
         {
             CheckBox checkbox = gvrow.FindControl("cbMyTeamListID") as CheckBox;
@@ -651,17 +546,19 @@ public partial class movement : System.Web.UI.Page
             {
                 M.EmpId = Convert.ToInt32(gv_DepMgrTeamList.DataKeys[gvrow.RowIndex].Value.ToString());
                 M.FromMgr = Convert.ToInt32(ddlDepartmentManager.SelectedValue.ToString());
-                
-                M.Types = TypeOfMovement;
                 M.State = 0;
                 M.InitBy = Employee_Id;
                 M.EffectiveDate = D;
                 M.UpdaterID = Employee_Id;
                 M.UpdatedOn = DateTime.Now;
-                // Go...
-                rowsAffected = M.InitiateTransfer();
+                // Collect Together all transferees...
+                TransferList.Add(M);
             }
-
+        }
+        rowsAffected = 0;
+        foreach (Transferee N in TransferList)
+        {
+            rowsAffected += N.InitiateTransfer();
         }
 
         fillTeamList(Employee_Id, ref gv_DepMgrTeamList);

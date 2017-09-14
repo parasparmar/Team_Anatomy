@@ -38,7 +38,7 @@
             </div>
             <!-- User name -->
             <div class="lockscreen-name">
-                Hi, pparm001
+                Hi, <asp:Literal ID="ltlUserID" runat="server"></asp:Literal>
 
             <div class="text-center">
                 <a href="login.html">Updating your image is simple. Just click it.</a>

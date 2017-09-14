@@ -9,6 +9,10 @@ public partial class lockscreen : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (!Page.IsPostBack)
+        {
+            ltlUserID.Text = Session["myID"].ToString();
 
+        }
     }
 }
