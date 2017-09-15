@@ -51,7 +51,10 @@
                     <div id="boxbody1" class="box-body" runat="server">
                         <asp:HiddenField ID="hdnfld_Employee_ID" Value='<%# Bind("Employee_ID")%>' runat="server"></asp:HiddenField><br />
                         
-                        <asp:GridView ID="gvTeamList" runat="server" AutoGenerateColumns="False" DataKeyNames="Employee_ID">
+                        <asp:GridView ID="gvTeamList" runat="server"
+                             CssClass="table table-condensed table-responsive datatable display compact hover stripe"
+                             AutoGenerateColumns="False" DataKeyNames="Employee_ID"
+                             OnPreRender="gv_PreRender">
                             <Columns>
                                 <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name"></asp:BoundField>
                                 <asp:BoundField DataField="Employee_ID" HeaderText="Employee_ID" SortExpression="Employee_ID"></asp:BoundField>

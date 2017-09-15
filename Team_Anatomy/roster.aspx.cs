@@ -45,6 +45,20 @@ public partial class roster : System.Web.UI.Page
 
     }
 
+    protected void gv_PreRender(object sender, EventArgs e)
+    {
+        GridView gv = (GridView)sender;
+        if (gv.Rows.Count > 0)
+        {
+            gv.UseAccessibleHeader = true;
+            gv.HeaderRow.TableSection = TableRowSection.TableHeader;
+
+            gv.HeaderStyle.BorderStyle = BorderStyle.None;
+
+            gv.BorderStyle = BorderStyle.None;
+            gv.BorderWidth = Unit.Pixel(1);
+        }
+    }
 
     protected void lvwTeamList_ItemDataBound(object sender, ListViewItemEventArgs e)
     {
@@ -61,11 +75,6 @@ public partial class roster : System.Web.UI.Page
             int EmpID = Convert.ToInt32(hdnfld_Employee_ID.Value.ToString());
             gv.DataSource = my.GetData(strSQL + EmpID);
             gv.DataBind();
-            //SqlDataSource sds = (SqlDataSource)e.Item.FindControl("SqlDataSource2");
-            //if (sds != null && lblid != null)
-            //{
-            //    sds.SelectParameters["employeeid"].DefaultValue = lblid.Text;
-            //}
         }
 
     }
