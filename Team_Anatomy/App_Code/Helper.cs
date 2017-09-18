@@ -23,10 +23,14 @@ public class Helper
     // ------------------------- Open Database Connection -------------------------
     public void open_db()
     {
+
         mcon = new SqlConnection(getConnectionString());
         try
         {
-            mcon.Open();
+            if (mcon.State == ConnectionState.Closed || mcon.State == ConnectionState.Broken)
+            {
+                mcon.Open();
+            }
         }
         catch (Exception e)
         {
@@ -49,7 +53,7 @@ public class Helper
     // ------------------------- Procedure for Execute Sql Query/Stored Procedure -------------------------
     public int ExecuteDMLCommand(ref SqlCommand cmd, string sql_string, string operation)
     {
-        open_db();
+        if (mcon.State == ConnectionState.Closed || mcon.State == ConnectionState.Broken) { open_db(); }
         int returnValue = 0;
         try
         {
@@ -83,18 +87,17 @@ public class Helper
 
     public DataTable GetDataTableViaProcedure(ref SqlCommand cmd)
     {
+        if (mcon.State == ConnectionState.Closed || mcon.State == ConnectionState.Broken) { open_db(); }
         DataTable dt = new DataTable();
-        using (SqlConnection cn = new SqlConnection(getConnectionString()))
+        using (cmd)
         {
-            cn.Open();
-            using (cmd)
-            {
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Connection = cn;
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
-                da.Fill(dt);
-            }
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Connection = mcon;
+
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            da.Fill(dt);
         }
+
         return dt;
     }
 
@@ -104,7 +107,7 @@ public class Helper
         using (SqlConnection mcon = new SqlConnection(getConnectionString()))
         {
             DataTable worktable = new DataTable();
-            SqlDataAdapter dap = new System.Data.SqlClient.SqlDataAdapter(new System.Data.SqlClient.SqlCommand(sql, mcon));
+            SqlDataAdapter dap = new SqlDataAdapter(new SqlCommand(sql, mcon));
             DataSet ds = new DataSet();
             dap.Fill(ds);
             worktable = ds.Tables[0];
@@ -300,6 +303,21 @@ public class Helper
             lblheading.Visible = true;
             lblheading.Text = heading;
         }
+    }
+
+    public int getSingleton(string strSQL)
+    {
+        open_db();
+        SqlCommand cmd = new SqlCommand(strSQL, mcon);
+        int result = 0;
+        if (Int32.TryParse(cmd.ExecuteScalar().ToString(), out result))
+        {
+            return result;
+        }
+        else
+        {
+            return 0;
+        };
     }
 
 
