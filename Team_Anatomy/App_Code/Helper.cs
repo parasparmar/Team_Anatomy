@@ -10,7 +10,16 @@ using CD;
 
 public class Helper
 {
-    public System.Data.SqlClient.SqlConnection mcon;
+    SqlConnection mcon;
+
+    public Helper()
+    {
+        SqlConnection mcon = new SqlConnection(getConnectionString());
+        if (mcon.State == ConnectionState.Closed || mcon.State == ConnectionState.Broken)
+        {
+            open_db();
+        }
+    }
 
     public string getConnectionString()
     {
@@ -320,6 +329,96 @@ public class Helper
         };
     }
 
+    public void fill_dropdown(Control drp_name, string sp_name, string datatextfield, string datavaluefield, string defaultitem, string parameters, string tran_type)
+    {
+        SqlCommand cmd = new SqlCommand(sp_name, mcon);
+        cmd.CommandType = CommandType.StoredProcedure;
+        SqlDataAdapter dap = new SqlDataAdapter();
+        DataSet ds = new DataSet();
 
+        try
+        {
+            DropDownList v = (DropDownList)drp_name;
+
+            ExecuteDMLCommand(ref cmd, sp_name, tran_type);
+            //----------------------- Addning Muiltipal Parameters with there values by split using '#' only if it is stored procedure.
+            if (tran_type == "S")
+            {
+                if (parameters.Trim() != "")
+                {
+                    string[] multiple_parameter = parameters.Split(',');
+                    foreach (string p_value in multiple_parameter)
+                    {
+                        string para_name = p_value.Split('#')[0];
+                        string para_value = p_value.Split('#')[1];
+                        cmd.Parameters.AddWithValue("@" + para_name, para_value);
+                    }
+                }
+            }
+
+            dap.SelectCommand = cmd;
+            dap.Fill(ds);
+
+
+
+
+            if (defaultitem != "")
+            {
+                DataRow dr = ds.Tables[0].NewRow();
+                dr[0] = 0;
+                dr[1] = defaultitem;
+                ds.Tables[0].Rows.Add(dr);
+            }
+            v.DataSource = ds.Tables[0];
+            v.DataTextField = datatextfield;
+            v.DataValueField = datavaluefield;
+            v.DataBind();
+
+
+            //--------------------------------------------
+            if (defaultitem != "")
+            {
+                v.SelectedValue = "0";
+            }
+        }
+        catch (Exception e)
+        {
+            Log.thisException(e);
+        }
+        finally
+        {
+            dap.Dispose();
+            ds.Dispose();
+            close_conn();
+        }
+    }
+
+    public void append_dropdown(ref DropDownList drp_name, string sp_name, int TextPosition, int ValuePosition)
+    {
+
+
+        using (SqlCommand cmd = new SqlCommand(sp_name, mcon))
+        {
+            using (SqlDataReader dr = cmd.ExecuteReader())
+            {
+                try
+                {
+                    DropDownList dp = (DropDownList)drp_name;
+
+                    while (dr.Read())
+                    {
+                        dp.Items.Add(new ListItem(dr.GetValue(TextPosition).ToString(), dr.GetValue(ValuePosition).ToString()));
+                    }
+
+                }
+                catch (Exception Ex)
+                {
+
+                }
+            }
+        }
+
+
+    }
 
 }

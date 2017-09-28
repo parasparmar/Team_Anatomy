@@ -47,8 +47,8 @@
                     <!-- Custom Tabs -->
                     <div class="box box-solid box-primary" style="height: auto;">
                         <div class="box-header with-border">
-                            <h4 class="box-title">Roster for Team :
-                                <asp:Literal ID="ltlReportingMgrsTeam" runat="server"></asp:Literal></h4>
+                            <h4 class="box-title">
+                                <asp:Literal ID="ltlReportingMgrsTeam" Text="Roster For Team" runat="server"></asp:Literal></h4>
                             <div class="box-tools pull-right">
                                 <button class="btn btn-box-tool" type="button" data-widget="collapse">
                                     <i class="fa fa-minus"></i>
@@ -57,22 +57,34 @@
                         </div>
                         <div class="box-body">
                             <div class="row">
-                                <asp:Panel CssClass ="col-md-3" ID="pnlAmIRvwMgr" Visible="true" runat="server">
+                                <asp:Panel CssClass="col-md-3" ID="pnlAmIRvwMgr" Visible="true" runat="server">
                                     <div class="form-group">
                                         Reporting Manager
-                                        <asp:DropDownList ID="ddlRepManager" runat="server" CssClass="form-control select2" Style="width: 100%;"  AutoPostBack="true" OnSelectedIndexChanged="ddlRepManager_SelectedIndexChanged">
+                                        <asp:DropDownList ID="ddlRepManager" runat="server" CssClass="form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlRepManager_SelectedIndexChanged">
+                                            <asp:ListItem Selected="True" Text="None" Value="0"></asp:ListItem>
                                         </asp:DropDownList>
-                                    </div><!-- ddlRepManager-->
-                                </asp:Panel><!-- pnlAmIRvwMgr-->
-                                
+                                    </div>
+                                    <!-- ddlRepManager-->
+                                </asp:Panel>
+                                <!-- pnlAmIRvwMgr-->
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        Roster for Week Beginning
-                                        <asp:DropDownList ID="ddlWeek" runat="server" CssClass="form-control select2" Style="width: 100%;"  AutoPostBack="true" OnSelectedIndexChanged="ddlWeek_SelectedIndexChanged">
+                                        Year
+                                        <asp:DropDownList ID="ddlYear" runat="server" CssClass="form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlYear_SelectedIndexChanged">
+                                            <asp:ListItem Selected="True" Text="None" Value="0"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>
-                                <!-- ddlRepManager-->
+                                <!-- Roster Year-->
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        Week
+                                        <asp:DropDownList ID="ddlWeek" runat="server" CssClass="form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlWeek_SelectedIndexChanged">
+                                            <asp:ListItem Selected="True" Text="None" Value="0"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
+                                <!-- Roster Dates-->
                             </div>
                         </div>
                     </div>
@@ -88,6 +100,20 @@
                             <h4 class="box-title">
                                 <asp:Literal ID="ltlRosterHeading" runat="server" Text="Week : "></asp:Literal></h4>
                             <div class="box-tools pull-right">
+                                <label>Replicate Shifts across all : </label>
+                                <div class="btn-group">
+                                    <asp:Button ID="btnCopyToAllRows" CssClass="btn btn-sm btn-warning" Text="Rows" runat="server" />
+                                    <asp:Button ID="btnCopyToAllColumns" CssClass="btn btn-sm btn-info" Text="Columns" runat="server" />
+                                </div>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
+                                        <i class="fa fa-wrench"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="#">Replicate Shifts across Rows</a></li>
+                                        <li><a href="#">Replicate Shifts across Columns</a></li>
+                                    </ul>
+                                </div>
                                 <button class="btn btn-box-tool" type="button" data-widget="collapse">
                                     <i class="fa fa-minus"></i>
                                 </button>
@@ -95,11 +121,61 @@
                         </div>
                         <div class="box-body">
                             <asp:Panel ID="pnlRoster" runat="server" Visible="true">
-                                <asp:GridView ID="gvRoster" runat="server" AutoGenerateColumns="true" CssClass="dataTable">
+
+                                <asp:GridView ID="gvRoster" runat="server" AutoGenerateColumns="false"
+                                    CssClass="table table-condensed table-responsive  display compact hover stripe"
+                                    OnPreRender="gv_PreRender">
+                                    <Columns>
+
+                                        <asp:BoundField DataField="EmpID" HeaderText="EmpID" />
+                                        <asp:BoundField DataField="EmpName" HeaderText="Name" />
+                                        <asp:TemplateField>
+                                            <ItemTemplate>
+                                                <asp:DropDownList ID="dd1" runat="server" CssClass="form-control select2" Style="width: 100%"></asp:DropDownList>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField>
+
+                                            <ItemTemplate>
+                                                <asp:DropDownList ID="dd2" runat="server" CssClass="form-control select2" Style="width: 100%"></asp:DropDownList>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField>
+
+                                            <ItemTemplate>
+                                                <asp:DropDownList ID="dd3" runat="server" CssClass="form-control select2" Style="width: 100%"></asp:DropDownList>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField>
+
+                                            <ItemTemplate>
+                                                <asp:DropDownList ID="dd4" runat="server" CssClass="form-control select2" Style="width: 100%"></asp:DropDownList>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField>
+
+                                            <ItemTemplate>
+                                                <asp:DropDownList ID="dd5" runat="server" CssClass="form-control select2" Style="width: 100%"></asp:DropDownList>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField>
+
+                                            <ItemTemplate>
+                                                <asp:DropDownList ID="dd6" runat="server" CssClass="form-control select2" Style="width: 100%"></asp:DropDownList>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField>
+
+                                            <ItemTemplate>
+                                                <asp:DropDownList ID="dd7" runat="server" CssClass="form-control select2" Style="width: 100%"></asp:DropDownList>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                    </Columns>
                                 </asp:GridView>
                             </asp:Panel>
                         </div>
                         <div class="box-footer">
+                            <asp:Button ID="btnSubmit" Text="Update" runat="server" CssClass="btn btn-primary" OnClick="btnSubmit_Click" />
                         </div>
                     </div>
                     <!-- /.box-footer-->
@@ -111,6 +187,7 @@
             <!---LHS Panel---->
         </ContentTemplate>
         <Triggers>
+            <asp:PostBackTrigger ControlID="btnSubmit" />
         </Triggers>
     </asp:UpdatePanel>
 
@@ -130,6 +207,7 @@
                 autoclose: true,
                 format: 'dd-M-yyyy'
             });
+
         }
 
 
@@ -143,6 +221,20 @@
             prm.add_endRequest(function (sender, e) {
                 if (sender._postBackSettings.panelsToUpdate != null) {
                     pluginsInitializer();
+                    $('.DataTable').DataTable({
+                        "sPaginationType": "full_numbers",
+                        "lengthMenu": [5, 10, 25, 50, 75, 100],
+                        "aaSortingFixed": [[0, 'asc']],
+                        "bSort": true,
+                        dom: 'Bfrltip',
+                        "columnDefs": [{ "orderable": false, "targets": 0 }],
+                        buttons: [
+                            { extend: 'copyHtml5', text: 'Copy Data' },
+                            { extend: 'excelHtml5', text: 'Export to Excel' },
+                            { extend: 'csvHtml5', text: 'Export to CSV' },
+                            { extend: 'pdfHtml5', text: 'Export to PDF' },
+                        ]
+                    });
                 }
             });
         };
