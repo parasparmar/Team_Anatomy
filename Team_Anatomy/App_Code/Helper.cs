@@ -318,8 +318,9 @@ public class Helper
     {
         open_db();
         SqlCommand cmd = new SqlCommand(strSQL, mcon);
+        var the_result = cmd.ExecuteScalar();
         int result = 0;
-        if (Int32.TryParse(cmd.ExecuteScalar().ToString(), out result))
+        if (Int32.TryParse(the_result.ToString(), out result))
         {
             return result;
         }

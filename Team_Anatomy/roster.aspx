@@ -100,33 +100,37 @@
                             <h4 class="box-title">
                                 <asp:Literal ID="ltlRosterHeading" runat="server" Text="Week : "></asp:Literal></h4>
                             <div class="box-tools pull-right">
-                                <label>Replicate Shifts across all : </label>
                                 <div class="btn-group">
-                                    <asp:Button ID="btnCopyToAllRows" CssClass="btn btn-sm btn-warning" Text="Rows" runat="server" />
-                                    <asp:Button ID="btnCopyToAllColumns" CssClass="btn btn-sm btn-info" Text="Columns" runat="server" />
-                                </div>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-                                        <i class="fa fa-wrench"></i>
+                                    <button type="button" title="Shift Tools" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
+                                        Shift Replication <i class="fa fa-wrench"></i>
                                     </button>
                                     <ul class="dropdown-menu" role="menu">
-                                        <li><a href="#">Replicate Shifts across Rows</a></li>
-                                        <li><a href="#">Replicate Shifts across Columns</a></li>
+                                        <li>
+                                            <a class="btn btn-flat btn-primary"><i class="fa fa-bars"></i>
+                                                <button id="btnRows" class="btn btn-flat btn-primary form-control" style="text-align: left">&nbsp Across Rows</button></a>
+                                        </li>
+                                        <li>
+                                            <a class="btn btn-flat btn-info"><i class="fa fa-columns"></i>
+                                                <button id="btnColumns" class="btn btn-flat btn-info form-control" style="text-align: left">&nbsp Across Columns</button></a>
+                                        </li>
+                                        <li>
+                                            <a class="btn btn-flat btn-warning"><i class="fa fa-repeat"></i>
+                                                <asp:Button ID="btnWeeks" Text=" From Previous Week"
+                                                     CssClass="btn btn-flat btn-warning form-control"
+                                                     Style="text-align: left"
+                                                     runat="server"
+                                                     OnClick="btnWeeks_Click"></asp:Button></a>
+                                        </li>
                                     </ul>
                                 </div>
-                                <button class="btn btn-box-tool" type="button" data-widget="collapse">
-                                    <i class="fa fa-minus"></i>
-                                </button>
                             </div>
                         </div>
                         <div class="box-body">
                             <asp:Panel ID="pnlRoster" runat="server" Visible="true">
-
                                 <asp:GridView ID="gvRoster" runat="server" AutoGenerateColumns="false"
                                     CssClass="table table-condensed table-responsive  display compact hover stripe"
                                     OnPreRender="gv_PreRender">
                                     <Columns>
-
                                         <asp:BoundField DataField="EmpID" HeaderText="EmpID" />
                                         <asp:BoundField DataField="EmpName" HeaderText="Name" />
                                         <asp:TemplateField>
@@ -208,7 +212,48 @@
                 format: 'dd-M-yyyy'
             });
 
+            // Replication Code for Rows. 
+            //03-Sep-2017 01.07 AM In Production support : paras.parmar@sitel.com
+
+            var i = 0;
+            $("#btnRows").click(function () {
+                var myShift = 0;
+                $("#gvRoster tr:gt(0)").addClass("bg-teal-active").each(function () {
+
+                    $(this).find('td:gt(1):lt(7)').each(function (i) {
+                        if (i == 0) {
+                            myShift = $(this).find('[class*="select2"]').val();
+                        }
+                        else {
+                            $(this).addClass("bg-teal").find('[class*="select2"]').val(myShift).trigger('change.select2');
+                        }
+
+                    });
+                });
+            });
+
+            // Replication Code for Columns. 
+            //03-Sep-2017 2.24 AM In Production support : paras.parmar@sitel.com
+
+            $("#btnColumns").click(function () {
+                var myShift = [];
+                $("#gvRoster tr:nth-child(1) td:gt(1):lt(7)").each(function () {
+                    myShift.push($(this).find('[class*="select2"]').val());
+                });
+
+                //alert(myShift);
+
+                $("#gvRoster tr:gt(0)").each(function () {
+                    $(this).find('td:gt(1):lt(7)').each(function (j) { $(this).find('[class*="select2"]').val(myShift[j]).trigger('change.select2') });
+                });
+
+            });
+
+
+
         }
+
+
 
 
         $(function () {

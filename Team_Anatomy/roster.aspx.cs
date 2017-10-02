@@ -108,7 +108,7 @@ public partial class roster : System.Web.UI.Page
             ddlWeek.DataBind();
             if (ddlYear.Text == DateTime.Today.Year.ToString())
             {
-                string RowID = my.getSingleton("Select A.[WeekId] from [CWFM_Umang].[WFMP].[tblRstWeeks] A where GETDATE() between A.FrDate and a.ToDate").ToString();
+                string RowID = my.getSingleton("Select A.[WeekId] from [CWFM_Umang].[WFMP].[tblRstWeeks] A where '" + DateTime.Today.Date + "' between A.FrDate and a.ToDate").ToString();
                 ddlWeek.SelectedIndex = ddlWeek.Items.IndexOf(ddlWeek.Items.FindByValue(RowID));
             }
             else
@@ -137,13 +137,25 @@ public partial class roster : System.Web.UI.Page
         }
 
     }
-    private void fillgvRoster(int RepMgrCode, int WeekID)
+    private void fillgvRoster(int RepMgrCode, int WeekID, int OffsetTheWeekBy = 0)
     {
 
         SqlCommand cmd = new SqlCommand("[WFMP].[GetRosterInformation]");
         cmd.Parameters.AddWithValue("@RepMgrCode", RepMgrCode);
+        // The Offset is incase the previous weeks roster needs to be replicated for today.
+        WeekID = WeekID + OffsetTheWeekBy;
         cmd.Parameters.AddWithValue("@WeekID", WeekID);
         dtRoster = my.GetDataTableViaProcedure(ref cmd);
+        if (OffsetTheWeekBy != 0)
+        {
+            for (int j = 2; j < dtRoster.Columns.Count; j++)
+            {
+                // The Offset is incase the previous weeks roster needs to be replicated for today.
+                string newName = Convert.ToDateTime(dtRoster.Columns[j].ColumnName).AddDays(7).ToString("dd-MMM-yyyy");
+                dtRoster.Columns[j].ColumnName = newName;
+            }
+        }
+
         gvRoster.DataSource = dtRoster;
         int RowCount = dtRoster.Rows.Count;
         int ColCount = dtRoster.Columns.Count;
@@ -169,6 +181,9 @@ public partial class roster : System.Web.UI.Page
                     //Set headers for Date Columns only    
                     ddlName = "dd" + (j - 1);
                     DropDownList v = (DropDownList)gvRoster.Rows[i].FindControl(ddlName);
+                    ListItem NullShift = new ListItem("--", "0");
+                    v.Items.Add(NullShift);
+
                     foreach (DataRow dr in dt1.Rows)
                     {
                         ListItem ShiftCode = new ListItem();
@@ -202,87 +217,79 @@ public partial class roster : System.Web.UI.Page
         int WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
         int UpdatedBy = MyEmpID;
         DateTime updatedOn = DateTime.Now;
-        DateTime From;
-        DateTime To;
-        CultureInfo enUS = new CultureInfo("en-US");
+
         DataSet X = new DataSet();
 
         string strSQL = "SELECT * FROM [CWFM_Umang].[WFMP].[RosterMst] where [RepMgrCode] = @RepMgrCode ";
-        strSQL += " and [WeekID] = @WeekID and [rDate] between @From and @To";
+        strSQL += " and [WeekID] = @WeekID";
         using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
         {
             cn.Open();
             SqlCommand cmd = new SqlCommand(strSQL, cn);
             cmd.Parameters.AddWithValue("@RepMgrCode", RepMgrCode);
             cmd.Parameters.AddWithValue("@WeekID", WeekID);
-            if (DateTime.TryParseExact("01-01-" + ddlYear.SelectedValue.ToString(), "dd-MM-yyyy", enUS, DateTimeStyles.None, out From))
-            {
-                cmd.Parameters.AddWithValue("@From", From);
-            }
-            if (DateTime.TryParseExact("31-12-" + ddlYear.SelectedValue.ToString(), "dd-MM-yyyy", enUS, DateTimeStyles.None, out To))
-            {
-                cmd.Parameters.AddWithValue("@To", To);
-            }
+
             using (SqlDataAdapter da = new SqlDataAdapter(cmd))
             {
-                da.UpdateCommand = new SqlCommand("UPDATE CWFM_Umang.[WFMP].[RosterMst] SET [ShiftID] = @ShiftID, [UpdatedBy] = @UpdatedBy,[updatedOn] = GETDATE() WHERE [EmpCode] = @EmpCode and [rDate] = @rDate", cn);
-                da.InsertCommand = new SqlCommand("INSERT INTO CWFM_Umang.[WFMP].[RosterMst]([EmpCode],[WeekID],[rDate],[ShiftID],[RepMgrCode],[UpdatedBy],[updatedOn]) VALUES (@EmpCode,@WeekID,@rDate,@ShiftID,@RepMgrCode,@UpdatedBy,GETDATE())", cn);
-                da.DeleteCommand = new SqlCommand("Delete from CWFM_Umang.[WFMP].[RosterMst] WHERE [EmpCode] = @EmpCode and [rDate] = @rDate", cn);
-
-                da.Fill(X);
-
-                List<Rosteree> ListOfR = new List<Rosteree>();
-                foreach (GridViewRow Row in gvRoster.Rows)
+                using (SqlCommandBuilder builder = new SqlCommandBuilder(da))
                 {
-                    int TheEmpCode = Convert.ToInt32(Row.Cells[0].Text.ToString());
-                    for (int j = 2; j < CellCount; j++)
+                    da.Fill(X);
+                    List<Rosteree> ListOfR = new List<Rosteree>();
+                    foreach (GridViewRow Row in gvRoster.Rows)
                     {
-                        Rosteree R = new Rosteree();
-                        R.EmpCode = TheEmpCode;
-                        R.rDate = Convert.ToDateTime(gvRoster.Columns[j].HeaderText);
-                        DropDownList ddl = (DropDownList)Row.Cells[j].FindControl("dd" + (j - 1));
-                        R.ShiftID = Convert.ToInt32(ddl.SelectedValue);
-                        R.RepMgrCode = RepMgrCode;
-                        R.WeekID = WeekID;
-                        R.UpdatedBy = UpdatedBy;
-                        R.updatedOn = updatedOn;
-                        ListOfR.Add(R);
-                    }
-                }
-                foreach (Rosteree R in ListOfR)
-                {
-                    DataRow[] drc = X.Tables[0].Select("EmpCode = " + R.EmpCode + " and rDate = '" + R.rDate+"'");
-
-                    if (drc.GetUpperBound(0) > 0)
-                    {
-                        DataRow dr = drc[0];
-                        dr["ShiftID"] = R.ShiftID;
-                        dr["UpdatedBy"] = R.UpdatedBy;
-                        dr.SetModified();
-                        for (int i = 1; i < drc.GetUpperBound(0); i++)
+                        int TheEmpCode = Convert.ToInt32(Row.Cells[0].Text.ToString());
+                        for (int j = 2; j < CellCount; j++)
                         {
-                            drc[i].Delete();
+                            Rosteree R = new Rosteree();
+                            R.EmpCode = TheEmpCode;
+                            R.rDate = Convert.ToDateTime(gvRoster.Columns[j].HeaderText);
+                            DropDownList ddl = (DropDownList)Row.Cells[j].FindControl("dd" + (j - 1));
+                            R.ShiftID = Convert.ToInt32(ddl.SelectedValue);
+                            R.RepMgrCode = RepMgrCode;
+                            R.WeekID = WeekID;
+                            R.UpdatedBy = UpdatedBy;
+                            R.updatedOn = updatedOn;
+                            ListOfR.Add(R);
                         }
                     }
-                    else if (drc.GetUpperBound(0) == 0)
+                    foreach (Rosteree R in ListOfR)
                     {
-                        DataRow dr = X.Tables[0].NewRow();
-                        dr["EmpCode"] = R.EmpCode;
-                        dr["WeekID"] = R.WeekID;
-                        dr["rDate"] = R.rDate;
-                        dr["ShiftID"] = R.ShiftID;
-                        dr["RepMgrCode"] = R.RepMgrCode;
-                        dr["UpdatedBy"] = R.UpdatedBy;
-                        dr["updatedOn"] = R.updatedOn;
-                        dr.SetAdded();
-                        X.Tables[0].Rows.Add(dr);
+                        DataRow[] drc = X.Tables[0].Select("EmpCode = " + R.EmpCode + " and rDate >= #" + R.rDate + "# and rDate <#" + R.rDate.AddDays(1) + "#");
+
+                        if (drc.Length > 0)
+                        {
+                            DataRow dr = drc[0];
+                            if (dr["ShiftID"].ToString() != R.ShiftID.ToString())
+                            {
+                                dr["ShiftID"] = R.ShiftID;
+                                dr["UpdatedBy"] = R.UpdatedBy;
+                                dr["updatedOn"] = R.updatedOn;
+                            }
+
+                            for (int i = 1; i < drc.Length; i++)
+                            {
+                                drc[i].Delete();
+                            }
+                        }
+                        else if (drc.Length == 0)
+                        {
+                            DataRow dr = X.Tables[0].NewRow();
+                            dr["EmpCode"] = R.EmpCode;
+                            dr["WeekID"] = R.WeekID;
+                            dr["rDate"] = R.rDate;
+                            dr["ShiftID"] = R.ShiftID;
+                            dr["RepMgrCode"] = R.RepMgrCode;
+                            dr["UpdatedBy"] = R.UpdatedBy;
+                            dr["updatedOn"] = R.updatedOn;
+                            //dr.SetAdded();
+                            X.Tables[0].Rows.Add(dr);
+                        }
                     }
+                    int rowsAffected = da.Update(X);
 
                 }
-                X.AcceptChanges();
-                da.Update(X);
-            }
 
+            }
         }
 
 
@@ -297,11 +304,21 @@ public partial class roster : System.Web.UI.Page
 
 
     }
+    protected void btnWeeks_Click(object sender, EventArgs e)
+    {
+        if (ddlRepManager.SelectedValue.Length > 0 && ddlWeek.SelectedValue.Length > 0 && ddlYear.SelectedValue != "0")
+        {
+            int RepMgrCode = Convert.ToInt32(ddlRepManager.SelectedValue);
+            int WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
+
+            fillgvRoster(RepMgrCode, WeekID, -1);
+        }
+    }
 
     class Rosteree
     {
         public int EmpCode { get; set; }
-        public int DeptLinkId { get; set; }
+
         public int RepMgrCode { get; set; }
         public int UpdatedBy { get; set; }
         public DateTime updatedOn { get; set; }
@@ -324,4 +341,5 @@ public partial class roster : System.Web.UI.Page
         }
 
     }
+
 }
