@@ -168,6 +168,7 @@ public partial class roster : System.Web.UI.Page
         for (int j = 2; j < ColCount; j++)
         {
             gvRoster.Columns[j].HeaderText = dtRoster.Columns[j].ColumnName;
+
         }
         gvRoster.DataBind();
 
@@ -193,6 +194,10 @@ public partial class roster : System.Web.UI.Page
 
                     }
                     v.SelectedIndex = v.Items.IndexOf(v.Items.FindByValue(dtRoster.Rows[i][j].ToString()));
+
+                    //string xx = gvRoster.Columns[j].HeaderText;
+                    //string yy = gvRoster.Rows[i].Cells[0].Text.ToString();
+
                 }
             }
 
@@ -313,6 +318,17 @@ public partial class roster : System.Web.UI.Page
 
             fillgvRoster(RepMgrCode, WeekID, -1);
         }
+    }
+    private void loadApprovedLeaves(int RepMgrCode, int WeekID)
+    {
+        Rosteree R = new Rosteree();
+        //        SELECT A.*, B.RepMgrCode FROM [CWFM_Umang].[WFMP].[tbl_leave_request] A
+        //INNER JOIN [WFMP].[tblMaster] B on B.Employee_ID = A.ecn
+        //LEFT JOIN [WFMP].[tbl_datewise_leave] C  on A.id = C.leave_batch_id
+        //where 1=1 and B.RepMgrCode = 931040 and (
+        //select getdate() between A.from_date and A.to_date
+        //)
+
     }
 
     class Rosteree

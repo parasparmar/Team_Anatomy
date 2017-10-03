@@ -101,25 +101,30 @@
                                 <asp:Literal ID="ltlRosterHeading" runat="server" Text="Week : "></asp:Literal></h4>
                             <div class="box-tools pull-right">
                                 <div class="btn-group">
+                                    <a class="btn btn-box-tool"><i class="fa fa-wrench"></i></a>
                                     <button type="button" title="Shift Tools" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-                                        Shift Replication <i class="fa fa-wrench"></i>
+                                        Shift Replication Tools
                                     </button>
+
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
-                                            <a class="btn btn-flat btn-primary"><i class="fa fa-bars"></i>
-                                                <button id="btnRows" class="btn btn-flat btn-primary form-control" style="text-align: left">&nbsp Across Rows</button></a>
+                                            <a><i class="fa fa-bars"></i>
+                                                <button id="btnRows" class="btn btn-primary form-control" style="text-align: left">&nbsp Across Rows</button>
+                                            </a>
                                         </li>
                                         <li>
-                                            <a class="btn btn-flat btn-info"><i class="fa fa-columns"></i>
-                                                <button id="btnColumns" class="btn btn-flat btn-info form-control" style="text-align: left">&nbsp Across Columns</button></a>
+                                            <a><i class="fa fa-columns"></i>
+                                                <button id="btnColumns" class="btn btn-info form-control" style="text-align: left">&nbsp Across Columns</button>
+                                            </a>
                                         </li>
                                         <li>
-                                            <a class="btn btn-flat btn-warning"><i class="fa fa-repeat"></i>
+                                            <a><i class="fa fa-repeat"></i>
                                                 <asp:Button ID="btnWeeks" Text=" From Previous Week"
-                                                     CssClass="btn btn-flat btn-warning form-control"
-                                                     Style="text-align: left"
-                                                     runat="server"
-                                                     OnClick="btnWeeks_Click"></asp:Button></a>
+                                                    CssClass="btn btn-warning form-control"
+                                                    Style="text-align: left"
+                                                    runat="server"
+                                                    OnClick="btnWeeks_Click"></asp:Button>
+                                            </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -128,50 +133,54 @@
                         <div class="box-body">
                             <asp:Panel ID="pnlRoster" runat="server" Visible="true">
                                 <asp:GridView ID="gvRoster" runat="server" AutoGenerateColumns="false"
-                                    CssClass="table table-condensed table-responsive  display compact hover stripe"
+                                    CssClass="table table-condensed table-responsive compact hover stripe"
                                     OnPreRender="gv_PreRender">
                                     <Columns>
                                         <asp:BoundField DataField="EmpID" HeaderText="EmpID" />
                                         <asp:BoundField DataField="EmpName" HeaderText="Name" />
                                         <asp:TemplateField>
+                                           
                                             <ItemTemplate>
-                                                <asp:DropDownList ID="dd1" runat="server" CssClass="form-control select2" Style="width: 100%"></asp:DropDownList>
+                                                <asp:DropDownList ID="dd1" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+
+                                        <asp:TemplateField>
+                                            
+                                            <ItemTemplate>
+                                                <asp:DropDownList ID="dd2" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+
+                                        <asp:TemplateField>
+                                            
+                                            <ItemTemplate>
+                                                <asp:DropDownList ID="dd3" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+
+                                        <asp:TemplateField>
+                                            
+                                            <ItemTemplate>
+                                                <asp:DropDownList ID="dd4" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:TemplateField>
-
+                                            
                                             <ItemTemplate>
-                                                <asp:DropDownList ID="dd2" runat="server" CssClass="form-control select2" Style="width: 100%"></asp:DropDownList>
+                                                <asp:DropDownList ID="dd5" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:TemplateField>
-
+                                           
                                             <ItemTemplate>
-                                                <asp:DropDownList ID="dd3" runat="server" CssClass="form-control select2" Style="width: 100%"></asp:DropDownList>
+                                                <asp:DropDownList ID="dd6" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:TemplateField>
-
+                                            
                                             <ItemTemplate>
-                                                <asp:DropDownList ID="dd4" runat="server" CssClass="form-control select2" Style="width: 100%"></asp:DropDownList>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField>
-
-                                            <ItemTemplate>
-                                                <asp:DropDownList ID="dd5" runat="server" CssClass="form-control select2" Style="width: 100%"></asp:DropDownList>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField>
-
-                                            <ItemTemplate>
-                                                <asp:DropDownList ID="dd6" runat="server" CssClass="form-control select2" Style="width: 100%"></asp:DropDownList>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField>
-
-                                            <ItemTemplate>
-                                                <asp:DropDownList ID="dd7" runat="server" CssClass="form-control select2" Style="width: 100%"></asp:DropDownList>
+                                                <asp:DropDownList ID="dd7" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                     </Columns>
