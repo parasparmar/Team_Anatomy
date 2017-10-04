@@ -319,17 +319,23 @@ public partial class roster : System.Web.UI.Page
             fillgvRoster(RepMgrCode, WeekID, -1);
         }
     }
-    private void loadApprovedLeaves(int RepMgrCode, int WeekID)
+    private void loadApprovedLeaves()
     {
-        Rosteree R = new Rosteree();
-        //        SELECT A.*, B.RepMgrCode FROM [CWFM_Umang].[WFMP].[tbl_leave_request] A
-        //INNER JOIN [WFMP].[tblMaster] B on B.Employee_ID = A.ecn
-        //LEFT JOIN [WFMP].[tbl_datewise_leave] C  on A.id = C.leave_batch_id
-        //where 1=1 and B.RepMgrCode = 931040 and (
-        //select getdate() between A.from_date and A.to_date
-        //)
+                
+        strSQL = "[WFMP].[Roster_loadLeaves]";
+        SqlCommand cmd = new SqlCommand(strSQL);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@RepMgrCode", ddlRepManager.SelectedValue.ToString());
+        cmd.Parameters.AddWithValue("@WeekId", ddlWeek.SelectedValue.ToString());
+        cmd.Parameters.AddWithValue("@status", 1);
+        DataTable dtleaves = my.GetDataTableViaProcedure(ref cmd);
+
+        
+        
 
     }
+
+
 
     class Rosteree
     {
@@ -348,14 +354,10 @@ public partial class roster : System.Web.UI.Page
 
         public Rosteree() { }
 
-        public int UpdateRoster()
-        {
-            int rowsAffected = 0;
-
-
-            return rowsAffected;
-        }
-
     }
 
+    protected void btnLoadLeaves_Click(object sender, EventArgs e)
+    {
+        loadApprovedLeaves();
+    }
 }
