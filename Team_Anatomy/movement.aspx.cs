@@ -34,6 +34,7 @@ public partial class movement : System.Web.UI.Page
         }
         catch (Exception Ex)
         {
+            Console.WriteLine(Ex.Message.ToString());
             Response.Redirect("index.aspx");
         }
         //fillTeamList();

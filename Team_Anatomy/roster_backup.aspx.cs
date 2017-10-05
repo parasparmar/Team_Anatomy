@@ -30,6 +30,7 @@ public partial class roster_backup : System.Web.UI.Page
         }
         catch (Exception Ex)
         {
+            Console.WriteLine(Ex.Message.ToString());
             Response.Redirect("index.aspx");
         }
         //fillTeamList();

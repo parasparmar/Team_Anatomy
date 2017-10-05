@@ -414,7 +414,7 @@ public class Helper
                 }
                 catch (Exception Ex)
                 {
-
+                    Console.Write(Ex.Message.ToString());
                 }
             }
         }

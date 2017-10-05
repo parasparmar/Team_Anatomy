@@ -35,6 +35,7 @@ public partial class roster : System.Web.UI.Page
         }
         catch (Exception Ex)
         {
+            Console.WriteLine(Ex.Message.ToString());
             Response.Redirect("index.aspx");
         }
         if (!IsPostBack)
@@ -321,20 +322,128 @@ public partial class roster : System.Web.UI.Page
     }
     private void loadApprovedLeaves()
     {
-                
+
         strSQL = "[WFMP].[Roster_loadLeaves]";
         SqlCommand cmd = new SqlCommand(strSQL);
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@RepMgrCode", ddlRepManager.SelectedValue.ToString());
         cmd.Parameters.AddWithValue("@WeekId", ddlWeek.SelectedValue.ToString());
-        cmd.Parameters.AddWithValue("@status", 1);
-        DataTable dtleaves = my.GetDataTableViaProcedure(ref cmd);
 
-        
-        
+        DataTable dtleaves = my.GetDataTableViaProcedure(ref cmd);
+        int gvRows = gvRoster.Rows.Count;
+        int gvColumns = gvRoster.Columns.Count;
+        int[] EmpLocation = new int[gvRows];
+        DateTime[] DateLocation = new DateTime[gvColumns];
+
+        for (int i = 0; i < gvRows; i++)
+        {
+            EmpLocation[i] = Convert.ToInt32(gvRoster.Rows[i].Cells[0].Text);
+        }
+
+        for (int j = 0; j < gvColumns; j++)
+        {
+            if (j > 1)
+            {
+                DateLocation[j] = Convert.ToDateTime(gvRoster.Columns[j].HeaderText);
+            }
+        }
+        string ddlID = string.Empty;
+        foreach (DataRow c in dtleaves.Rows)
+        {
+            int dtECN = Convert.ToInt32(c["ECN"].ToString());
+            DateTime dtTheDate = Convert.ToDateTime(c["LeaveDate"].ToString());
+            string LeaveShiftCode = c["LeaveShiftCode"].ToString();
+
+            int i = Array.IndexOf(EmpLocation, dtECN);
+            int j = Array.IndexOf(DateLocation, dtTheDate);
+
+            TableCell me = gvRoster.Rows[i].Cells[j];
+            me.CssClass = "bg-teal";
+            foreach (Control ddl in me.Controls)
+            {
+                if (ddl is DropDownList)
+                {
+                    DropDownList d = (DropDownList)ddl;
+                    d.SelectedIndex = d.Items.IndexOf(d.Items.FindByValue(LeaveShiftCode));
+                }
+            }
+
+
+
+
+        }
+
+
 
     }
+    protected void btnLoadLeaves_Click(object sender, EventArgs e)
+    {
+        if (gvRoster.Rows.Count > 0)
+        {
+            loadApprovedLeaves();
 
+        }
+    }
+    protected void btnCancelledLeaves_Click(object sender, EventArgs e)
+    {
+        if (!cbxCancelledLeaves.Checked)
+        {
+            strSQL = "[WFMP].[Roster_loadCancelledLeaves]";
+            SqlCommand cmd = new SqlCommand(strSQL);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@RepMgrCode", ddlRepManager.SelectedValue.ToString());
+            cmd.Parameters.AddWithValue("@WeekId", ddlWeek.SelectedValue.ToString());
+
+            DataTable dtleaves = my.GetDataTableViaProcedure(ref cmd);
+            int gvRows = gvRoster.Rows.Count;
+            int gvColumns = gvRoster.Columns.Count;
+            int[] EmpLocation = new int[gvRows];
+            DateTime[] DateLocation = new DateTime[gvColumns];
+
+            for (int i = 0; i < gvRows; i++)
+            {
+                EmpLocation[i] = Convert.ToInt32(gvRoster.Rows[i].Cells[0].Text);
+            }
+
+            for (int j = 0; j < gvColumns; j++)
+            {
+                if (j > 1)
+                {
+                    DateLocation[j] = Convert.ToDateTime(gvRoster.Columns[j].HeaderText);
+                }
+            }
+            string ddlID = string.Empty;
+            foreach (DataRow c in dtleaves.Rows)
+            {
+                int dtECN = Convert.ToInt32(c["ECN"].ToString());
+                DateTime dtTheDate = Convert.ToDateTime(c["LeaveDate"].ToString());
+
+                int i = Array.IndexOf(EmpLocation, dtECN);
+                int j = Array.IndexOf(DateLocation, dtTheDate);
+
+                TableCell me = gvRoster.Rows[i].Cells[j];
+                me.CssClass = "bg-yellow";
+                //foreach (Control ddl in me.Controls)
+                //{
+                //    if (ddl is DropDownList)
+                //    {
+                //        DropDownList d = (DropDownList)ddl;
+                //        d.SelectedIndex = d.Items.IndexOf(d.Items.FindByValue(LeaveShiftCode));
+                //    }
+                //}
+            }
+
+            btnCancelledLeaves.CssClass = "btn btn-flat btn-warning form-control";
+            cbxCancelledLeaves.Checked = true;
+        }
+        else
+        {
+
+            btnCancelledLeaves.CssClass = "btn btn-primary form-control";
+            btnCancelledLeaves.Text = "Load Cancelled Leaves";
+            cbxCancelledLeaves.Checked = true;
+        }
+    }
 
 
     class Rosteree
@@ -355,9 +464,6 @@ public partial class roster : System.Web.UI.Page
         public Rosteree() { }
 
     }
-
-    protected void btnLoadLeaves_Click(object sender, EventArgs e)
-    {
-        loadApprovedLeaves();
-    }
+    
 }
+

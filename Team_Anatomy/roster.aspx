@@ -100,8 +100,8 @@
                             <h4 class="box-title">
                                 <asp:Literal ID="ltlRosterHeading" runat="server" Text="Week : "></asp:Literal></h4>
                             <div class="box-tools pull-right">
-                                <div class="btn-group">
 
+                                <div class="btn-group">
                                     <a class="btn btn-box-tool"><i class="fa fa-calendar-o"></i></a>
                                     <button type="button" title="Shift Planning" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
                                         Shift Planning
@@ -110,18 +110,18 @@
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
                                             <a><i class="fa fa-beer"></i>
-                                                <button id="btnCompOff" class="btn btn-primary form-control" style="text-align: left">&nbsp Add CompOffs</button>
+                                                <button id="btnCompOff" class="btn btn-primary form-control disabled" style="text-align: left">Add CompOffs</button>
                                             </a>
                                         </li>
                                         <li>
                                             <a><i class="fa fa-retweet"></i>
-                                                <button id="btnSwaps" class="btn btn-info form-control" style="text-align: left">&nbsp Add Swaps</button>
+                                                <button id="btnSwaps" class="btn btn-info form-control disabled" style="text-align: left">Add Swaps</button>
                                             </a>
                                         </li>
                                         <li>
                                             <a><i class="fa fa-plane"></i>
-                                                <asp:Button ID="btnLoadLeaves" Text=" Load Approved Leaves"
-                                                    CssClass="btn btn-warning form-control"
+                                                <asp:Button ID="btnLoadLeaves" Text="Load Approved Leaves"
+                                                    CssClass="btn btn-success form-control"
                                                     Style="text-align: left"
                                                     runat="server"
                                                     OnClick="btnLoadLeaves_Click"></asp:Button>
@@ -132,11 +132,12 @@
                                 <!-- Shift Planning Tools-->
 
                                 <div class="btn-group">
-                                    <a class="btn btn-box-tool"><i class="fa fa-wrench"></i></a>
+                                    <a class="btn btn-box-tool">
+                                        <i class="fa fa-wrench"></i>
+                                    </a>
                                     <button type="button" title="Shift Tools" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
                                         Shift Replication Tools
                                     </button>
-
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
                                             <a><i class="fa fa-bars"></i>
@@ -161,6 +162,34 @@
                                 </div>
                                 <!-- Shift Replication Tools-->
 
+                                <div class="btn-group">
+                                    <a class="btn btn-box-tool"><i class="fa fa-calendar-o"></i></a>
+                                    <button type="button" title="Shift Planning" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
+                                        Roster Rules
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li class="input-group">
+                                            <span class="input-group-addon">
+                                                <input id="cbxDualWorkoffs" type="checkbox" runat="server">
+                                            </span>
+                                            <button id="btnDualWorkoffs"
+                                                class="btn btn-primary form-control" style="text-align: left"
+                                                title="Min 1 and Max 2 Workoffs per employee per week">
+                                                WO's Between 1 & 2
+                                            </button>
+                                        </li>
+                                        <li class="input-group">
+                                            <span class="input-group-addon">
+                                                <input id="cbxCancelledLeaves" type="checkbox" runat="server">
+                                            </span>
+                                            <asp:Button ID="btnCancelledLeaves" CssClass="btn btn-primary form-control" runat="server"
+                                                Style="text-align: left" ToolTip="See User Cancelled Leaves" Text="Load Cancelled Leaves"
+                                                OnClick="btnCancelledLeaves_Click"></asp:Button>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                                <!-- Roster Rules Validation-->
                             </div>
 
                         </div>
@@ -168,33 +197,29 @@
                             <asp:Panel ID="pnlRoster" runat="server" Visible="true">
                                 <asp:GridView ID="gvRoster" runat="server" AutoGenerateColumns="false"
                                     CssClass="table table-condensed table-responsive compact hover stripe"
-                                    OnPreRender="gv_PreRender">
+                                    OnPreRender="gv_PreRender" DataKeyNames="EmpID">
                                     <Columns>
                                         <asp:BoundField DataField="EmpID" HeaderText="EmpID" />
                                         <asp:BoundField DataField="EmpName" HeaderText="Name" />
                                         <asp:TemplateField>
-
                                             <ItemTemplate>
                                                 <asp:DropDownList ID="dd1" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
                                             </ItemTemplate>
                                         </asp:TemplateField>
 
                                         <asp:TemplateField>
-
                                             <ItemTemplate>
                                                 <asp:DropDownList ID="dd2" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
                                             </ItemTemplate>
                                         </asp:TemplateField>
 
                                         <asp:TemplateField>
-
                                             <ItemTemplate>
                                                 <asp:DropDownList ID="dd3" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
                                             </ItemTemplate>
                                         </asp:TemplateField>
 
                                         <asp:TemplateField>
-
                                             <ItemTemplate>
                                                 <asp:DropDownList ID="dd4" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
                                             </ItemTemplate>
@@ -257,7 +282,6 @@
 
             // Replication Code for Rows. 
             //03-Sep-2017 01.07 AM In Production support : paras.parmar@sitel.com
-
             var i = 0;
             $("#btnRows").click(function () {
                 var myShift = 0;
@@ -274,10 +298,8 @@
                     });
                 });
             });
-
             // Replication Code for Columns. 
             //03-Sep-2017 2.24 AM In Production support : paras.parmar@sitel.com
-
             $("#btnColumns").click(function () {
                 var myShift = [];
                 $("#gvRoster tr:nth-child(1) td:gt(1):lt(7)").each(function () {
@@ -292,15 +314,37 @@
 
             });
 
+            $("#btnDualWorkoffs").click(function () {
+                var myShift = 0;
 
+                $('#gvRoster tr:gt(0)').each(function () {
+                    myShift = 0;
+                    $(this).find("td:gt(1):lt(7) .select2 :selected").each(function () {
+                        if ($(this).val() == "49") {
+                            myShift++;
+                            if (myShift <= 2) {
+                                $(this).closest("td").addClass("bg-teal");
+                            } else {
+                                $(this).closest("td").addClass("bg-orange");
+                            }
+                        }
 
+                    });
+                });
+            });
         }
+
+
+
+
 
 
 
 
         $(function () {
             pluginsInitializer();
+
+
         });
 
         //On UpdatePanel Refresh
