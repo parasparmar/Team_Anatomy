@@ -321,14 +321,13 @@
                     myShift = 0;
                     $(this).find("td:gt(1):lt(7) .select2 :selected").each(function () {
                         if ($(this).val() == "49") {
+                            // add the working days in a week.
                             myShift++;
-                            if (myShift <= 2) {
-                                $(this).closest("td").addClass("bg-teal");
-                            } else {
-                                $(this).closest("td").addClass("bg-orange");
-                            }
+                            $(this).closest("td").addClass("bg-teal");
                         }
-
+                        if (myShift < 1 || myShift >2) {
+                            $(this).closest("td").addClass("bg-orange");
+                        } 
                     });
                 });
             });

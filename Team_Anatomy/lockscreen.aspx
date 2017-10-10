@@ -38,38 +38,43 @@
             </div>
             <!-- User name -->
             <div class="lockscreen-name">
-                Hi, <asp:Literal ID="ltlUserID" runat="server"></asp:Literal>
+                Hi,
+                <asp:Literal ID="ltlUserID" runat="server"></asp:Literal>
 
-            <div class="text-center">
-                <a href="login.html">Updating your image is simple. Just click it.</a>
-            </div>
+                <div class="text-center">
+                    <a href="#">The application could not find you in our employee database. Maybe, it's a temporary state.</a>
+                    <br />
+                    <a>However, since your id is not authorized to proceed past this point. You can request an update by filling in the 2 fields above.</a>
+                </div>
             </div>
 
             <!-- START LOCK SCREEN ITEM -->
             <div class="lockscreen-item" style="margin-top: 50px">
-                <!-- lockscreen image -->
-                <div class="lockscreen-image">
-                    <img src="AdminLTE/dist/img/user1-128x128.jpg" alt="User Image">
-                </div>
-                <!-- /.lockscreen-image -->
 
                 <!-- lockscreen credentials (contains the form) -->
-                <form class="lockscreen-credentials">
+                <div class="lockscreen-credentials">
                     <div class="input-group">
-                        <input type="password" class="form-control" placeholder="">
-
+                        <input type="text" class="form-control" placeholder="Your Employee ID" />
                         <div class="input-group-btn">
                             <button type="button" class="btn"><i class="fa fa-arrow-right text-muted"></i></button>
                         </div>
                     </div>
-                </form>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Your Windows Login" />
+                        <div class="input-group-btn">
+                            <button type="button" class="btn"><i class="fa fa-arrow-right text-muted"></i></button>
+                        </div>
+                    </div>
+                </div>
                 <!-- /.lockscreen credentials -->
 
             </div>
             <!-- /.lockscreen-item -->
             <div class="help-block text-center">
-                However, since your id is not authorized to proceed past this point. Please request your reporting manager to update your details at
-            <br />
+                 
+                <br />
+                Please request your reporting manager to update your details at
+                <br />
                 Team Anatomy -> Team -> Add/Update Team Member
  
             </div>

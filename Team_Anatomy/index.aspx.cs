@@ -13,8 +13,8 @@ public partial class index : System.Web.UI.Page
     string myID;
     protected void Page_Load(object sender, EventArgs e)
     {
-        myID = PageExtensionMethods.getMyWindowsID().ToString();
-        //myID = "ktriv003";
+        //myID = PageExtensionMethods.getMyWindowsID().ToString();
+        myID = "xyz";
         Session["myID"] = myID;
         Helper my = new Helper();
         DataTable dt = my.GetData("WFMP.getEmployeeData " + myID);
