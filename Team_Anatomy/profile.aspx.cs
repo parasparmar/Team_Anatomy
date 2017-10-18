@@ -36,14 +36,8 @@ public partial class profile : System.Web.UI.Page
     {
         try
         {
-            myID = PageExtensionMethods.getMyWindowsID().ToString();
-            
-            Helper my = new Helper();
-            DataTable dtEmp = my.GetData("Exec WFMP.getEmployeeData '" + myID + "'");
-            Session["Employee_Datatable"] = dtEmp;
-            Session["myID"] = myID;
+            DataTable dtEmp = (DataTable)Session["dtEmp"];
             DataRow dr = dtEmp.Rows[0];
-
             lblNTID.Text = myID;
             lblEmployee_ID.Text = dr["Employee_ID"].ToString();
             lblName.Text = dr["First_Name"].ToString() + " " + dr["Middle_Name"].ToString() + " " + dr["Last_Name"].ToString();
@@ -132,6 +126,7 @@ public partial class profile : System.Web.UI.Page
         catch (Exception Ex)
         {
             Response.Write(Ex.Message);
+            //Response.Redirect("index.aspx");
         }
 
 
@@ -157,7 +152,7 @@ public partial class profile : System.Web.UI.Page
         Decimal Alternate_Contact = Convert.ToDecimal(tbAlternate_Contact.Text);
         string EmergencyContactPerson = tbEmergencyContactPerson.Text;
         string Email_Personal = tbEmail_id.Text;
-        bool Transport = tbTransport_User.SelectedItem.ToString()=="Yes"?true:false;
+        bool Transport = tbTransport_User.SelectedItem.ToString() == "Yes" ? true : false;
         string Country = tbAddress_Country.Text;
         string City = tbAddress_City.Text;
         Decimal Total_Work_Experience = Convert.ToDecimal(tbTotal_Work_Experience.Text);
@@ -169,7 +164,7 @@ public partial class profile : System.Web.UI.Page
         j.Append(first);
 
         // GET SELECTED ITEMS
-        for (int i = 0; i < tbSkill_Set_1.Items.Count-1; i++)
+        for (int i = 0; i < tbSkill_Set_1.Items.Count - 1; i++)
         {
             if (tbSkill_Set_1.Items[i].Selected) j.Append("," + tbSkill_Set_1.Items[i].Text);
         }
@@ -192,7 +187,7 @@ public partial class profile : System.Web.UI.Page
         string Updated_by = myID;
         DateTime Update_Date = DateTime.Now;
         string the_Procedure = "WFMP.updateEmployeeProfileData";
-        
+
         try
         {
             using (SqlConnection cn = new SqlConnection(constr))
@@ -200,8 +195,8 @@ public partial class profile : System.Web.UI.Page
                 cn.Open();
                 using (SqlCommand cmd = new SqlCommand(the_Procedure, cn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;   
-                    
+                    cmd.CommandType = CommandType.StoredProcedure;
+
                     cmd.Parameters.AddWithValue("@Date_of_Birth", Date_of_Birth);
                     cmd.Parameters.AddWithValue("@Gender", Gender);
                     cmd.Parameters.AddWithValue("@Email_Personal", Email_Personal);
@@ -218,7 +213,7 @@ public partial class profile : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@Skill2", Skill2);
                     cmd.Parameters.AddWithValue("@Skill3", Skill3);
                     cmd.Parameters.AddWithValue("@Alternate_Contact", Alternate_Contact);
-                    cmd.Parameters.AddWithValue("@EmergencyContactPerson", EmergencyContactPerson);                    
+                    cmd.Parameters.AddWithValue("@EmergencyContactPerson", EmergencyContactPerson);
                     cmd.Parameters.AddWithValue("@Updated_by", Updated_by);
                     cmd.Parameters.AddWithValue("@Update_Date", Update_Date);
                     cmd.Parameters.AddWithValue("@Employee_ID", Employee_ID);
@@ -236,7 +231,7 @@ public partial class profile : System.Web.UI.Page
         }
 
     }
-   
+
 
 
 

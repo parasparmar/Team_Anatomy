@@ -32,22 +32,8 @@ public partial class MasterPage : System.Web.UI.MasterPage
     {
         try
         {
-            myID = PageExtensionMethods.getMyWindowsID().ToString();
-            Helper my = new Helper();
-
-            string constr = my.getConnectionString();
-
-            using (SqlConnection cn = new SqlConnection(constr))
-            {
-                cn.Open();
-                string strSQL = "Exec WFMP.getEmployeeData @NT_ID = " + myID;
-                using (SqlDataAdapter a = new SqlDataAdapter(strSQL, cn))
-                {
-                    a.Fill(dt);
-                }
-            }
+            dt = (DataTable)Session["dtEmp"];
             DataRow dr = dt.Rows[0];
-
             lblName.Text = dr["First_Name"] + " " + dr["Last_Name"];
             lblNameDesignation.Text = dr["First_Name"] + " " + dr["Last_Name"] + " - " + dr["DesignationId"];
             lblDOJ.Text = Convert.ToDateTime(dr["DOJ"].ToString()).ToString("dd-MMM-yyyy");

@@ -34,44 +34,33 @@
     <div class="lockscreen-wrapper">
         <form id="form1" runat="server">
             <div class="lockscreen-logo">
-                <a href="AdminLTE/index2.html"><b>Team Anatomy</b></a>
+                <a href="index.aspx">
+                    <img src="sitel/img/sitel_logo.jpg" width="292px" alt="Sitel Logo" />
+                    <h1>Team Anatomy</h1>
+                </a>
             </div>
             <!-- User name -->
-            <div class="lockscreen-name">
-                Hi,
-                <asp:Literal ID="ltlUserID" runat="server"></asp:Literal>
-
-                <div class="text-center">
-                    <a href="#">The application could not find you in our employee database. Maybe, it's a temporary state.</a>
-                    <br />
-                    <a>However, since your id is not authorized to proceed past this point. You can request an update by filling in the 2 fields above.</a>
-                </div>
+            <div class="lockscreen-name" style="text-align: left; padding-left:5%;">
+                Hi <asp:Label ID="ltlUserID" runat="server"></asp:Label>
             </div>
 
             <!-- START LOCK SCREEN ITEM -->
-            <div class="lockscreen-item" style="margin-top: 50px">
-
+            <div class="lockscreen-item" style="margin-top: 30px">
                 <!-- lockscreen credentials (contains the form) -->
                 <div class="lockscreen-credentials">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Your Employee ID" />
-                        <div class="input-group-btn">
-                            <button type="button" class="btn"><i class="fa fa-arrow-right text-muted"></i></button>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Your Windows Login" />
-                        <div class="input-group-btn">
-                            <button type="button" class="btn"><i class="fa fa-arrow-right text-muted"></i></button>
-                        </div>
-                    </div>
                 </div>
                 <!-- /.lockscreen credentials -->
-
             </div>
+            <div class="input-group margin">
+                <input id="tbEmpID" runat="server" class="form-control" placeholder="Enter your Employee ID" type="text" />
+                <span class="input-group-btn">
+                    <asp:Button id="btnSubmit" runat="server"  class="btn btn-info btn-flat" type="button" Text="Go!" OnClick="btnSubmit_Click"></asp:Button>
+                </span>
+            </div>
+
             <!-- /.lockscreen-item -->
             <div class="help-block text-center">
-                 
+
                 <br />
                 Please request your reporting manager to update your details at
                 <br />
@@ -80,7 +69,9 @@
             </div>
 
             <div class="lockscreen-footer text-center">
-                Copyright &copy; 2017 <b><a href="https://www.sitel.com" class="text-black">Acticall Sitel Ltd.</a></b><br>
+                Copyright &copy;
+                <asp:Literal ID="currentYear" Text="2017" runat="server"></asp:Literal>
+                <b><a href="https://www.sitel.com" class="text-black">Acticall Sitel Ltd.</a></b><br>
                 All rights reserved
  
             </div>
@@ -94,5 +85,9 @@
     <script src="AdminLTE/bower_components/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap 3.3.7 -->
     <script src="AdminLTE/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script>
+        $("#ltlUserID").css("font-size", "20px");
+        $("#ltlUserID").css("font-style", "italic");
+    </script>
 </body>
 </html>

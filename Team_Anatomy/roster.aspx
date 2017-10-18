@@ -325,9 +325,9 @@
                             myShift++;
                             $(this).closest("td").addClass("bg-teal");
                         }
-                        if (myShift < 1 || myShift >2) {
+                        if (myShift < 1 || myShift > 2) {
                             $(this).closest("td").addClass("bg-orange");
-                        } 
+                        }
                     });
                 });
             });

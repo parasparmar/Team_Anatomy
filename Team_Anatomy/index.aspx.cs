@@ -13,15 +13,14 @@ public partial class index : System.Web.UI.Page
     string myID;
     protected void Page_Load(object sender, EventArgs e)
     {
-        //myID = PageExtensionMethods.getMyWindowsID().ToString();
-        myID = "xyz";
-        Session["myID"] = myID;
+        myID = PageExtensionMethods.getMyWindowsID().ToString();
+        //myID = "gbans001";
         Helper my = new Helper();
-        DataTable dt = my.GetData("WFMP.getEmployeeData " + myID);
+        DataTable dt = my.GetData("WFMP.getEmployeeData '" + myID+"'");
         if (dt.Rows.Count > 0)
         {
             Session["dtEmp"] = dt;
-            Response.Redirect("roster.aspx", true);
+            Response.Redirect("profile.aspx", true);
         }
         else
         {
