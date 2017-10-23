@@ -16,7 +16,7 @@ using CD;
 public partial class MasterPage : System.Web.UI.MasterPage
 {
 
-    string myID;
+    
     DataTable dt = new DataTable();
     protected void Page_Load(object sender, EventArgs e)
     {

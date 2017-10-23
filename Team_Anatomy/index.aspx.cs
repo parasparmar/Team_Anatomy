@@ -15,18 +15,35 @@ public partial class index : System.Web.UI.Page
     {
         myID = PageExtensionMethods.getMyWindowsID().ToString();
         //myID = "gbans001";
-        Helper my = new Helper();
-        DataTable dt = my.GetData("WFMP.getEmployeeData '" + myID+"'");
-        if (dt.Rows.Count > 0)
+        if (myID != "IDNotFound")
         {
-            Session["dtEmp"] = dt;
-            Response.Redirect("profile.aspx", true);
+
+            Helper my = new Helper();
+            DataTable dt = my.GetData("WFMP.getEmployeeData '" + myID + "'");
+            try
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    Session["dtEmp"] = dt;
+                    Response.Redirect("profile.aspx", true);
+                }
+                else
+                {
+                    // Every page in the application will use the session 'myID' as the NTName of the unauthorized user.
+                    Session["myID"] = myID;
+                    Response.Redirect("lockscreen.aspx", true);
+                }
+            }
+            catch (Exception Ex)
+            {
+                Response.Write(Ex.Message);
+
+            }
         }
         else
         {
             Response.Redirect("lockscreen.aspx", true);
         }
-
 
 
     }

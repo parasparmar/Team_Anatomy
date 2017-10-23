@@ -10,12 +10,13 @@ using System.Data.SqlClient;
 public partial class lockscreen : System.Web.UI.Page
 {
     Helper P = new Helper();
-
+    string myID = string.Empty;
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!Page.IsPostBack)
         {
-            string UserText = Session["myID"].ToString();
+            myID = Session["myID"].ToString();
+            string UserText = myID;
             UserText +=", <br /><br />The application could not find you in our employee database.<br />You can however, request it to be updated by filling in the details below.";
             ltlUserID.Text = UserText;
             currentYear.Text = DateTime.Today.Year.ToString();

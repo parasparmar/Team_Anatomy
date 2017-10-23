@@ -32,10 +32,10 @@ public partial class roster : System.Web.UI.Page
             else
             {
                 // In Production Use the below
-                // MyEmpID = Convert.ToInt32(dtRoster.Rows[0]["Employee_Id"].ToString());
+                 MyEmpID = Convert.ToInt32(dtRoster.Rows[0]["Employee_Id"].ToString());
 
                 // In Testing, I am Gurdeep Singh 923563
-                MyEmpID = 923563;
+               // MyEmpID = 923563;
                 currentWeek = my.getSingleton("SELECT [WeekId] FROM [CWFM_Umang].[WFMP].[tblRstWeeks] where GETDATE() between FrDate and ToDate");
             }
         }

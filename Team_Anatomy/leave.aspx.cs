@@ -35,7 +35,7 @@ public partial class leave : System.Web.UI.Page
             else
             {
                 MyEmpID = Convert.ToInt32(dt.Rows[0]["Employee_Id"].ToString());
-                //MyEmpID = 931040/923563;
+                //MyEmpID = 908308;
             }
 
         }

@@ -1,9 +1,10 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="LeaveApproval.aspx.cs" Inherits="LeaveApproval" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="headPlaceHolder" runat="Server">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
+        <%--toastr--%>
+    <%--<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />--%>
 
-    <Link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" rel="stylesheet"/> 
 
     <style>
         /*.example-modal .modal {
@@ -163,12 +164,12 @@
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">Leave Details</h4>
+                            <h4 class="modal-title">Leave Details for <asp:Label ID="lblEmployeeID" runat="server"></asp:Label></h4>   
                         </div>
                         <div class="modal-body">
                             <asp:GridView ID="gvdatewiseAppr" runat="server"
                                 CssClass="table table-bordered table-hover "
-                                AutoGenerateColumns="false" ><%--DatatableOnPreRender="gv_PreRender"--%>
+                                AutoGenerateColumns="false" >
                                 <Columns>
                                     <asp:BoundField DataField="LEAVEDATE" HeaderText="Date"></asp:BoundField>
                                     <asp:BoundField DataField="LEAVETEXT" HeaderText="Leave Type"></asp:BoundField>
@@ -176,10 +177,10 @@
                                 </Columns>
                             </asp:GridView>
                             <br>
-                            <asp:TextBox ID="txt_reason" TextMode="multiline" Columns="74" Rows="2" runat="server" CssClass="form-control" placeholder="Enter comments ....."></asp:TextBox>
-                            <%--<asp:Label ID="lblLeaveID" runat="server" CssClass="label"></asp:Label>--%>
-                            <asp:HiddenField ID="lblLeaveID" runat="server"></asp:HiddenField>            
-                            <asp:HiddenField ID="lblEmployeeID" runat="server"></asp:HiddenField>                  
+                            <asp:TextBox ID="txt_reason" TextMode="multiline" Columns="74" Rows="2" runat="server" CssClass="form-control"></asp:TextBox>
+                            
+                            <asp:Label ID="lblLeaveID" runat="server" Visible="false"></asp:Label>            
+                                           
                         </div>
                         <div class="modal-footer">
                             <div class="row">
@@ -205,7 +206,9 @@
 </asp:Content>
 
 <asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">
-         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js" type="text/javascript"></script>
+         <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js" type="text/javascript"></script>--%>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> 
+
    <%-- <script type="text/javascript">
         //$(document).ready(function () {
         //    var leave_id; var btn; var status;
@@ -230,7 +233,27 @@
         }
     </script>--%>
     <script type="text/javascript">
-
+        function toastA() {
+            toastr.success('Leave Approved', 'Success');
+            toastr.options = {
+                "showDuration": "0",
+                "hideDuration": "0",
+                "timeOut": "1000",
+                "extendedTimeOut": "0",
+            }
+        }
+        function Alert() {
+            alert("Please enter comments");
+        }
+        function toastD() {
+            toastr.success('Leave Declined', 'Success');
+            toastr.options = {
+                "showDuration": "0",
+                "hideDuration": "0",
+                "timeOut": "1000",
+                "extendedTimeOut": "0",
+            }
+        }
         function openModal() {
             $("#modal-details").modal("show");//#modal-details
         }

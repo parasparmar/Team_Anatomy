@@ -15,7 +15,7 @@ using System.Configuration;
 public partial class profile : System.Web.UI.Page
 {
     string myID;
-    private string constr = ConfigurationManager.ConnectionStrings["constr"].ToString();
+    Helper my = new Helper();
     protected void Page_Load(object sender, EventArgs e)
     {
 
@@ -36,97 +36,106 @@ public partial class profile : System.Web.UI.Page
     {
         try
         {
-            DataTable dtEmp = (DataTable)Session["dtEmp"];
-            DataRow dr = dtEmp.Rows[0];
-            lblNTID.Text = myID;
-            lblEmployee_ID.Text = dr["Employee_ID"].ToString();
-            lblName.Text = dr["First_Name"].ToString() + " " + dr["Middle_Name"].ToString() + " " + dr["Last_Name"].ToString();
-            lblDesignation.Text = dr["DesignationID"].ToString();
-            lblDepartment.Text = dr["SkillSet"].ToString() + "-" + dr["SubSkillSet"].ToString();
-            lblDOJ.Text = Convert.ToDateTime(dr["DOJ"]).ToString("dd-MMMM-yyyy");
-            lblEmailID.Text = dr["Email_Office"].ToString();
-            lblContactNumber.Text = dr["Contact_Number"].ToString();
-            if (dr["UserImage"].ToString().Length > 0)
+
+            DataTable dtEmp = Session["dtEmp"] as DataTable;
+
+            if (dtEmp.Rows.Count > 0)
             {
-                imgbtnUserImage.ImageUrl = "sitel/user_images/" + dr["UserImage"].ToString();
+                DataRow dr = dtEmp.Rows[0];
+                lblNTID.Text = myID;
+                lblEmployee_ID.Text = dr["Employee_ID"].ToString();
+                lblName.Text = dr["First_Name"].ToString() + " " + dr["Middle_Name"].ToString() + " " + dr["Last_Name"].ToString();
+                lblDesignation.Text = dr["DesignationID"].ToString();
+                lblDepartment.Text = dr["SkillSet"].ToString() + "-" + dr["SubSkillSet"].ToString();
+                lblDOJ.Text = Convert.ToDateTime(dr["DOJ"]).ToString("dd-MMMM-yyyy");
+                lblEmailID.Text = dr["Email_Office"].ToString();
+                lblContactNumber.Text = dr["Contact_Number"].ToString();
+                if (dr["UserImage"].ToString().Length > 0)
+                {
+                    imgbtnUserImage.ImageUrl = "sitel/user_images/" + dr["UserImage"].ToString();
 
+                }
+                lblSupervisor.Text = dr["RepMgrCode"].ToString();
+                lblEmployee_Role.Text = dr["Job_Type"].ToString();
+                lblEmployee_Type.Text = dr["FunctionId"].ToString();
+                lblEmployee_Status.Text = dr["EmpStatus"].ToString();
+                lblUpdate_Date.Text = dr["Update_Date"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["Update_Date"].ToString()).ToString("dd-MMMM-yyyy HH:mm"); //dr["Update_Date"].ToString();
+                lblUpdated_by.Text = dr["Updated_by"].ToString();
+                lblSite.Text = dr["SiteID"].ToString();
+                /////---------------Personal Section 
+                tbGender.SelectedValue = dr["Gender"].ToString();
+                tbDate_of_Birth.Text = dr["Date_of_Birth"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["Date_of_Birth"].ToString()).ToString("dd-MMMM-yyyy");
+                tbHighest_Qualification.Text = dr["HighestQualification"].ToString();
+                //tbMarital_Status.Text = dr["Marital_Status"].ToString();
+                tbAnniversaryDate.Text = dr["AnniversaryDate"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["AnniversaryDate"].ToString()).ToString("dd-MMM-yyyy");
+                tbContact_Number.Text = dr["Contact_Number"].ToString();
+                tbAlternate_Contact.Text = dr["Alternate_Contact"].ToString();
+                tbEmergencyContactPerson.Text = dr["EmergencyContactPerson"].ToString();
+                tbEmail_id.Text = dr["Email_Personal"].ToString();
+                /////---------------Transport Section 
+                tbTransport_User.Text = dr["Transport"].ToString();
+                tbAddress_Line_1.Text = dr["Address1"].ToString();
+                tbAddress_Line_2.Text = dr["Address2"].ToString();
+                tbAddress_Landmark.Text = dr["Landmark"].ToString();
+                tbAddress_City.Text = dr["City"].ToString();
+                //tbAddress_Country.Text = dr["Address_Country"].ToString();
+                // tbPermanent_Address_City.Text = dr["Permanent_Address_City"].ToString();
+                /////---------------Work Experience
+                tbTotal_Work_Experience.Text = dr["Total_Work_Experience"].ToString();
+
+                StringBuilder j = new StringBuilder(dr["Skill1"].ToString());
+                string[] tbSkill_Set_1Items = j.ToString().Split(Convert.ToChar(","));
+
+                for (int i = 0; i < tbSkill_Set_1Items.Length; i++)
+                {
+                    tbSkill_Set_1.Items.Add(new ListItem(tbSkill_Set_1Items[i]));
+                    tbSkill_Set_1.Items[i].Selected = true;
+                }
+                j.Clear();
+
+
+                j.Append(dr["Skill2"].ToString());
+
+                string[] tbSkill_Set_2Items = j.ToString().Split(Convert.ToChar(","));
+                for (int i = 0; i < tbSkill_Set_2Items.Length; i++)
+                {
+                    tbSkill_Set_2.Items.Add(new ListItem(tbSkill_Set_2Items[i]));
+                    tbSkill_Set_2.Items[i].Selected = true;
+                }
+                j.Clear();
+
+
+                j.Append(dr["Skill3"].ToString());
+                string[] tbSkill_Set_3Items = j.ToString().Split(Convert.ToChar(","));
+
+                for (int i = 0; i < tbSkill_Set_3Items.Length; i++)
+                {
+                    tbSkill_Set_3.Items.Add(new ListItem(tbSkill_Set_3Items[i]));
+                    tbSkill_Set_3.Items[i].Selected = true;
+                }
+
+                string[] arrSkills = { "Access", "Accounting", "Administration", "Analysis", "Analytics", "ASP", "Aspect", "Automation", "Avaya CMS", "Back Office", "Basic German Language", "Blue Pumkin", "BO", "BP", "BTP", "Budget", "Business Analytics", "C", "C++", "Call Centre", "Capacity Planning", "Capman", "Client management", "CMS", "Communication", "Computer", "Cooking", "Coordination", "CRA", "Customer Service", "Development", "Dialler", "DotNet", "End to End Forecast", "Excel", "EXCEL Advanced", "EXCEL Basic", "EXCEL VBA", "External Clients Management", "Extra Innovation Activities for User Friendly Data Efficiency", "Finance", "Finance(Essbase)", "Financial", "Financial Reporting", "Forecast", "Forecasting", "Forecasting & Planning", "Formation", "GCC", "GCC & Analytics", "Genesys Platform", "German Language", "Hands On Expertise In Analytics", "Hardware", "IEX", "Internal and external clients management", "Invoices", "JAVASCRIPT", "JQUERY", "Kronos", "Language", "Languages", "Layout", "Leadership", "LINUX", "Logical Reasoning", "Macros & Formula", "Management", "Manpower Planning", "MCSC", "MIS", "MIS - Analyst", "MIS - Operations", "MIS - Reporting", "MIS & Reporting", "MIS Excel", "MIS Reporting", "MS Access", "MS Excel", "MS Office", "MS SQL", "MSCS", "NA", "networking", "Office", "Operations", "Ops Team Lead", "Oracle", "People Management", "Planning", "Programming Languages", "Project Management", "Projects Management", "Real Time", "Real Time Management", "Real time Reports", "Recording Macro", "Reporting", "Reports", "Resource Planning", "Rostering", "RTA", "RTA Analyst", "RTA)", "Sales", "SAP Knowlegde for Analysys", "Scheduling", "Scheduling & Rostering", "Scheduling in Excel", "Scheduling WFM Support", "Seat Utilization", "Sizing", "Skill Development", "Spanish", "Spanish Language Expert", "SQL", "Staffing", "Stakeholder Management", "Strategy", "Team Management", "Technical Support", "VB", "VBA", "VBA Automation", "Visual Basic", "WFC", "WFM", "Writing" };
+                foreach (string i in arrSkills)
+                {
+                    tbSkill_Set_1.Items.Add(i);
+                    tbSkill_Set_2.Items.Add(i);
+                    tbSkill_Set_3.Items.Add(i);
+
+                }
             }
-            lblSupervisor.Text = dr["RepMgrCode"].ToString();
-            lblEmployee_Role.Text = dr["Job_Type"].ToString();
-            lblEmployee_Type.Text = dr["FunctionId"].ToString();
-            lblEmployee_Status.Text = dr["EmpStatus"].ToString();
-            lblUpdate_Date.Text = dr["Update_Date"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["Update_Date"].ToString()).ToString("dd-MMMM-yyyy HH:mm"); //dr["Update_Date"].ToString();
-            lblUpdated_by.Text = dr["Updated_by"].ToString();
-            lblSite.Text = dr["SiteID"].ToString();
-            /////---------------Personal Section 
-            tbGender.SelectedValue = dr["Gender"].ToString();
-            tbDate_of_Birth.Text = dr["Date_of_Birth"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["Date_of_Birth"].ToString()).ToString("dd-MMMM-yyyy");
-            tbHighest_Qualification.Text = dr["HighestQualification"].ToString();
-            //tbMarital_Status.Text = dr["Marital_Status"].ToString();
-            tbAnniversaryDate.Text = dr["AnniversaryDate"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["AnniversaryDate"].ToString()).ToString("dd-MMM-yyyy");
-            tbContact_Number.Text = dr["Contact_Number"].ToString();
-            tbAlternate_Contact.Text = dr["Alternate_Contact"].ToString();
-            tbEmergencyContactPerson.Text = dr["EmergencyContactPerson"].ToString();
-            tbEmail_id.Text = dr["Email_Personal"].ToString();
-            /////---------------Transport Section 
-            tbTransport_User.Text = dr["Transport"].ToString();
-            tbAddress_Line_1.Text = dr["Address1"].ToString();
-            tbAddress_Line_2.Text = dr["Address2"].ToString();
-            tbAddress_Landmark.Text = dr["Landmark"].ToString();
-            tbAddress_City.Text = dr["City"].ToString();
-            //tbAddress_Country.Text = dr["Address_Country"].ToString();
-            // tbPermanent_Address_City.Text = dr["Permanent_Address_City"].ToString();
-            /////---------------Work Experience
-            tbTotal_Work_Experience.Text = dr["Total_Work_Experience"].ToString();
-
-            StringBuilder j = new StringBuilder(dr["Skill1"].ToString());
-            string[] tbSkill_Set_1Items = j.ToString().Split(Convert.ToChar(","));
-
-            for (int i = 0; i < tbSkill_Set_1Items.Length; i++)
+            else
             {
-                tbSkill_Set_1.Items.Add(new ListItem(tbSkill_Set_1Items[i]));
-                tbSkill_Set_1.Items[i].Selected = true;
+                //Response.Write(Session["dtEmp"].ToString() + "----------------" + Ex.Message);
+                //Response.Redirect("index.aspx");
             }
-            j.Clear();
-
-
-            j.Append(dr["Skill2"].ToString());
-
-            string[] tbSkill_Set_2Items = j.ToString().Split(Convert.ToChar(","));
-            for (int i = 0; i < tbSkill_Set_2Items.Length; i++)
-            {
-                tbSkill_Set_2.Items.Add(new ListItem(tbSkill_Set_2Items[i]));
-                tbSkill_Set_2.Items[i].Selected = true;
-            }
-            j.Clear();
-
-
-            j.Append(dr["Skill3"].ToString());
-            string[] tbSkill_Set_3Items = j.ToString().Split(Convert.ToChar(","));
-
-            for (int i = 0; i < tbSkill_Set_3Items.Length; i++)
-            {
-                tbSkill_Set_3.Items.Add(new ListItem(tbSkill_Set_3Items[i]));
-                tbSkill_Set_3.Items[i].Selected = true;
-            }
-
-            string[] arrSkills = { "Access", "Accounting", "Administration", "Analysis", "Analytics", "ASP", "Aspect", "Automation", "Avaya CMS", "Back Office", "Basic German Language", "Blue Pumkin", "BO", "BP", "BTP", "Budget", "Business Analytics", "C", "C++", "Call Centre", "Capacity Planning", "Capman", "Client management", "CMS", "Communication", "Computer", "Cooking", "Coordination", "CRA", "Customer Service", "Development", "Dialler", "DotNet", "End to End Forecast", "Excel", "EXCEL Advanced", "EXCEL Basic", "EXCEL VBA", "External Clients Management", "Extra Innovation Activities for User Friendly Data Efficiency", "Finance", "Finance(Essbase)", "Financial", "Financial Reporting", "Forecast", "Forecasting", "Forecasting & Planning", "Formation", "GCC", "GCC & Analytics", "Genesys Platform", "German Language", "Hands On Expertise In Analytics", "Hardware", "IEX", "Internal and external clients management", "Invoices", "JAVASCRIPT", "JQUERY", "Kronos", "Language", "Languages", "Layout", "Leadership", "LINUX", "Logical Reasoning", "Macros & Formula", "Management", "Manpower Planning", "MCSC", "MIS", "MIS - Analyst", "MIS - Operations", "MIS - Reporting", "MIS & Reporting", "MIS Excel", "MIS Reporting", "MS Access", "MS Excel", "MS Office", "MS SQL", "MSCS", "NA", "networking", "Office", "Operations", "Ops Team Lead", "Oracle", "People Management", "Planning", "Programming Languages", "Project Management", "Projects Management", "Real Time", "Real Time Management", "Real time Reports", "Recording Macro", "Reporting", "Reports", "Resource Planning", "Rostering", "RTA", "RTA Analyst", "RTA)", "Sales", "SAP Knowlegde for Analysys", "Scheduling", "Scheduling & Rostering", "Scheduling in Excel", "Scheduling WFM Support", "Seat Utilization", "Sizing", "Skill Development", "Spanish", "Spanish Language Expert", "SQL", "Staffing", "Stakeholder Management", "Strategy", "Team Management", "Technical Support", "VB", "VBA", "VBA Automation", "Visual Basic", "WFC", "WFM", "Writing" };
-            foreach (string i in arrSkills)
-            {
-                tbSkill_Set_1.Items.Add(i);
-                tbSkill_Set_2.Items.Add(i);
-                tbSkill_Set_3.Items.Add(i);
-
-            }
-
 
 
 
         }
         catch (Exception Ex)
         {
-            Response.Write(Ex.Message);
-            //Response.Redirect("index.aspx");
+            //Response.Write(Session["dtEmp"].ToString() + "----------------" + Ex.Message);
+            Response.Redirect("index.aspx");
         }
 
 
@@ -190,6 +199,7 @@ public partial class profile : System.Web.UI.Page
 
         try
         {
+            string constr = my.getConnectionString();
             using (SqlConnection cn = new SqlConnection(constr))
             {
                 cn.Open();

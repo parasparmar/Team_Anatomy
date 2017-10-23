@@ -115,13 +115,17 @@ public class Helper
     {
         using (SqlConnection mcon = new SqlConnection(getConnectionString()))
         {
-            DataTable worktable = new DataTable();
-            SqlDataAdapter dap = new SqlDataAdapter(new SqlCommand(sql, mcon));
-            DataSet ds = new DataSet();
-            dap.Fill(ds);
-            worktable = ds.Tables[0];
+
+            DataTable dt = new DataTable();
+            using (SqlDataAdapter da = new SqlDataAdapter(new SqlCommand(sql, mcon)))
+            {
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                dt = ds.Tables[0];
+            }
+            
             //close_conn();
-            return worktable;
+            return dt;
         }
 
     }
