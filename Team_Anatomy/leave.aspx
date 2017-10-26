@@ -105,7 +105,7 @@
                             <div class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
                             </div>
-                            <asp:TextBox ID="reservation" runat="server" CssClass="form-control pull-right select2" OnTextChanged="reservation_TextChanged"></asp:TextBox>
+                            <asp:TextBox ID="reservation" runat="server" CssClass="form-control pull-right" OnTextChanged="reservation_TextChanged"></asp:TextBox>
                             <%--<input type="text" class="form-control pull-right" id="reservation">--%>
                         </div>
                         <!-- /.input group -->

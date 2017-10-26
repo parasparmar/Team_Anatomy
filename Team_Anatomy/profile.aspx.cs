@@ -16,15 +16,14 @@ public partial class profile : System.Web.UI.Page
 {
     string myID;
     Helper my = new Helper();
+    DataTable dtEmp;
     protected void Page_Load(object sender, EventArgs e)
     {
-
 
         if (!Page.IsPostBack)
         {
             intialize_me();
         }
-
     }
 
     protected bool my_permissions()
@@ -36,13 +35,14 @@ public partial class profile : System.Web.UI.Page
     {
         try
         {
-
-            DataTable dtEmp = Session["dtEmp"] as DataTable;
+            dtEmp = Session["dtEmp"] as DataTable;
+            //Critical** This line refreshes the data received from the session.
+            dtEmp = my.GetData("WFMP.getEmployeeData '" + dtEmp.Rows[0]["ntName"] + "'");
 
             if (dtEmp.Rows.Count > 0)
             {
                 DataRow dr = dtEmp.Rows[0];
-                lblNTID.Text = myID;
+                lblNTID.Text = dr["ntName"].ToString();
                 lblEmployee_ID.Text = dr["Employee_ID"].ToString();
                 lblName.Text = dr["First_Name"].ToString() + " " + dr["Middle_Name"].ToString() + " " + dr["Last_Name"].ToString();
                 lblDesignation.Text = dr["DesignationID"].ToString();
@@ -143,29 +143,33 @@ public partial class profile : System.Web.UI.Page
     }
     protected void btnPersonalSubmit_Click(object sender, EventArgs e)
     {
-        myID = Session["myID"].ToString();
-        DataTable dtEmp = (DataTable)Session["Employee_Datatable"];
+        dtEmp = (DataTable)Session["dtEmp"];
         DataRow dr = dtEmp.Rows[0];
+
+        myID = dr["ntName"].ToString();
         int Employee_ID = Convert.ToInt32(lblEmployee_ID.Text);
         string Gender = tbGender.SelectedItem.ToString();
-        DateTime Date_of_Birth = Convert.ToDateTime(tbDate_of_Birth.Text);
         string Marital_Status = tbMarital_Status.SelectedItem.ToString();
-        DateTime Anniversary_Date = Convert.ToDateTime(tbAnniversaryDate.Text);
         string Address_Country = tbAddress_Country.Text;
         string Address_City = tbAddress_City.Text;
         string Address1 = tbAddress_Line_1.Text;
         string Address2 = tbAddress_Line_2.Text;
         string Landmark = tbAddress_Landmark.Text;
         string Permanent_Address_City = tbPermanent_Address_City.Text;
-        Decimal Contact_Number = Convert.ToDecimal(tbContact_Number.Text);
-        Decimal Alternate_Contact = Convert.ToDecimal(tbAlternate_Contact.Text);
         string EmergencyContactPerson = tbEmergencyContactPerson.Text;
         string Email_Personal = tbEmail_id.Text;
         bool Transport = tbTransport_User.SelectedItem.ToString() == "Yes" ? true : false;
         string Country = tbAddress_Country.Text;
         string City = tbAddress_City.Text;
-        Decimal Total_Work_Experience = Convert.ToDecimal(tbTotal_Work_Experience.Text);
         string HighestQualification = tbHighest_Qualification.Text;
+
+        DateTime Date_of_Birth;
+        DateTime Anniversary_Date;
+        Decimal Contact_Number;
+        Decimal Alternate_Contact;
+        Decimal Total_Work_Experience;
+
+
 
 
         StringBuilder j = new StringBuilder();
@@ -199,41 +203,61 @@ public partial class profile : System.Web.UI.Page
 
         try
         {
-            string constr = my.getConnectionString();
-            using (SqlConnection cn = new SqlConnection(constr))
+            using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
             {
                 cn.Open();
                 using (SqlCommand cmd = new SqlCommand(the_Procedure, cn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@Date_of_Birth", Date_of_Birth);
                     cmd.Parameters.AddWithValue("@Gender", Gender);
                     cmd.Parameters.AddWithValue("@Email_Personal", Email_Personal);
-                    cmd.Parameters.AddWithValue("@Contact_Number", Contact_Number);
-                    cmd.Parameters.AddWithValue("@AnniversaryDate", Anniversary_Date);
+
+
                     cmd.Parameters.AddWithValue("@HighestQualification", HighestQualification);
                     cmd.Parameters.AddWithValue("@Transport", Transport);
                     cmd.Parameters.AddWithValue("@Address1", Address1);
                     cmd.Parameters.AddWithValue("@Address2", Address2);
                     cmd.Parameters.AddWithValue("@Landmark", Landmark);
                     cmd.Parameters.AddWithValue("@City", City);
-                    cmd.Parameters.AddWithValue("@Total_Work_Experience", Total_Work_Experience);
+
                     cmd.Parameters.AddWithValue("@Skill1", Skill1);
                     cmd.Parameters.AddWithValue("@Skill2", Skill2);
                     cmd.Parameters.AddWithValue("@Skill3", Skill3);
-                    cmd.Parameters.AddWithValue("@Alternate_Contact", Alternate_Contact);
+
                     cmd.Parameters.AddWithValue("@EmergencyContactPerson", EmergencyContactPerson);
                     cmd.Parameters.AddWithValue("@Updated_by", Updated_by);
                     cmd.Parameters.AddWithValue("@Update_Date", Update_Date);
                     cmd.Parameters.AddWithValue("@Employee_ID", Employee_ID);
-                    //Procedure or function 'updateEmployeeProfileData' expects parameter '@Employee_ID', which was not supplied.
-                    cmd.ExecuteNonQuery();
+
+
+                    if (DateTime.TryParse(tbDate_of_Birth.Text, out Date_of_Birth))
+                    {
+                        cmd.Parameters.AddWithValue("@Date_of_Birth", Date_of_Birth);
+                    }
+
+                    if (DateTime.TryParse(tbAnniversaryDate.Text, out Anniversary_Date))
+                    {
+                        cmd.Parameters.AddWithValue("@AnniversaryDate", Anniversary_Date);
+                    }
+                    if (Decimal.TryParse(tbContact_Number.Text, out Contact_Number))
+                    {
+                        cmd.Parameters.AddWithValue("@Contact_Number", Contact_Number);
+                    }
+                    if (Decimal.TryParse(tbAlternate_Contact.Text, out Alternate_Contact))
+                    {
+                        cmd.Parameters.AddWithValue("@Alternate_Contact", Alternate_Contact);
+                    }
+                    if (Decimal.TryParse(tbTotal_Work_Experience.Text, out Total_Work_Experience))
+                    {
+                        cmd.Parameters.AddWithValue("@Total_Work_Experience", Total_Work_Experience);
+                    }
+                    //Procedure or function 'updateEmployeeProfileData' expects parameter '@Employee_ID', which was not supplied.            
+                    int rowsAffected = cmd.ExecuteNonQuery();
+
+                    this.intialize_me();
                 }
             }
-
-            this.intialize_me();
-
         }
         catch (Exception Ex)
         {

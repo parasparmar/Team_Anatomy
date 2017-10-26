@@ -12,6 +12,12 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
     <link rel="stylesheet" href="AdminLTE/bower_components/bootstrap/dist/css/bootstrap.min.css">
+
+    <!-- bootstrap datepicker -->
+    <link href="AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
+     <%--<link rel="stylesheet" href="../../bower_components/bootstrap-daterangepicker/daterangepicker.css">--%>
+    <link rel="stylesheet" href="AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="AdminLTE/bower_components/font-awesome/css/font-awesome.min.css">
     <!-- Ionicons -->
@@ -31,6 +37,7 @@
     <link rel="stylesheet" href="https://cdn.DataTables.net/1.10.15/css/DataTables.jqueryui.min.css" />
 
     <!-- bootstrap datepicker -->
+    <link href="AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
     <link rel="stylesheet" href="AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -301,12 +308,12 @@
                             <li class="treeview">
                                 <a href="#">
                                     <i class="fa fa-plane"></i><span>Leaves</span>
-                                    <span class="pull-right-container">
-                                        <i class="fa fa-plane pull-right"></i>
+                                    <span class="pull-right-container" style="margin-top:0px;">
+                                        <i class="fa fa-angle-left pull-right"></i>
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href="leave.aspx"><i class="fa fa-plane"></i>Leaves</a></li>
+                                    <li><a href="leave.aspx"><i class="fa fa-plane"></i>Request Leave</a></li>
                                     <li><a href="LeaveApproval.aspx"><i class="fa fa-plane"></i>Leave Approvals</a></li>
                                 </ul>
                             </li>
@@ -318,7 +325,7 @@
                             <li class="treeview">
                                 <a href="#">
                                     <i class="fa fa-dashboard"></i><span>My Information</span>
-                                    <span class="pull-right-container">
+                                    <span class="pull-right-container" style="margin-top:0px;">
                                         <i class="fa fa-angle-left pull-right"></i>
                                     </span>
                                 </a>
@@ -608,6 +615,7 @@
     <script src="AdminLTE/bower_components/jquery/dist/jquery.js"></script>
     <!-- Bootstrap 3.3.7 -->
     <script src="AdminLTE/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
     <!-- DataTables -->
     <script src="/AdminLTE/bower_components/DataTables.net/js/jquery.DataTables.min.js"></script>
     <script src="/AdminLTE/bower_components/DataTables.net-bs/js/DataTables.bootstrap.min.js"></script>
@@ -624,7 +632,11 @@
     <script type="text/javascript" src="Sitel/jszip.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
 
-    <!-- bootstrap datepicker -->
+    <!-- date-range-picker -->
+    <script src="AdminLTE/bower_components/moment/min/moment.min.js"></script>
+    
+    <script src="AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+
     <script src="AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <!-- SlimScroll -->
     <script src="AdminLTE/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
@@ -643,6 +655,10 @@
 
 
     <script>
+
+        //Date range picker
+        
+
         $(function () {
             $('.DataTable').DataTable({
                 "sPaginationType": "full_numbers",

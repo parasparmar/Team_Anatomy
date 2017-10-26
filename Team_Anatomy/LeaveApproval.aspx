@@ -12,6 +12,7 @@
             top: auto;
             bottom: auto;
             right: auto;
+
             left: auto;
             display: block;
             z-index: 1;
@@ -259,7 +260,10 @@
         }
         function hideModal() {
             //$("#modal-details").modal("hide");//#modal-details
+            $('#modal-details').modal('hide');//#modal-details
             $('.modal-backdrop').hide();
+            //$('#modal-details').hide();
+            
         }
         function pluginsInitializer() {
             //var x = 1;

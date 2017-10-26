@@ -414,8 +414,6 @@
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
                     <!-- /.tab-pane Edit Profile Image-->
                 </div>

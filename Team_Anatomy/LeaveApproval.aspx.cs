@@ -235,7 +235,8 @@ public partial class LeaveApproval : System.Web.UI.Page
             //FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
             ScriptManager.RegisterStartupScript(this, this.GetType(), "show", "toastA();", true);
             FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
-                //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave is approved.', 'Success')", true);
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave is approved.', 'Success')", true);
+            fillddlRepManager();//
         }
 
     }
@@ -285,9 +286,10 @@ public partial class LeaveApproval : System.Web.UI.Page
         }
         ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "hideModal();", true);
         //FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
-        //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Request Declined.', 'Success')", true);
         ScriptManager.RegisterStartupScript(this, this.GetType(), "show", "toastD();", true);
         FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
+        Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Request Declined.', 'Success')", true);
+        fillddlRepManager();
         
     }
 }
