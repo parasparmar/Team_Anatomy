@@ -33,13 +33,16 @@ public partial class MasterPage : System.Web.UI.MasterPage
         try
         {
             dt = (DataTable)Session["dtEmp"];
-            DataRow dr = dt.Rows[0];
-            lblName.Text = dr["First_Name"] + " " + dr["Last_Name"];
-            lblNameDesignation.Text = dr["First_Name"] + " " + dr["Last_Name"] + " - " + dr["DesignationId"];
-            lblDOJ.Text = Convert.ToDateTime(dr["DOJ"].ToString()).ToString("dd-MMM-yyyy");
-            string UserImageURI = "~/Sitel/user_images/" + dr["UserImage"];
-            mediumUserImage.ImageUrl = UserImageURI;
-            smallUserImage.ImageUrl = UserImageURI;
+            if (dt.Rows.Count > 0)
+            {
+                DataRow dr = dt.Rows[0];
+                lblName.Text = dr["First_Name"] + " " + dr["Last_Name"];
+                lblNameDesignation.Text = dr["First_Name"] + " " + dr["Last_Name"] + " - " + dr["DesignationId"];
+                lblDOJ.Text = Convert.ToDateTime(dr["DOJ"].ToString()).ToString("dd-MMM-yyyy");
+                string UserImageURI = "~/Sitel/user_images/" + dr["UserImage"];
+                mediumUserImage.ImageUrl = UserImageURI;
+                smallUserImage.ImageUrl = UserImageURI;
+            }
 
         }
         catch (Exception Ex)

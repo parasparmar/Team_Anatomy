@@ -54,36 +54,7 @@ public partial class LeaveApproval : System.Web.UI.Page
 
     private void fillddlRepManager()
     {
-        //strSQL = "Select count(*) as Teams FROM [CWFM_Umang].[WFMP].[tblMaster] A ";
-        //strSQL += " WHERE A.RepMgrCode = " + MyEmpID + " and A.IsReportingManager = 1";
-        //int countofManagersReportingToMe = bhai.getSingleton(strSQL);
-
-        //if (countofManagersReportingToMe > 0)
-        //{
-
-        //    strSQL = "SELECT A.RepMgrCode, REPLACE(B.First_Name +' '+B.Middle_Name+' '+B.Last_Name,'  ',' ') as RepMgr";
-        //    strSQL += " , A.Employee_ID as MgrID, A.First_Name +' '+A.Middle_Name+' '+A.Last_Name as MgrName";
-        //    strSQL += "  FROM [CWFM_Umang].[WFMP].[tblMaster] A ";
-        //    strSQL += " INNER JOIN [CWFM_Umang].[WFMP].[tblMaster] B ON B.Employee_ID = A.RepMgrCode";
-        //    strSQL += " WHERE A.RepMgrCode = " + MyEmpID + " and A.IsReportingManager = 1";
-        //    DataTable dt1 = bhai.GetData(strSQL);
-        //    ddlRepManager.DataSource = dt1;
-        //    ddlRepManager.DataTextField = "MgrName";
-        //    ddlRepManager.DataValueField = "MgrID";
-        //    ddlRepManager.DataBind();
-
-        //    string MyEmpCode = dt.Rows[0]["Employee_Id"].ToString();
-        //    string MyName = dt.Rows[0]["First_Name"].ToString() + " " + dt.Rows[0]["Middle_Name"].ToString();
-        //    ddlRepManager.Items.Insert(0, new ListItem(MyName, MyEmpCode));
-
-        //}
-        //else
-        //{
-
-        //}
-
-
-        strSQL = "CWFM_UMANG.WFMP.GetRepRevMgr";
+       strSQL = "CWFM_UMANG.WFMP.GetRepRevMgr";
 
         SqlCommand cmd = new SqlCommand(strSQL);
         cmd.Parameters.AddWithValue("@EmpCode", Convert.ToInt32(MyEmpID.ToString()));

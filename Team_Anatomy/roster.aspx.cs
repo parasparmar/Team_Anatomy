@@ -21,29 +21,30 @@ public partial class roster : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-
-        try
-        {
-            dtEmp = (DataTable)Session["dtEmp"];
-            if (dtEmp.Rows.Count <= 0)
-            {
-                Response.Redirect("index.aspx");
-            }
-            else
-            {
-                // In Production Use the below
-                MyEmpID = Convert.ToInt32(dtEmp.Rows[0]["Employee_Id"].ToString());
-                MyRepMgr = Convert.ToInt32(dtEmp.Rows[0]["RepMgrCode"].ToString());
-                currentWeek = my.getSingleton("SELECT [WeekId] FROM [CWFM_Umang].[WFMP].[tblRstWeeks] where GETDATE() between FrDate and ToDate");
-            }
-        }
-        catch (Exception Ex)
-        {
-            Console.WriteLine(Ex.Message.ToString());
-            Response.Redirect("index.aspx");
-        }
+        
+        
         if (!IsPostBack)
         {
+            try
+            {
+                dtEmp = (DataTable)Session["dtEmp"];
+                if (dtEmp.Rows.Count <= 0)
+                {
+                    Response.Redirect("index.aspx");
+                }
+                else
+                {
+                    // In Production Use the below
+                    MyEmpID = Convert.ToInt32(dtEmp.Rows[0]["Employee_Id"].ToString());
+                    MyRepMgr = Convert.ToInt32(dtEmp.Rows[0]["RepMgrCode"].ToString());
+                    currentWeek = my.getSingleton("SELECT [WeekId] FROM [CWFM_Umang].[WFMP].[tblRstWeeks] where GETDATE() between FrDate and ToDate");
+                }
+            }
+            catch (Exception Ex)
+            {
+                Console.WriteLine(Ex.Message.ToString());
+                Response.Redirect("index.aspx");
+            }
             Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
             title.Text = "Roster";
             fillddlRepManager();
@@ -78,6 +79,7 @@ public partial class roster : System.Web.UI.Page
                 pnlAmIRvwMgr.Visible = true;
 
                 i = new ListItem("My Team's Roster", MyRepMgr.ToString(), true);
+
                 break;
         }
 
@@ -187,17 +189,18 @@ public partial class roster : System.Web.UI.Page
 
         gvRoster.DataSource = dtEmp;
         int RowCount = dtEmp.Rows.Count;
-        int ColCount = dtEmp.Columns.Count;
+        int ColCount = dtEmp.Columns.Count-1;
 
         strSQL = "SELECT [ShiftID],[ShiftCode] FROM [CWFM_Umang].[WFMP].[tblShiftCode] where [Active] = 1";
         DataTable dt1 = my.GetData(strSQL);
         string ddlName;
         // Set the date Header rows
         // The gvRoster has dates beginning from 3rd column onwards and shows 7 dates. ie:- indices 2 through ColCount-1 = 8
+
+
         for (int j = 2; j < ColCount; j++)
         {
             gvRoster.Columns[j].HeaderText = dtEmp.Columns[j].ColumnName;
-
         }
         gvRoster.DataBind();
 
@@ -223,15 +226,38 @@ public partial class roster : System.Web.UI.Page
 
                     }
                     v.SelectedIndex = v.Items.IndexOf(v.Items.FindByValue(dtEmp.Rows[i][j].ToString()));
-
-                    //string xx = gvRoster.Columns[j].HeaderText;
-                    //string yy = gvRoster.Rows[i].Cells[0].Text.ToString();
-
                 }
             }
 
         }
+
+
     }
+    private void userCannotEditHisRosterRow()
+    {
+
+        if (Role == (int)role.MySelf)
+        {
+            foreach (GridViewRow gvRows in gvRoster.Rows)
+            {
+                int gvEmpID;
+                var gvCell = gvRows.Cells[0].FindControl("EmpID");
+                if (Int32.TryParse(gvCell.ToString(), out gvEmpID))
+                {
+                    if (gvEmpID == MyEmpID)
+                    {
+                        for (int i = 0; i <= 7; i++)
+                        {
+                            gvRows.Cells[i].CssClass += "read-only"; 
+                        }
+                    }
+                }
+
+            }
+
+        }
+    }
+
     protected void gv_PreRender(object sender, EventArgs e)
     {
         GridView gv = (GridView)sender;

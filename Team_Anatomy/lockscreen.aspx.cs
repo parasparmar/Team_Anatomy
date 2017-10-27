@@ -27,7 +27,7 @@ public partial class lockscreen : System.Web.UI.Page
     {
 
         string strEmpID = tbEmpID.Value;
-        string ntName = PageExtensionMethods.getMyWindowsID();
+        string ntName = Session["myID"].ToString();
         int EmpID = 0;
         if (Int32.TryParse(strEmpID, out EmpID))
         {

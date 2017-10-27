@@ -452,7 +452,7 @@
                 var files = fileUpload.files;
                 var data = new FormData();
                 var myID = $("#lblNTID").text() + "_0." + fileExtension;
-                alert(myID);
+                //alert(myID);
                 for (var i = 0; i < files.length; i++) {                    
                     data.append(files[i].name, files[i], myID);
                 }

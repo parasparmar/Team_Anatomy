@@ -19,17 +19,15 @@ public partial class profile : System.Web.UI.Page
     DataTable dtEmp;
     protected void Page_Load(object sender, EventArgs e)
     {
-
-        if (!Page.IsPostBack)
+        if (!IsPostBack)
         {
+            Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
+            title.Text = "Profile";
             intialize_me();
         }
     }
 
-    protected bool my_permissions()
-    {
-        return true;
-    }
+    
 
     protected void intialize_me()
     {
@@ -135,7 +133,7 @@ public partial class profile : System.Web.UI.Page
         catch (Exception Ex)
         {
             //Response.Write(Session["dtEmp"].ToString() + "----------------" + Ex.Message);
-            Response.Redirect("index.aspx");
+            Response.Redirect("lockscreen.aspx");
         }
 
 

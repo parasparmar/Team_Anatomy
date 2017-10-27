@@ -14,7 +14,8 @@ public partial class index : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         myID = PageExtensionMethods.getMyWindowsID().ToString();
-        //myID = "avish001";
+        //myID = "vshir001";
+        Session["myID"] = myID;
         if (myID != "IDNotFound")
         {
 
