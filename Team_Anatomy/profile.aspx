@@ -443,6 +443,7 @@
 
             });
 
+
             $('input[type=file]').change(function () {
                 var vals = $(this).val();
                 var fileName = vals.length ? vals.split('\\').pop() : '';
@@ -450,15 +451,12 @@
                 var fileUpload = $(this).get(0);
                 var files = fileUpload.files;
                 var data = new FormData();
-                var myID = $("#lblNTID").val() + "_0." + fileExtension;
-                for (var i = 0; i < files.length; i++) {
-                    data.append(files[i].name, files[i], "pparm001_0.jpg");
+                var myID = $("#lblNTID").text() + "_0." + fileExtension;
+                alert(myID);
+                for (var i = 0; i < files.length; i++) {                    
+                    data.append(files[i].name, files[i], myID);
                 }
 
-                //  
-
-                // $('input[type=text]').val(val);
-                //alert(filePath.toString());
 
                 $.ajax({
                     url: "FileUploadHandler.ashx",
@@ -472,9 +470,6 @@
                     },
                     error: function (err) { alert(err.statusText) }
                 });
-
-
-
             });
 
         });

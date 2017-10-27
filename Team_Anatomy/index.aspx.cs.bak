@@ -13,6 +13,7 @@ public partial class index : System.Web.UI.Page
     string myID;
     protected void Page_Load(object sender, EventArgs e)
     {
+
         //myID = PageExtensionMethods.getMyWindowsID().ToString();
         myID = "avish001";
         if (myID != "IDNotFound")
