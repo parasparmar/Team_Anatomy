@@ -14,7 +14,7 @@ using System.Configuration;
 
 public partial class profile : System.Web.UI.Page
 {
-    string myID;
+    string myid;
     Helper my = new Helper();
     DataTable dtEmp;
     protected void Page_Load(object sender, EventArgs e)
@@ -124,7 +124,7 @@ public partial class profile : System.Web.UI.Page
             else
             {
                 //Response.Write(Session["dtEmp"].ToString() + "----------------" + Ex.Message);
-                //Response.Redirect("index.aspx");
+                //Response.Redirect("index.aspx", false);
             }
 
 
@@ -133,7 +133,7 @@ public partial class profile : System.Web.UI.Page
         catch (Exception Ex)
         {
             //Response.Write(Session["dtEmp"].ToString() + "----------------" + Ex.Message);
-            Response.Redirect("lockscreen.aspx");
+            Response.Redirect("index.aspx",false);
         }
 
 
@@ -144,7 +144,7 @@ public partial class profile : System.Web.UI.Page
         dtEmp = (DataTable)Session["dtEmp"];
         DataRow dr = dtEmp.Rows[0];
 
-        myID = dr["ntName"].ToString();
+        myid = dr["ntName"].ToString();
         int Employee_ID = Convert.ToInt32(lblEmployee_ID.Text);
         string Gender = tbGender.SelectedItem.ToString();
         string Marital_Status = tbMarital_Status.SelectedItem.ToString();
@@ -195,7 +195,7 @@ public partial class profile : System.Web.UI.Page
         }
         string Skill3 = j.ToString().Substring(1);
 
-        string Updated_by = myID;
+        string Updated_by = myid;
         DateTime Update_Date = DateTime.Now;
         string the_Procedure = "WFMP.updateEmployeeProfileData";
 

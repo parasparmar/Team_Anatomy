@@ -451,10 +451,10 @@
                 var fileUpload = $(this).get(0);
                 var files = fileUpload.files;
                 var data = new FormData();
-                var myID = $("#lblNTID").text() + "_0." + fileExtension;
-                //alert(myID);
+                var myid = $("#lblNTID").text() + "_0." + fileExtension;
+                //alert(myid);
                 for (var i = 0; i < files.length; i++) {                    
-                    data.append(files[i].name, files[i], myID);
+                    data.append(files[i].name, files[i], myid);
                 }
 
 

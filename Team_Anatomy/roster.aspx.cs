@@ -30,7 +30,7 @@ public partial class roster : System.Web.UI.Page
                 dtEmp = (DataTable)Session["dtEmp"];
                 if (dtEmp.Rows.Count <= 0)
                 {
-                    Response.Redirect("index.aspx");
+                    Response.Redirect("index.aspx",false);
                 }
                 else
                 {
@@ -43,7 +43,7 @@ public partial class roster : System.Web.UI.Page
             catch (Exception Ex)
             {
                 Console.WriteLine(Ex.Message.ToString());
-                Response.Redirect("index.aspx");
+                Response.Redirect("index.aspx", false);
             }
             Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
             title.Text = "Roster";

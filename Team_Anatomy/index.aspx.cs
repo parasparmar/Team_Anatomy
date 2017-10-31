@@ -10,42 +10,44 @@ using System.Data.Sql;
 
 public partial class index : System.Web.UI.Page
 {
-    string myID;
+    string myid;
     protected void Page_Load(object sender, EventArgs e)
     {
-        myID = PageExtensionMethods.getMyWindowsID().ToString();
-        //myID = "vshir001";
-        Session["myID"] = myID;
-        if (myID != "IDNotFound")
+        try
         {
-
-            Helper my = new Helper();
-            DataTable dt = my.GetData("WFMP.getEmployeeData '" + myID + "'");
-            try
+            myid = PageExtensionMethods.getMyWindowsID().ToString();
+            //myid = "utiwa002";
+            Session["myid"] = myid;
+            //Is my NTID available?
+            if (myid != "IDNotFound")
             {
+                Helper my = new Helper();
+                // Get all rows with my ntid.
+                DataTable dt = my.GetData("WFMP.getEmployeeData '" + myid + "'");
                 if (dt.Rows.Count > 0)
                 {
                     Session["dtEmp"] = dt;
-                    Response.Redirect("profile.aspx", true);
+                    // If possible, redirect to the referring url, else to profile.aspx as default.
+                    Response.Redirect("profile.aspx", false);
                 }
                 else
                 {
-                    // Every page in the application will use the session 'myID' as the NTName of the unauthorized user.
-                    Session["myID"] = myID;
-                    Response.Redirect("lockscreen.aspx", true);
+                    // Every page in the application will use the session 'myid' as the NTName of the unauthorized user.
+                    // or the user whose ntname does not match any known names in the db.
+                    Session["myid"] = myid;
+                    Response.Redirect("lockscreen.aspx", false);
                 }
             }
-            catch (Exception Ex)
+            else
             {
-                Response.Write(Ex.Message);
-
+                // In case the NTName cannot be read via pageextension methods.
+                Response.Redirect("lockscreen.aspx", false);
             }
         }
-        else
+        catch (Exception Ex)
         {
-            Response.Redirect("lockscreen.aspx", true);
+            Response.Write(Ex.Message);
         }
-
 
     }
 }

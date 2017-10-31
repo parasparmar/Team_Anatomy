@@ -64,9 +64,9 @@ public static class PageExtensionMethods
 
     public static string getMyWindowsID()
     {
-        string myID = HttpContext.Current.User.Identity.Name;
+        string myid = HttpContext.Current.User.Identity.Name;
         string[] stringSeparators = new string[] { "\\" };
-        string[] result = myID.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+        string[] result = myid.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
         if (result.Length > 1)
         {
             return result[1];
@@ -74,7 +74,7 @@ public static class PageExtensionMethods
         else { return "IDNotFound"; }
     }
 
-
+    
 
 }
 public static class MovementType

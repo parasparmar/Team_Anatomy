@@ -21,10 +21,10 @@ public partial class movement : System.Web.UI.Page
     {
         try
         {
-            dt = (DataTable)Session["dtEmp"];
+            dt = Session["dtEmp"] as DataTable;
             if (dt.Rows.Count <= 0)
             {
-                Response.Redirect("index.aspx");
+                Response.Redirect("index.aspx", false);
             }
             else
             {
@@ -35,7 +35,7 @@ public partial class movement : System.Web.UI.Page
         catch (Exception Ex)
         {
             Console.WriteLine(Ex.Message.ToString());
-            Response.Redirect("index.aspx");
+            Response.Redirect("index.aspx", false);
         }
         //fillTeamList();
         Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
@@ -64,12 +64,9 @@ public partial class movement : System.Web.UI.Page
     {
         MovementHandler(MovementType.Department);
 
-        //ddlDepartmentManager.SelectedIndex = 0;
-        //if (ddlDepartmentManager.Items.Count > 1)
-        //{
+
         ddlDepartmentManager.Items.Insert(0, new ListItem("---", "0"));
         ddlDepartmentManager.SelectedIndex = 0;
-        //}
 
         ddlFunctionId.Items.Insert(0, new ListItem("---", String.Empty));
         ddlFunctionId.SelectedIndex = 0;
@@ -223,16 +220,22 @@ public partial class movement : System.Web.UI.Page
 
 
                     // Fill From Mgr Dropdown.
-                    strSQL = "SELECT Distinct B.[Employee_ID],REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') as Name ";
-                    strSQL += " FROM [CWFM_Umang].[WFMP].[tblMaster] A inner join [CWFM_Umang].[WFMP].[tblMaster] B on B.Employee_ID = A.RepMgrCode";
+                    //strSQL = "SELECT Distinct B.[Employee_ID],REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') as Name ";
+                    //strSQL += " FROM [CWFM_Umang].[WFMP].[tblMaster] A inner join [CWFM_Umang].[WFMP].[tblMaster] B on B.Employee_ID = A.RepMgrCode";
+                    //strSQL += " where B.isReportingManager > 0 and B.Employee_ID <> " + MyEmpID;
+                    //strSQL += " order by REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') ASC";
+
+                    strSQL = "SELECT 0 as 'Employee_ID','Un-Mapped Employees' as Name union SELECT Distinct B.[Employee_ID] ";
+                    strSQL += "  ,REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),'  ',' ') as Name  ";
+                    strSQL += " FROM [CWFM_Umang].[WFMP].[tblMaster] A  ";
+                    strSQL += " inner join [CWFM_Umang].[WFMP].[tblMaster] B on B.Employee_ID = A.RepMgrCode ";
                     strSQL += " where B.isReportingManager > 0 and B.Employee_ID <> " + MyEmpID;
-                    strSQL += " order by REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') ASC";
 
                     ddlFromMgr.DataSource = my.GetData(strSQL);
                     ddlFromMgr.DataTextField = "Name";
                     ddlFromMgr.DataValueField = "Employee_ID";
-                    ListItem LI2 = new ListItem("Please Select", "0");
-                    ddlFromMgr.Items.Insert(0, LI2);
+                    //ListItem LI2 = new ListItem("Please Select", "0");
+                    //ddlFromMgr.Items.Insert(0, LI2);
                     ddlFromMgr.DataBind();
 
 
@@ -529,7 +532,7 @@ public partial class movement : System.Web.UI.Page
         // Locate the ToDptLinkMstId
         string mstQuery = "[WFMP].[GetDeptValues]";
         SqlCommand mstCmd = new SqlCommand();
-        mstCmd.CommandText = mstQuery;       
+        mstCmd.CommandText = mstQuery;
         mstCmd.Parameters.AddWithValue("@FunctionID", ddlFunctionId.SelectedValue.ToString());
         mstCmd.Parameters.AddWithValue("@DepartmentID", ddlDepartmentID.SelectedValue.ToString());
         mstCmd.Parameters.AddWithValue("@LOBID", ddlLOBID.SelectedValue.ToString());

@@ -29,7 +29,7 @@ public partial class LeaveApproval : System.Web.UI.Page
             dt = (DataTable)Session["dtEmp"];
             if (dt.Rows.Count <= 0)
             {
-                Response.Redirect("index.aspx");
+                Response.Redirect("index.aspx", false);
             }
             else
             {
@@ -39,7 +39,7 @@ public partial class LeaveApproval : System.Web.UI.Page
         }
         catch (Exception Ex)
         {
-            Response.Redirect("index.aspx");
+            Response.Redirect("index.aspx", false);
         }
 
         Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");

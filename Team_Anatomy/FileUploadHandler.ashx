@@ -32,7 +32,7 @@ public class FileUploadHandler : IHttpHandler
                     dtEmp = my.GetData("WFMP.getEmployeeData '" + NT_ID + "'");
                     Employee_ID = Convert.ToInt32(dtEmp.Rows[0]["Employee_ID"].ToString());
                 }
-                string fileOnServer = context.Server.MapPath("/Sitel/user_images/" + filesname);
+                string fileOnServer = context.Server.MapPath("~/Sitel/user_images/" + filesname);
                 file.SaveAs(fileOnServer);
 
                 string strSQL = "WFMP.Profile_SaveUserImage";
