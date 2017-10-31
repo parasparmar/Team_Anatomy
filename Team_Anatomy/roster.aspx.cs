@@ -21,8 +21,8 @@ public partial class roster : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        
-        
+
+
         if (!IsPostBack)
         {
             try
@@ -30,7 +30,7 @@ public partial class roster : System.Web.UI.Page
                 dtEmp = (DataTable)Session["dtEmp"];
                 if (dtEmp.Rows.Count <= 0)
                 {
-                    Response.Redirect("index.aspx",false);
+                    Response.Redirect("index.aspx", false);
                 }
                 else
                 {
@@ -177,6 +177,10 @@ public partial class roster : System.Web.UI.Page
         WeekID = WeekID + OffsetTheWeekBy;
         cmd.Parameters.AddWithValue("@WeekID", WeekID);
         dtEmp = my.GetDataTableViaProcedure(ref cmd);
+        while (dtEmp.Columns.Count > 9)
+        {
+            dtEmp.Columns.RemoveAt(9);
+        }
         if (OffsetTheWeekBy != 0)
         {
             for (int j = 2; j < dtEmp.Columns.Count; j++)
@@ -189,18 +193,29 @@ public partial class roster : System.Web.UI.Page
 
         gvRoster.DataSource = dtEmp;
         int RowCount = dtEmp.Rows.Count;
-        int ColCount = dtEmp.Columns.Count-1;
 
+
+        int ColCount = dtEmp.Columns.Count;
         strSQL = "SELECT [ShiftID],[ShiftCode] FROM [CWFM_Umang].[WFMP].[tblShiftCode] where [Active] = 1";
         DataTable dt1 = my.GetData(strSQL);
         string ddlName;
         // Set the date Header rows
         // The gvRoster has dates beginning from 3rd column onwards and shows 7 dates. ie:- indices 2 through ColCount-1 = 8
 
-
-        for (int j = 2; j < ColCount; j++)
+        string colName;
+        DateTime colDate;
+        for (int j = 0; j < ColCount; j++)
         {
-            gvRoster.Columns[j].HeaderText = dtEmp.Columns[j].ColumnName;
+            colName = dtEmp.Columns[j].ColumnName;
+
+            if (DateTime.TryParseExact(colName, "dd-MMM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out colDate))
+            {
+                gvRoster.Columns[j].HeaderText = colDate.ToString("ddd, dd-MMM-yyyy");
+            }
+            else
+            {
+                gvRoster.Columns[j].HeaderText = colName;
+            }
         }
         gvRoster.DataBind();
 
@@ -248,7 +263,7 @@ public partial class roster : System.Web.UI.Page
                     {
                         for (int i = 0; i <= 7; i++)
                         {
-                            gvRows.Cells[i].CssClass += "read-only"; 
+                            gvRows.Cells[i].CssClass += "read-only";
                         }
                     }
                 }
@@ -257,7 +272,6 @@ public partial class roster : System.Web.UI.Page
 
         }
     }
-
     protected void gv_PreRender(object sender, EventArgs e)
     {
         GridView gv = (GridView)sender;
@@ -315,7 +329,7 @@ public partial class roster : System.Web.UI.Page
                             }
                         }
                         // Before an update to db, check for rules compliance
-                        bool RosterRulesCompliance = isRosterRuleCompliant(ref ListOfR);
+                        bool RosterRulesCompliance = true; //isRosterRuleCompliant(ref ListOfR);
                         if (RosterRulesCompliance)
                         {
                             foreach (RosterRecord R in ListOfR)
@@ -376,14 +390,12 @@ public partial class roster : System.Web.UI.Page
         }
 
     }
-
     private bool isRosterRuleCompliant(ref List<RosterRecord> ListOfR)
     {
         bool complianceStatus = true;
         complianceStatus = CountOfWOBetween1and2(ref ListOfR) && complianceStatus;
         return complianceStatus;
     }
-
     private bool CountOfWOBetween1and2(ref List<RosterRecord> ListOfR)
     {
 
@@ -409,7 +421,6 @@ public partial class roster : System.Web.UI.Page
         }
         return complianceStatus;
     }
-
     protected void btnWeeks_Click(object sender, EventArgs e)
     {
         if (ddlRepManager.SelectedValue.Length > 0 && ddlWeek.SelectedValue.Length > 0 && ddlYear.SelectedValue != "0")
@@ -540,7 +551,6 @@ public partial class roster : System.Web.UI.Page
             cbxCancelledLeaves.Checked = true;
         }
     }
-
     private int Role
     {
         get
@@ -577,7 +587,6 @@ public partial class roster : System.Web.UI.Page
         TeamManager = 2,
         MySelf = 1
     }
-
     class RosterRecord
     {
         public int EmpCode { get; set; }
@@ -597,8 +606,5 @@ public partial class roster : System.Web.UI.Page
 
 
     }
-
-
-
 }
 

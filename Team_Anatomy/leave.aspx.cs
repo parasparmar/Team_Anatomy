@@ -41,7 +41,7 @@ public partial class leave : System.Web.UI.Page
         }
         catch (Exception Ex)
         {
-            Response.Redirect("index.aspx", false);
+            Response.Write(Ex.Message);
         }
 
         Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");

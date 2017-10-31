@@ -242,7 +242,7 @@
                                                 <asp:DropDownList ID="dd7" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        
+
                                     </Columns>
                                 </asp:GridView>
                             </asp:Panel>
@@ -281,10 +281,13 @@
                 format: 'dd-M-yyyy'
             });
 
-            // Replication Code for Rows. 
-            //03-Sep-2017 01.07 AM In Production support : paras.parmar@sitel.com
+
+
+            // Replication Code for Columns. 
+            //03-Sep-2017 2.24 AM In Production support : paras.parmar@sitel.com
             var i = 0;
-            $("#btnRows").click(function () {
+            $("#btnColumns").click(function () {
+                //$("#btnRows").click(function () {
                 var myShift = 0;
                 $("#gvRoster tr:gt(0)").addClass("bg-teal-active").each(function () {
 
@@ -299,9 +302,10 @@
                     });
                 });
             });
-            // Replication Code for Columns. 
-            //03-Sep-2017 2.24 AM In Production support : paras.parmar@sitel.com
-            $("#btnColumns").click(function () {
+            // Replication Code for Rows. 
+            //03-Sep-2017 01.07 AM In Production support : paras.parmar@sitel.com            
+            $("#btnRows").click(function () {
+                //$("#btnColumns").click(function () {
                 var myShift = [];
                 $("#gvRoster tr:nth-child(1) td:gt(1):lt(7)").each(function () {
                     myShift.push($(this).find('[class*="select2"]').val());
