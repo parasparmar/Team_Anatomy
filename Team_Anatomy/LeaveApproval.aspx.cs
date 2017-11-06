@@ -29,7 +29,7 @@ public partial class LeaveApproval : System.Web.UI.Page
             dt = (DataTable)Session["dtEmp"];
             if (dt.Rows.Count <= 0)
             {
-                Response.Redirect("index.aspx", false);
+                Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "index.aspx", false);
             }
             else
             {
@@ -106,8 +106,10 @@ public partial class LeaveApproval : System.Web.UI.Page
         string leaveid = row.Cells[8].Text.ToString();
         lblLeaveID.Text = leaveid;
         string employeeid = row.Cells[0].Text.ToString();
-        lblEmployeeID.Text  = employeeid;
-        String Sql = "select A.[LeaveDate], B.[LeaveText], A.[roster]";
+        lblEmployeeID.Text = employeeid;
+        string employeeName = row.Cells[1].Text.ToString();
+        lblEmployeeName.Text = employeeName;
+        String Sql = "select CONVERT(VARCHAR,A.[LeaveDate],106) as LeaveDate, B.[LeaveText]";//, A.[roster]
         Sql += "from [WFMP].[tbl_datewise_leave] A ";
         Sql += "inner join [WFMP].[tblLeaveType] B ";
         Sql += "on A.[leave_type] = B.[LeaveID]";
@@ -201,13 +203,14 @@ public partial class LeaveApproval : System.Web.UI.Page
             con.Close();
             txt_reason.Text = String.Empty;
             lblLeaveID.Text = String.Empty; ;
-            lblEmployeeID.Text = "";
+            lblEmployeeName.Text = "";
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "hideModal();", true);
             //FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
             ScriptManager.RegisterStartupScript(this, this.GetType(), "show", "toastA();", true);
             FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
+            
             Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave is approved.', 'Success')", true);
-            fillddlRepManager();//
+            fillddlRepManager();
         }
 
     }
@@ -217,50 +220,59 @@ public partial class LeaveApproval : System.Web.UI.Page
         string val = lblLeaveID.Text .ToString();
         char trim = (',');
         string id = val.TrimEnd(trim);
-        string eval = lblEmployeeID.Text .ToString();
+        string eval = lblEmployeeID.Text.ToString();
         string empid = eval.TrimEnd(trim);
         string comment = txt_reason.Text.ToString();
         string comments = comment.TrimEnd(trim);
-        SqlConnection con = new SqlConnection(my.getConnectionString());
-        con.Open();
-
-        String strSQL = "CWFM_UMANG.[WFMP].[UpdateDecline]";
-        SqlCommand cmd = new SqlCommand(strSQL, con);
-        cmd.CommandType = CommandType.StoredProcedure;
-
-        cmd.Parameters.AddWithValue("@ApproverID", MyEmpID);
-        cmd.Parameters.AddWithValue("@EmpID", Convert.ToInt32(empid.ToString()));
-        cmd.Parameters.AddWithValue("@id", Convert.ToInt32(id.ToString()));
-        cmd.Parameters.AddWithValue("@comments", comments);
-        cmd.Parameters.Add("@bit", SqlDbType.VarChar, 500);
-        cmd.Parameters["@bit"].Direction = ParameterDirection.Output;
-
-        cmd.Connection = con;
-        cmd.ExecuteNonQuery();
-        con.Close();
-        string decider = cmd.Parameters["@bit"].Value.ToString();
-        txt_reason.Text = String.Empty;
-        lblLeaveID.Text  = String.Empty; ;
-        lblEmployeeID.Text  = "";
-        if (decider == "disable")
-        {
-            ////btn_dec.ID.Enabled = false;
-            //Button btn_dec = (Button)sender;
-            //string buttonId = btn_dec.ID+1;
-            //string buttonText = btn_dec.Text + 1;
-            //string buttonClass = btn_dec.CssClass + 1;
-            //btn_dec.Attributes.Add("class", "buttonClass");
-
-            ////(FindControl(buttonId) as Button).Enabled = false;
-            //Button tb1 = (Button)FindControl(btn_dec);
-            //tb1.Enabled = false;
+        if (comments == string.Empty)
+        { //ClientScript.RegisterStartupScript(GetType(), "Message", "<SCRIPT type='text/javascript'>alert('Please enter decline reason');</script>");
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Message", "<SCRIPT type='text/javascript'>alert('Please enter decline reason');</script>", false);
         }
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "hideModal();", true);
-        //FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "show", "toastD();", true);
-        FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
-        Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Request Declined.', 'Success')", true);
-        fillddlRepManager();
-        
+
+        else{
+
+            SqlConnection con = new SqlConnection(my.getConnectionString());
+            con.Open();
+
+            String strSQL = "CWFM_UMANG.[WFMP].[UpdateDecline]";
+            SqlCommand cmd = new SqlCommand(strSQL, con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@ApproverID", MyEmpID);
+            cmd.Parameters.AddWithValue("@EmpID", Convert.ToInt32(empid.ToString()));
+            cmd.Parameters.AddWithValue("@id", Convert.ToInt32(id.ToString()));
+            cmd.Parameters.AddWithValue("@comments", comments);
+            cmd.Parameters.Add("@bit", SqlDbType.VarChar, 500);
+            cmd.Parameters["@bit"].Direction = ParameterDirection.Output;
+
+            cmd.Connection = con;
+            cmd.ExecuteNonQuery();
+            con.Close();
+            string decider = cmd.Parameters["@bit"].Value.ToString();
+            txt_reason.Text = String.Empty;
+            lblLeaveID.Text = String.Empty; ;
+            lblEmployeeName.Text = "";
+            if (decider == "disable")
+            {
+                ////btn_dec.ID.Enabled = false;
+                //Button btn_dec = (Button)sender;
+                //string buttonId = btn_dec.ID+1;
+                //string buttonText = btn_dec.Text + 1;
+                //string buttonClass = btn_dec.CssClass + 1;
+                //btn_dec.Attributes.Add("class", "buttonClass");
+
+                ////(FindControl(buttonId) as Button).Enabled = false;
+                //Button tb1 = (Button)FindControl(btn_dec);
+                //tb1.Enabled = false;
+            }
+        }
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "hideModal();", true);
+            //FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "show", "toastD();", true);
+            FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
+
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Request Declined.', 'Success')", true);
+            fillddlRepManager();
+       
     }
 }

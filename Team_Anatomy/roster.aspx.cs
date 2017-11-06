@@ -43,7 +43,7 @@ public partial class roster : System.Web.UI.Page
             catch (Exception Ex)
             {
                 Console.WriteLine(Ex.Message.ToString());
-                Response.Redirect("index.aspx", false);
+                Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "index.aspx", false);
             }
             Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
             title.Text = "Roster";
@@ -329,7 +329,7 @@ public partial class roster : System.Web.UI.Page
                             }
                         }
                         // Before an update to db, check for rules compliance
-                        bool RosterRulesCompliance = true; //isRosterRuleCompliant(ref ListOfR);
+                        bool RosterRulesCompliance = isRosterRuleCompliant(ref ListOfR);
                         if (RosterRulesCompliance)
                         {
                             foreach (RosterRecord R in ListOfR)

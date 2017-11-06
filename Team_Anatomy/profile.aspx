@@ -2,6 +2,11 @@
 
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="headPlaceHolder" runat="Server">
+    <style>
+        .cursor {
+            cursor:pointer;
+        }
+    </style>
 </asp:Content>
 <%--<asp:Content ID="Content2" ContentPlaceHolderID="headmenu" runat="Server">
 </asp:Content>--%>
@@ -28,7 +33,7 @@
             <!-- Profile Image -->
             <div class="box box-primary">
                 <div class="box-body box-profile">
-                    <asp:Image ID="imgbtnUserImage" CssClass="profile-user-img img-responsive img-circle" runat="server" />
+                    <asp:Image ID="imgbtnUserImage" CssClass="profile-user-img img-responsive img-circle cursor" runat="server" />
                     <h3 class="profile-username text-center">
                         <asp:Label ID="lblName" runat="server"></asp:Label>
                     </h3>

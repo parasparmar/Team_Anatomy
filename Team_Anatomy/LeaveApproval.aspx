@@ -161,11 +161,11 @@
             </div>
             <div class="modal" id="modal-details">
                 <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
+                    <div class="modal-content" style="border:1px solid #3c8dbc">
+                        <div class="modal-header" style="background-color:#3c8dbc">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">Leave Details for <asp:Label ID="lblEmployeeID" runat="server"></asp:Label></h4>   
+                            <h4 class="modal-title" style="color:white">Leave Details for <asp:Label ID="lblEmployeeName" runat="server"></asp:Label> &nbsp<asp:Label ID="lblEmployeeID" runat="server"></asp:Label></h4>   
                         </div>
                         <div class="modal-body">
                             <asp:GridView ID="gvdatewiseAppr" runat="server"
@@ -174,7 +174,7 @@
                                 <Columns>
                                     <asp:BoundField DataField="LEAVEDATE" HeaderText="Date"></asp:BoundField>
                                     <asp:BoundField DataField="LEAVETEXT" HeaderText="Leave Type"></asp:BoundField>
-                                    <asp:BoundField DataField="ROSTER" HeaderText="Roster"></asp:BoundField>
+                                    <%--<asp:BoundField DataField="ROSTER" HeaderText="Roster"></asp:BoundField>--%>
                                 </Columns>
                             </asp:GridView>
                             <br>

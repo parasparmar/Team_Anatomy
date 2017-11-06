@@ -15,24 +15,32 @@ public partial class team : System.Web.UI.Page
         fillTeamList();
         Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
         title.Text = "Team List";
+
     }
 
     private void fillTeamList()
     {
-        DataTable dt = (DataTable)Session["dtEmp"];
-        if (dt.Rows.Count > 0)
+        try
         {
-            Helper my = new Helper();
-            DataRow dr = dt.Rows[0];
-            int EmpCode = Convert.ToInt32(dr["Employee_Id"].ToString());
-            
-            DataTable dtMyTeam = my.GetData("Exec [WFMP].[TeamList] " + EmpCode);
-            gv_TeamList.DataSource = dtMyTeam;
-            gv_TeamList.DataBind();
+            DataTable dt = Session["dtEmp"] as DataTable;
+            if (dt.Rows.Count > 0)
+            {
+                Helper my = new Helper();
+                DataRow dr = dt.Rows[0];
+                int EmpCode = Convert.ToInt32(dr["Employee_Id"].ToString());
+
+                DataTable dtMyTeam = my.GetData("Exec [WFMP].[TeamList] " + EmpCode);
+                gv_TeamList.DataSource = dtMyTeam;
+                gv_TeamList.DataBind();
+            }
+            else
+            {
+                Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "index.aspx", false);
+            }
         }
-        else
-        { 
-        
+        catch (Exception Ex)
+        {
+            Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "index.aspx", false);
         }
     }
 

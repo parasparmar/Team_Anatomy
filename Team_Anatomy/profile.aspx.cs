@@ -19,6 +19,7 @@ public partial class profile : System.Web.UI.Page
     DataTable dtEmp;
     protected void Page_Load(object sender, EventArgs e)
     {
+
         if (!IsPostBack)
         {
             Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
@@ -36,6 +37,7 @@ public partial class profile : System.Web.UI.Page
             dtEmp = Session["dtEmp"] as DataTable;
             //Critical** This line refreshes the data received from the session.
             dtEmp = my.GetData("WFMP.getEmployeeData '" + dtEmp.Rows[0]["ntName"] + "'");
+            Session["dtEmp"] = dtEmp;
 
             if (dtEmp.Rows.Count > 0)
             {
@@ -123,8 +125,7 @@ public partial class profile : System.Web.UI.Page
             }
             else
             {
-                //Response.Write(Session["dtEmp"].ToString() + "----------------" + Ex.Message);
-                //Response.Redirect("index.aspx", false);
+                Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "SomeOtherPage.aspx");
             }
 
 
@@ -132,8 +133,8 @@ public partial class profile : System.Web.UI.Page
         }
         catch (Exception Ex)
         {
-            //Response.Write(Session["dtEmp"].ToString() + "----------------" + Ex.Message);
-            Response.Redirect("index.aspx",false);
+            Response.Write(Ex.Message);
+            Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "index.aspx", false);
         }
 
 

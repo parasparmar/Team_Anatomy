@@ -245,6 +245,32 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function () {
+            var date;
+            var startdate = Thedate();
+            var value;
+            function Thedate() {
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    data:{},
+                    contentType: "application/json; charset=utf-8",
+                    url: "leave.aspx/getDates",
+                    async: true,
+                    success: function (Record) {
+                        value = Record.d;
+                        //alert(value);
+                        doWork(value);
+                    }
+
+                });
+            }
+            function doWork(value) {
+                date = value;
+                //alert(date);
+                $('#reservation').daterangepicker({
+                    minDate: date,
+                });
+            }
             var leave_id; var btn; var status;
             $(".btn-danger").click(function (e) {
                 //
@@ -258,7 +284,9 @@
                 //$("#modal-danger").css({ "display": "block" });
                 //alert("2");
                 //$("#modal-danger").css({ "display": "block" }); alert("2");
+
             });
+
 
 
 
@@ -298,15 +326,8 @@
                 }
             });
         });
-    </script>
-    <%--<script>
-        function openmodal() {
-            $('.modal').modal('show');
-        }
-    </script>--%>
-    <script type="text/javascript">
 
-
+  
         function pluginsInitializer() {
             //var x = 1;
             //$("#btn_proceed").click(function () {
@@ -327,9 +348,11 @@
                 $(this).find("td:nth-child(10)").hide();
             });
 
+            //$('#reservation').daterangepicker({
+            //    minDate: new Date(),
+            //});
 
-
-            $('#reservation').daterangepicker({ format: 'DD-MMM-YYYY' })
+            //$('#reservation').daterangepicker({ format: 'DD-MMM-YYYY' })
             //$('#reservation').change(function () {
             //    var x = $('#reservation').val();
 
@@ -342,15 +365,19 @@
 
 
             //Date range picker
+           
 
             $('#reservation').on('apply.daterangepicker', function (ev, picker) {
-                var startdate = picker.startDate.format('DD-MMM-YYYY');
+                //var startdate = Thedate();
+                var startdate=picker.endDate.format('DD-MMM-YYYY');
                 var enddate = picker.endDate.format('DD-MMM-YYYY');
+                picker.minDate = startdate;
+                picker.maxDate = enddate;
+
                 //alert("startdate: "+startdate + " enddate: "+ enddate);
             });
-            //function (startDate, endDate, period) {
-            //    $(this).val(startDate.format('L') + ' – ' + endDate.format('L'))
-            //});
+
+
 
 
         }
@@ -407,5 +434,10 @@
         //    };
         //}
     </script>
+      <%--<script>
+        function openmodal() {
+            $('.modal').modal('show');
+        }
+    </script>--%>
 </asp:Content>
 

@@ -31,7 +31,7 @@ public class Helper
 
     // ------------------------- Open Database Connection -------------------------
     public void open_db()
-    {
+     {
 
         mcon = new SqlConnection(getConnectionString());
         try
@@ -62,7 +62,7 @@ public class Helper
     // ------------------------- Procedure for Execute Sql Query/Stored Procedure -------------------------
     public int ExecuteDMLCommand(ref SqlCommand cmd, string sql_string, string operation)
     {
-        if (mcon.State == ConnectionState.Closed || mcon.State == ConnectionState.Broken) { open_db(); }
+        open_db();
         int returnValue = 0;
         try
         {
@@ -200,64 +200,6 @@ public class Helper
     }
 
 
-    // ------------------------- Procedure For fill dropdownlist with default item -------------------------
-    public void fill_dropdown(ref DropDownList drp_name, string sp_name, string datatextfeild, string datavaluefeild, string defaultitem, string parameters, string tran_type)
-    {
-        SqlCommand cmd = new SqlCommand();
-        SqlDataAdapter dap = new SqlDataAdapter();
-        DataSet ds = new DataSet();
-        try
-        {
-            ExecuteDMLCommand(ref cmd, sp_name, tran_type);
-            //----------------------- Addning Muiltipal Parameters with there values by split using '#' only if it is stored procedure.
-            if (tran_type == "S")
-            {
-                if (parameters.Trim() != "")
-                {
-                    string[] multiple_parameter = parameters.Split(',');
-                    foreach (string p_value in multiple_parameter)
-                    {
-                        string para_name = p_value.Split('#')[0];
-                        string para_value = p_value.Split('#')[1];
-                        cmd.Parameters.AddWithValue("@" + para_name, para_value);
-                    }
-                }
-            }
-
-            dap.SelectCommand = cmd;
-            dap.Fill(ds);
-
-            if (defaultitem != "")
-            {
-                DataRow dr = ds.Tables[0].NewRow();
-                dr[0] = 0;
-                dr[1] = defaultitem;
-                ds.Tables[0].Rows.Add(dr);
-            }
-            drp_name.DataSource = ds.Tables[0];
-            drp_name.DataTextField = datatextfeild;
-            drp_name.DataValueField = datavaluefeild;
-            drp_name.DataBind();
-
-
-            //--------------------------------------------
-            if (defaultitem != "")
-            {
-                drp_name.SelectedValue = "0";
-            }
-        }
-        catch (Exception e)
-        {
-            Log.thisException(e);
-        }
-        finally
-        {
-            dap.Dispose();
-            ds.Dispose();
-            close_conn();
-        }
-
-    }
 
 
     // ------------------------- Procedure For fill Gridview with Blank row -------------------------
@@ -336,6 +278,7 @@ public class Helper
 
     public void fill_dropdown(Control drp_name, string sp_name, string datatextfield, string datavaluefield, string defaultitem, string parameters, string tran_type)
     {
+
         SqlCommand cmd = new SqlCommand(sp_name, mcon);
         cmd.CommandType = CommandType.StoredProcedure;
         SqlDataAdapter dap = new SqlDataAdapter();

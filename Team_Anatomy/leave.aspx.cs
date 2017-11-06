@@ -27,20 +27,26 @@ public partial class leave : System.Web.UI.Page
 
         try
         {
-            dt = (DataTable)Session["dtEmp"];
+            dt = Session["dtEmp"] as DataTable;
             if (dt.Rows.Count <= 0)
             {
                 Response.Redirect("index.aspx", false);
             }
             else
             {
+                // In Production Use the below
                 MyEmpID = Convert.ToInt32(dt.Rows[0]["Employee_Id"].ToString());
-                //MyEmpID = 908308;
+
+                    if(!Int32.TryParse(MyEmpID.ToString(), out MyEmpID)){
+                        Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "index.aspx", false);
+                    }
+                
             }
 
         }
         catch (Exception Ex)
         {
+            Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "index.aspx", false);
             Response.Write(Ex.Message);
         }
 
@@ -156,7 +162,8 @@ public partial class leave : System.Web.UI.Page
             {
                 dt = 0;
             }
-            else {
+            else
+            {
                 dt = 1;
             }
             //int dt = Convert.ToInt32(date);
@@ -189,7 +196,7 @@ public partial class leave : System.Web.UI.Page
         String strSQL = "CWFM_UMANG.WFMP.InsertLeaveRecords";
         SqlCommand cmd = new SqlCommand(strSQL, con);
         cmd.CommandType = CommandType.StoredProcedure;
-
+        MyEmpID = Convert.ToInt32(dt.Rows[0]["Employee_Id"].ToString());
         cmd.Parameters.AddWithValue("@EmpCode", MyEmpID);
         cmd.Parameters.AddWithValue("@from_date", from_Date);
         cmd.Parameters.AddWithValue("@to_date", end_Date);
@@ -340,31 +347,23 @@ public partial class leave : System.Web.UI.Page
    
 
     [WebMethod]
-    public static void CancelData(string cancel_reason, string id, string status)
+    public static string getDates()
     {
         Helper my = new Helper();
-        SqlConnection con = new SqlConnection(my.getConnectionString());
 
-        SqlConnection cn = con;
+        String strSQL = "CWFM_UMANG.WFMP.[getMinDateforLeaveRequest]";
+        SqlCommand cmd = new SqlCommand(strSQL);
+        DataTable dtMinDate = my.GetDataTableViaProcedure(ref cmd);
+        string minDate =dtMinDate.Rows[0]["minDate"].ToString();
+        //JavaScriptSerializer js = new JavaScriptSerializer();
 
-        SqlCommand cmd = new SqlCommand();
-        cmd.CommandType = CommandType.Text;
-        cn.Open();
-
-        String Sql = "UPDATE [WFMP].[tbl_leave_request]";
-        Sql += "SET [cancel_reason]='" + cancel_reason + "', [status]='" + status + "'";
-
-        Sql += "WHERE [id] = '" + id + "'";
-
-        cmd.CommandText = Sql;
-
-        cmd.Connection = cn;
+        //return js.Serialize(minDate); 
+        return (minDate);
 
 
-        cmd.ExecuteNonQuery();
-
-        cn.Close();
     }
 
 }
+
+        
 

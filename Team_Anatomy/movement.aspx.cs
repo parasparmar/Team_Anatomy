@@ -24,7 +24,7 @@ public partial class movement : System.Web.UI.Page
             dt = Session["dtEmp"] as DataTable;
             if (dt.Rows.Count <= 0)
             {
-                Response.Redirect("index.aspx", false);
+                Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "index.aspx",false);
             }
             else
             {
@@ -35,7 +35,7 @@ public partial class movement : System.Web.UI.Page
         catch (Exception Ex)
         {
             Console.WriteLine(Ex.Message.ToString());
-            Response.Redirect("index.aspx", false);
+            Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "index.aspx", false);
         }
         //fillTeamList();
         Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
