@@ -157,7 +157,6 @@
 
 
 </asp:Content>
-
 <asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">
     <!-- Select2 -->
     <script src="AdminLTE/bower_components/select2/dist/js/select2.full.min.js"></script>

@@ -330,6 +330,7 @@ public partial class roster : System.Web.UI.Page
                         }
                         // Before an update to db, check for rules compliance
                         bool RosterRulesCompliance = isRosterRuleCompliant(ref ListOfR);
+                        
                         if (RosterRulesCompliance)
                         {
                             foreach (RosterRecord R in ListOfR)
@@ -400,27 +401,48 @@ public partial class roster : System.Web.UI.Page
     {
 
         bool complianceStatus = true;
-        var employees = ListOfR.Where(i => i.ShiftID == 49);
+        var employees = ListOfR.Where(i => i.ShiftID == 49).Distinct(new EmployeeComparer());
+        var employeeWorkoffs = ListOfR.Where(i => i.ShiftID == 49);
+        int WOCount = 0;
         foreach (var employee in employees)
         {
-            int WOCount = 0;
-            if (employee.ShiftID == 49)
+            employee.WOCount = employeeWorkoffs.Count(i => i.EmpCode == employee.EmpCode);
+        }
+        foreach (var employee in employees)
+        {
+            if (employee.WOCount > 2 || employee.WOCount < 1)
             {
-                employee.WOCount = WOCount++;
-                if (employee.WOCount >= 2 || employee.WOCount < 1)
-                {
-                    employee.rules_WorkOffCompliance = false;
-                    complianceStatus = false && complianceStatus;
-                }
-                else
-                {
-                    employee.rules_WorkOffCompliance = true;
-                    complianceStatus = true && complianceStatus;
-                }
+                employee.rules_WorkOffCompliance = false;
+                complianceStatus = false && complianceStatus;
+            }
+            else
+            {
+                employee.rules_WorkOffCompliance = true;
+                complianceStatus = true && complianceStatus;
             }
         }
+
+
+
         return complianceStatus;
     }
+
+    class EmployeeComparer : IEqualityComparer<RosterRecord>
+    {
+        public bool Equals(RosterRecord x, RosterRecord y)
+        {
+            if (x.EmpCode == y.EmpCode)
+                return true;
+            return false;
+        }
+
+        public int GetHashCode(RosterRecord obj)
+        {
+            return obj.EmpCode.GetHashCode();
+        }
+    }
+
+
     protected void btnWeeks_Click(object sender, EventArgs e)
     {
         if (ddlRepManager.SelectedValue.Length > 0 && ddlWeek.SelectedValue.Length > 0 && ddlYear.SelectedValue != "0")
