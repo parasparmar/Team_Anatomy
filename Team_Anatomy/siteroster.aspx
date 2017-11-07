@@ -86,7 +86,7 @@
                             Week Selection
                             <div class="input-group">
                                 <span class="input-group-addon">
-                                    <asp:RadioButton ID="rdoWeekSelection" runat="server" GroupName="DateRangeSelection" CssClass="flat-red" />
+                                    <asp:RadioButton ID="rdoWeekSelection" runat="server" GroupName="DateRangeSelection" />
                                 </span>
                                 <asp:DropDownList ID="ddlWeekSelection" runat="server" CssClass="form-control select2" Style="width: 100%;" OnSelectedIndexChanged="ddlWeekSelection_SelectedIndexChanged">
                                 </asp:DropDownList>
@@ -97,7 +97,7 @@
                             For a Date Range                            
                                 <div class="input-group">
                                     <span class="input-group-addon">
-                                        <asp:RadioButton ID="rdoCustomDateSelection" runat="server" CssClass="flat-red" GroupName="DateRangeSelection" />
+                                        <asp:RadioButton ID="rdoCustomDateSelection" runat="server" GroupName="DateRangeSelection" />
                                     </span>
                                     <asp:TextBox ID="ddlFromDate" runat="server"
                                         CssClass="form-control datepicker" Style="width: 100%;"
@@ -126,32 +126,33 @@
         </div>
         <!-- /.col -->
     </div>
-    <div class="row-fluid">
-        <div class="col-md-12">
-            <!-- Custom Tabs -->
-            <div class="box box-solid box-primary" style="height: auto;">
-                <div class="box-header with-border">
-                    <h4 class="box-title">
-                        <asp:Literal ID="ltlRosterHeading" runat="server" Text="Week : "></asp:Literal></h4>
+    <asp:Panel ID="debugZone" Visible="false" runat="server">
+        <div class="row-fluid">
+            <div class="col-md-12">
+                <!-- Custom Tabs -->
+                <div class="box box-solid box-primary" style="height: auto;">
+                    <div class="box-header with-border">
+                        <h4 class="box-title">
+                            <asp:Literal ID="ltlRosterHeading" runat="server" Text="Week : "></asp:Literal></h4>
 
 
-                </div>
-                <div class="box-body">
-                    <asp:GridView ID="gvRoster" runat="server" AutoGenerateColumns="true"
-                        CssClass="table table-condensed table-responsive compact hover stripe"
-                        OnPreRender="gv_PreRender" DataKeyNames="ECN">
-                    </asp:GridView>
+                    </div>
+                    <div class="box-body">
+                        <asp:GridView ID="gvRoster" runat="server" AutoGenerateColumns="true"
+                            CssClass="table table-condensed table-responsive compact hover stripe"
+                            OnPreRender="gv_PreRender">
+                        </asp:GridView>
 
+                    </div>
+                    <div class="box-footer">
+                    </div>
                 </div>
-                <div class="box-footer">
-                </div>
+                <!-- /.box-footer-->
             </div>
-            <!-- /.box-footer-->
+            <!--tabcontent-->
         </div>
-        <!--tabcontent-->
-    </div>
-    <!-- /.col -->
-
+        <!-- /.col -->
+    </asp:Panel>
     <!---LHS Panel---->
 
 
@@ -162,13 +163,25 @@
     <script src="AdminLTE/bower_components/select2/dist/js/select2.full.min.js"></script>
     <script>
         $(function () {
-            //Date picker
-            $("[class*='datepicker']").datepicker({
-                autoclose: true,
-                dateFormat: 'dd-M-yyyy'
-            })
+            
             //Initialize Select2 Elements
             $("[class*='select2']").select2();
+            //Date picker
+
+            $("[class*='datepicker']").datepicker({
+                autoclose: true,
+                format: "dd-M-yyyy"
+            }).on("changeDate", function () {
+
+                $("#rdoCustomDateSelection").prop("checked", true);
+                $("#rdoWeekSelection").prop("checked", false);
+            });
+
+            $("#ddlWeekSelection").on("select2:close", function () {
+                $("#rdoWeekSelection").prop("checked", true);
+                $("#rdoCustomDateSelection").prop("checked", false);
+            });
+
         });
     </script>
 

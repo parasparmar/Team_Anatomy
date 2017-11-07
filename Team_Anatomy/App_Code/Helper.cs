@@ -10,7 +10,7 @@ using CD;
 
 public class Helper
 {
-    SqlConnection mcon;
+    SqlConnection cn;
 
     public Helper()
     {
@@ -29,16 +29,15 @@ public class Helper
         return xString;
     }
 
-    // ------------------------- Open Database Connection -------------------------
     public void open_db()
-     {
+    {
 
-        mcon = new SqlConnection(getConnectionString());
+        cn = new SqlConnection(getConnectionString());
         try
         {
-            if (mcon.State == ConnectionState.Closed || mcon.State == ConnectionState.Broken)
+            if (cn.State == ConnectionState.Closed || cn.State == ConnectionState.Broken)
             {
-                mcon.Open();
+                cn.Open();
             }
         }
         catch (Exception e)
@@ -48,26 +47,23 @@ public class Helper
         }
     }
 
-    // ------------------------- Close  Database Connection -------------------------
     public void close_conn()
     {
-        if (mcon.State == ConnectionState.Open)
+        if (cn.State == ConnectionState.Open)
         {
-            mcon.Close();
-            mcon.Dispose();
+            cn.Close();
+            cn.Dispose();
         }
     }
 
-
-    // ------------------------- Procedure for Execute Sql Query/Stored Procedure -------------------------
     public int ExecuteDMLCommand(ref SqlCommand cmd, string sql_string, string operation)
     {
         open_db();
         int returnValue = 0;
         try
         {
-            //cmd = new SqlCommand(sql_string, mcon);
-            cmd.Connection = mcon;
+            //cmd = new SqlCommand(sql_string, cn);
+            cmd.Connection = cn;
             if (operation == "E")
             {
                 returnValue = cmd.ExecuteNonQuery();
@@ -96,12 +92,12 @@ public class Helper
 
     public DataTable GetDataTableViaProcedure(ref SqlCommand cmd)
     {
-        if (mcon.State == ConnectionState.Closed || mcon.State == ConnectionState.Broken) { open_db(); }
+        if (cn.State == ConnectionState.Closed || cn.State == ConnectionState.Broken) { open_db(); }
         DataTable dt = new DataTable();
         using (cmd)
         {
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Connection = mcon;
+            cmd.Connection = cn;
 
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             da.Fill(dt);
@@ -110,7 +106,6 @@ public class Helper
         return dt;
     }
 
-    // ------------------------- Function for return datatable -------------------------
     public DataTable GetData(string sql)
     {
         using (SqlConnection mcon = new SqlConnection(getConnectionString()))
@@ -123,26 +118,24 @@ public class Helper
                 da.Fill(ds);
                 dt = ds.Tables[0];
             }
-            
+
             //close_conn();
             return dt;
         }
 
     }
 
-    // ------------------------- Function for return datatable -------------------------
     public DataSet return_dataset(string sql)
     {
         open_db();
         DataTable worktable = new DataTable();
-        SqlDataAdapter dap = new System.Data.SqlClient.SqlDataAdapter(new System.Data.SqlClient.SqlCommand(sql, mcon));
+        SqlDataAdapter dap = new System.Data.SqlClient.SqlDataAdapter(new System.Data.SqlClient.SqlCommand(sql, cn));
         DataSet ds = new DataSet();
         dap.Fill(ds);
         //close_conn();
         return ds;
     }
 
-    // ------------------------- Procedure For fill ListBox with default item -------------------------
     public void fill_listbox(ref ListBox list_name, string sp_name, string datatextfeild, string datavaluefeild, string defaultitem, string parameters)
     {
         SqlCommand cmd = new SqlCommand();
@@ -199,10 +192,6 @@ public class Helper
 
     }
 
-
-
-
-    // ------------------------- Procedure For fill Gridview with Blank row -------------------------
     public void fill_gridview(ref GridView gridname, string sql_string)
     {
         SqlCommand cmd = new SqlCommand();
@@ -248,8 +237,6 @@ public class Helper
         }
     }
 
-
-    // ------------------------- Display Page heading Name -------------------------
     public void set_pageheading(string heading, Page pagename)
     {
         Label lblheading = (Label)pagename.Master.FindControl("lblheading");
@@ -263,7 +250,7 @@ public class Helper
     public int getSingleton(string strSQL)
     {
         open_db();
-        SqlCommand cmd = new SqlCommand(strSQL, mcon);
+        SqlCommand cmd = new SqlCommand(strSQL, cn);
         var the_result = cmd.ExecuteScalar();
         int result = 0;
         if (Int32.TryParse(the_result.ToString(), out result))
@@ -279,7 +266,7 @@ public class Helper
     public void fill_dropdown(Control drp_name, string sp_name, string datatextfield, string datavaluefield, string defaultitem, string parameters, string tran_type)
     {
 
-        SqlCommand cmd = new SqlCommand(sp_name, mcon);
+        SqlCommand cmd = new SqlCommand(sp_name, cn);
         cmd.CommandType = CommandType.StoredProcedure;
         SqlDataAdapter dap = new SqlDataAdapter();
         DataSet ds = new DataSet();
@@ -345,7 +332,7 @@ public class Helper
     {
 
 
-        using (SqlCommand cmd = new SqlCommand(sp_name, mcon))
+        using (SqlCommand cmd = new SqlCommand(sp_name, cn))
         {
             using (SqlDataReader dr = cmd.ExecuteReader())
             {

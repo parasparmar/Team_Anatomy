@@ -7,8 +7,10 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 using System.Data.Sql;
-
+using CsvHelper;
 using System.Globalization;
+using System.IO;
+using System.Text;
 
 public partial class myroster : System.Web.UI.Page
 {
@@ -18,7 +20,6 @@ public partial class myroster : System.Web.UI.Page
     private int MyEmpID { get; set; }
     private DateTime toDate { get; set; }
     private DateTime fromDate { get; set; }
-
     protected void Page_Load(object sender, EventArgs e)
     {
 
@@ -176,14 +177,16 @@ public partial class myroster : System.Web.UI.Page
     }
     protected void btnDownloadRoster_Click(object sender, EventArgs e)
     {
-        string strSQL;
+        string FileName = "Sitel " + ddlSite.SelectedItem.ToString() + " Roster ";
 
+        string strSQL;
         if (rdoCustomDateSelection.Checked)
         {
             if (ddlFromDate.Text.Length > 0 && ddlToDate.Text.Length > 0)
             {
                 fromDate = Convert.ToDateTime(ddlFromDate.Text);
                 toDate = Convert.ToDateTime(ddlToDate.Text);
+                // Swap dates if From is After To date.
                 if (fromDate > toDate)
                 {
                     ddlFromDate.Text = toDate.ToString();
@@ -215,14 +218,67 @@ public partial class myroster : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@FromDate", fromDate);
             cmd.Parameters.AddWithValue("@ToDate", toDate);
             DataTable d = my.GetDataTableViaProcedure(ref cmd);
-            gvRoster.DataSource = d;
-            gvRoster.DataBind();
+            d.Columns.Remove("ShiftID");
+            d.Columns.Remove("CountryID");
+            d.Columns.Remove("SiteID");
+            d.Columns.Remove("LOBID");
+            d.Columns.Remove("ResType");
+
+            string[] rowFields = { "ECN", "NAME", "TL_ECN", "TEAM_LEADER" };
+            string[] columnFields = { "ShiftDate" };
+            Pivot pvt = new Pivot(d);
+            d = pvt.PivotData("ShiftCode", AggregateFunction.First, rowFields, columnFields);
+            DateTime myDate;
+            foreach (DataColumn dc in d.Columns)
+            {
+                if (DateTime.TryParse(dc.ColumnName, out myDate))
+                {
+                    dc.ColumnName = myDate.ToString("ddd dd-MMM-yyyy");
+                    //dc.ColumnName = myDate.ToString("(ddd) dd-MMM-yyyy");
+                    //dc.ColumnName = myDate.ToString("ddd(dd)");
+                }
+            }
+
+
+            //// Use only if you wish to see what's getting sent to the csv download.
+            //gvRoster.DataSource = d;
+            //gvRoster.DataBind();
+
+            FileName += fromDate.ToString("dd-MMM-yyyy") + " to " + toDate.ToString("dd-MMM-yyyy") + ".csv";
+            //Get the physical path to the file.
+            string FilePath = Server.MapPath("Sitel//roster_downloads//" + FileName);
+            using (var textWriter = File.CreateText(FilePath))
+            {
+                using (var csv = new CsvWriter(textWriter))
+                {
+                    // Write columns
+                    foreach (DataColumn column in d.Columns)
+                    {
+                        csv.WriteField(column.ColumnName);
+                    }
+                    csv.NextRecord();
+
+                    // Write row values
+                    foreach (DataRow row in d.Rows)
+                    {
+                        for (var i = 0; i < d.Columns.Count; i++)
+                        {
+                            csv.WriteField(row[i]);
+                        }
+                        csv.NextRecord();
+                    }
+                }
+            }
+
+            //Send the CSV file as a Download.
+            Response.Clear();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment;filename=" + FileName);
+            Response.Charset = "";
+            Response.ContentType = "application/text";
+            Response.Output.Write(File.ReadAllText(FilePath));
+            Response.Flush();
+            Response.End();
         }
-
-        //ToDo: Pivot this Datatable https://www.codeproject.com/Articles/46486/Pivoting-DataTable-Simplified
-        // or : https://stackoverflow.com/questions/12866685/dynamic-pivot-using-c-sharp-linq
-
-
-
     }
 }
