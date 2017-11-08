@@ -352,7 +352,7 @@
             //    minDate: new Date(),
             //});
 
-            //$('#reservation').daterangepicker({ format: 'DD-MMM-YYYY' })
+            $('#reservation').daterangepicker({ format: 'DD-MMM-YYYY' })
             //$('#reservation').change(function () {
             //    var x = $('#reservation').val();
 
