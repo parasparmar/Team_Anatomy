@@ -46,144 +46,86 @@ public partial class myroster : System.Web.UI.Page
                 Response.Redirect("index.aspx", false);
             }
             Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
-            title.Text = "Roster";
-            fillddlRepManager();
+            title.Text = "My Roster";
+            fillddlYear();
         }
     }
-    private void fillddlRepManager()
+
+    protected void fillddlYear()
     {
-        // If I'm a rev mgr, fill the ddlRepManager with my reporting managers, If I'm a reporting manager, fill it with reportees, if I'm a sole contributor,
-        // fill ddlRepManager with my name.
-        strSQL = "SELECT A.RepMgrCode, REPLACE(B.First_Name +' '+B.Middle_Name+' '+B.Last_Name,'  ',' ') as RepMgr";
-        strSQL += " , A.Employee_ID as MgrID, A.First_Name +' '+A.Middle_Name+' '+A.Last_Name as MgrName";
-        strSQL += "  FROM [CWFM_Umang].[WFMP].[tblMaster] A ";
-        strSQL += " INNER JOIN [CWFM_Umang].[WFMP].[tblMaster] B ON B.Employee_ID = A.RepMgrCode";
-        strSQL += " WHERE A.RepMgrCode = " + MyEmpID + "";
-
-        ListItem i = new ListItem();
-
-        switch (Role)
-        {
-            case (int)role.ReviewingManager:
-                pnlAmIRvwMgr.Visible = true;
-                strSQL += " and A.IsReportingManager = 1";
-                i = new ListItem("My Reportees", MyEmpID.ToString(), true);
-                break;
-
-            case (int)role.TeamManager:
-                pnlAmIRvwMgr.Visible = true;
-                i = new ListItem("My Team", MyEmpID.ToString(), true);
-                break;
-
-            case (int)role.MySelf:
-                pnlAmIRvwMgr.Visible = true;
-
-                i = new ListItem("My Team's Roster", MyRepMgr.ToString(), true);
-
-                break;
-        }
-
-        DataTable dt = my.GetData(strSQL);
-        ddlRepManager.DataSource = dt;
-        ddlRepManager.DataTextField = "MgrName";
-        ddlRepManager.DataValueField = "MgrID";
-        ddlRepManager.DataBind();
-        ddlRepManager.Items.Insert(0, i);
-        ddlRepManager.SelectedIndex = 0;
-        ddlRepManager_SelectedIndexChanged(ddlRepManager, new EventArgs());
-
-
-    }
-    protected void ddlRepManager_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        int i = Convert.ToInt32(ddlRepManager.SelectedIndex);
         strSQL = "select distinct ryear as Year from CWFM_Umang.WFMP.tblRstWeeks";
         my.append_dropdown(ref ddlYear, strSQL, 0, 0);
-        ltlReportingMgrsTeam.Text = "Roster for Team : " + ddlRepManager.SelectedItem.Text;
-        ddlRepManager.SelectedIndex = i;
-        ddlYear_SelectedIndexChanged(ddlRepManager, new EventArgs());
-        if (ddlRepManager.SelectedValue.Length > 0 && ddlWeek.SelectedValue.Length > 0 && ddlYear.SelectedValue != "0")
-        {
-            int RepMgrCode = Convert.ToInt32(ddlRepManager.SelectedValue);
-            int WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
-
-            fillgvRoster(RepMgrCode, WeekID);
-        }
-        else
-        {
-
-            int RepMgrCode = MyEmpID;
-            int WeekID = currentWeek;
-            fillgvRoster(RepMgrCode, WeekID);
-        }
+        ltlReportingMgrsTeam.Text = "Roster For";
     }
     protected void ddlYear_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (pnlAmIRvwMgr.Visible)
+
+        // When The manager in the dropdown is a reporting manager
+        strSQL = "WFMP.GetWeeks";
+        SqlCommand cmd = new SqlCommand(strSQL);
+        cmd.Parameters.AddWithValue("@Year", Convert.ToInt32(ddlYear.SelectedValue.ToString()));
+        cmd.CommandType = CommandType.StoredProcedure;
+        DataTable dt = my.GetDataTableViaProcedure(ref cmd);
+        ddlWeek.DataSource = dt;
+        ddlWeek.DataTextField = "Dates";
+        ddlWeek.DataValueField = "Id";
+        ddlWeek.DataBind();
+        if (ddlYear.Text == DateTime.Today.Year.ToString())
         {
-            // When The manager in the dropdown is a reporting manager
-            strSQL = "WFMP.GetWeeks";
-
-
-            SqlCommand cmd = new SqlCommand(strSQL);
-
-            cmd.Parameters.AddWithValue("@Year", Convert.ToInt32(ddlYear.SelectedValue.ToString()));
-            cmd.CommandType = CommandType.StoredProcedure;
-            DataTable dt = my.GetDataTableViaProcedure(ref cmd);
-            ddlWeek.DataSource = dt;
-
-            ddlWeek.DataTextField = "Dates";
-            ddlWeek.DataValueField = "Id";
-            ddlWeek.DataBind();
-            if (ddlYear.Text == DateTime.Today.Year.ToString())
-            {
-                string RowID = my.getSingleton("Select A.[WeekId] from [CWFM_Umang].[WFMP].[tblRstWeeks] A where '" + DateTime.Today.Date + "' between A.FrDate and a.ToDate").ToString();
-                ddlWeek.SelectedIndex = ddlWeek.Items.IndexOf(ddlWeek.Items.FindByValue(RowID));
-            }
-            else
-            {
-                ddlWeek.SelectedIndex = 0;
-            }
-
-            if (ddlRepManager.SelectedValue.Length > 0 && ddlWeek.SelectedValue.Length > 0 && ddlYear.SelectedValue != "0")
-            {
-                int RepMgrCode = Convert.ToInt32(ddlRepManager.SelectedValue);
-                int WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
-                fillgvRoster(RepMgrCode, WeekID);
-            }
-
-            ddlWeek_SelectedIndexChanged(ddlYear, new EventArgs());
-            ltlRosterHeading.Text = "Week : " + ddlWeek.SelectedItem.Text;
+            string RowID = my.getSingleton("Select A.[WeekId] from [CWFM_Umang].[WFMP].[tblRstWeeks] A where '" + DateTime.Today.Date + "' between A.FrDate and a.ToDate").ToString();
+            ddlWeek.SelectedIndex = ddlWeek.Items.IndexOf(ddlWeek.Items.FindByValue(RowID));
         }
+        else
+        {
+            ddlWeek.SelectedIndex = 0;
+        }
+
+        if (ddlWeek.SelectedValue.Length > 0 && ddlYear.SelectedValue != "0")
+        {
+            int WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
+            fillgvRoster(MyEmpID, WeekID);
+        }
+
+
+        ltlRosterHeading.Text = "Week : " + ddlWeek.SelectedItem.Text;
+
     }
     protected void ddlWeek_SelectedIndexChanged(object sender, EventArgs e)
     {
 
         ltlRosterHeading.Text = "Week : " + ddlWeek.SelectedItem.Text;
-        if (ddlRepManager.SelectedValue.Length > 0 && ddlWeek.SelectedValue.Length > 0 && ddlYear.SelectedValue != "0")
+        if (ddlWeek.SelectedValue.Length > 0 && ddlYear.SelectedValue != "0")
         {
-            int RepMgrCode = Convert.ToInt32(ddlRepManager.SelectedValue);
+            int RepMgrCode = MyRepMgr;
             int WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
-            fillgvRoster(RepMgrCode, WeekID);
+            fillgvRoster(MyEmpID, WeekID);
         }
 
     }
-    private void fillgvRoster(int RepMgrCode, int WeekID)
+    private void fillgvRoster(int MyEmpID, int WeekID)
     {
+        gvRoster.DataSource = null;
+        gvRoster.Columns.Clear();
+        gvRoster.DataBind();
 
-        SqlCommand cmd = new SqlCommand("[WFMP].[GetRosterInformation]");
-        cmd.Parameters.AddWithValue("@RepMgrCode", RepMgrCode);
-        // The Offset is incase the previous weeks roster needs to be replicated for today.
-
-        cmd.Parameters.AddWithValue("@WeekID", WeekID);
+        DataTable dtDates = my.GetData("Select * from [WFMP].[tblRstWeeks] where WeekId = " + WeekID);
+        DateTime FromDate = Convert.ToDateTime(dtDates.Rows[0]["FrDate"].ToString());
+        DateTime ToDate = Convert.ToDateTime(dtDates.Rows[0]["ToDate"].ToString());
+        
+        SqlCommand cmd = new SqlCommand("[WFMP].[Roster_GetEmployeeSpecificRoster]");
+        cmd.Parameters.AddWithValue("@EmpID", MyEmpID);
+        cmd.Parameters.AddWithValue("@FromDate", FromDate);
+        cmd.Parameters.AddWithValue("@ToDate", ToDate);
         dtEmp = my.GetDataTableViaProcedure(ref cmd);
-        while (dtEmp.Columns.Count > 9)
-        {
-            dtEmp.Columns.RemoveAt(9);
-        }
+
+        string[] rowFields = { "ECN", "NAME", "TEAM_LEADER" };
+        string[] columnFields = { "ShiftDate" };
+        Pivot pvt = new Pivot(dtEmp);
+        dtEmp = pvt.PivotData("ShiftCode", AggregateFunction.First, rowFields, columnFields);
+
+        
 
 
-        gvRoster.DataSource = dtEmp;
         int RowCount = dtEmp.Rows.Count;
         int ColCount = dtEmp.Columns.Count;
 
@@ -196,20 +138,26 @@ public partial class myroster : System.Web.UI.Page
         {
             colName = dtEmp.Columns[j].ColumnName;
 
-            if (DateTime.TryParseExact(colName, "dd-MMM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out colDate))
+            if (DateTime.TryParse(colName, CultureInfo.InvariantCulture, DateTimeStyles.None, out colDate))
             {
-                gvRoster.Columns[j].HeaderText = colDate.ToString("dd-MMM-yyyy");
-                
+                BoundField d = new BoundField();
+                d.DataField = colDate.ToString();
+                d.HeaderText = colDate.ToString("ddd dd-MMM-yyyy");
+                gvRoster.Columns.Add(d);
+
             }
             else
             {
-                gvRoster.Columns[j].HeaderText = colName;
-                //dtEmp.Columns[j].ColumnName = "[" + colDate.ToString("ddd, dd-MMM-yyyy") + "]";
+
+                BoundField d = new BoundField();
+                d.DataField = colName;
+                d.HeaderText = colName;
+                gvRoster.Columns.Add(d);
             }
         }
 
-        
 
+        gvRoster.DataSource = dtEmp;
         gvRoster.DataBind();
     }
 
@@ -226,41 +174,6 @@ public partial class myroster : System.Web.UI.Page
         }
     }
 
-    private int Role
-    {
-        get
-        {
-            // Am I a reviewing manager or a reporting manager
-            string strSQL_local = "Select count(*) as Teams FROM [CWFM_Umang].[WFMP].[tblMaster] A ";
-            strSQL_local += " WHERE A.RepMgrCode = " + MyEmpID + " and A.IsReportingManager = 1";
-            int countofManagersReportingToMe = my.getSingleton(strSQL_local);
 
-            if (countofManagersReportingToMe > 0)
-            {
-                return (int)role.ReviewingManager;
-            }
-            else
-            {
-                strSQL_local = "Select count(*) as Teams FROM [CWFM_Umang].[WFMP].[tblMaster] A ";
-                strSQL_local += " WHERE A.RepMgrCode = " + MyEmpID;
-                int countofReporteesReportingToMe = my.getSingleton(strSQL_local);
-                if (countofReporteesReportingToMe > 0)
-                {
-                    return (int)role.TeamManager;
-                }
-                else
-                {
-                    return (int)role.MySelf;
-                }
-            }
-        }
-        set { Role = value; }
-    }
-    private enum role
-    {
-        ReviewingManager = 3,
-        TeamManager = 2,
-        MySelf = 1
-    }
 
 }

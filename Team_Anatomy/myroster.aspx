@@ -20,10 +20,6 @@
         }
     </style>
 </asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="headmenu" runat="Server">
-</asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="leftmenu" runat="Server">
-</asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="pageheader" runat="Server">
     <ol class="breadcrumb">
         <li><a href="index.aspx"><i class="iconfa-home"></i>Home</a></li>
@@ -55,16 +51,6 @@
                 </div>
                 <div class="box-body">
                     <div class="row">
-                        <asp:Panel CssClass="col-md-3" ID="pnlAmIRvwMgr" Visible="true" runat="server">
-                            <div class="form-group">
-                                Reporting Manager
-                                        <asp:DropDownList ID="ddlRepManager" runat="server" CssClass="form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlRepManager_SelectedIndexChanged">
-                                            <asp:ListItem Selected="True" Text="None" Value="0"></asp:ListItem>
-                                        </asp:DropDownList>
-                            </div>
-                            <!-- ddlRepManager-->
-                        </asp:Panel>
-                        <!-- pnlAmIRvwMgr-->
                         <div class="col-md-3">
                             <div class="form-group">
                                 Year
@@ -103,12 +89,8 @@
                 <div class="box-body">
                     <asp:Panel ID="pnlRoster" runat="server" Visible="true">
                         <asp:GridView ID="gvRoster" runat="server" AutoGenerateColumns="false"
-                            CssClass="table table-condensed table-responsive compact hover stripe"
-                            OnPreRender="gv_PreRender" DataKeyNames="EmpID">
-                            <Columns>
-                                <asp:BoundField DataField="EmpID" HeaderText="EmpID" />
-                                <asp:BoundField DataField="EmpName" HeaderText="Name" />
-                            </Columns>
+                            CssClass="table table-condensed table-responsive compact hover stripe DataTable"
+                            OnPreRender="gv_PreRender">
                         </asp:GridView>
                     </asp:Panel>
                 </div>
@@ -125,6 +107,22 @@
 
 
 </asp:Content>
-<asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">
+<asp:Content ID="content6" runat="server" ContentPlaceHolderID="below_footer">
+
+    <!-- Select2 -->
+    <script src="AdminLTE/bower_components/select2/dist/js/select2.full.min.js"></script>
+    <script src="Sitel/plugins/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
+
+    <script>
+        $(function () {
+            //Initialize Select2 Elements
+            $('.select2').select2({
+            });
+
+
+        });
+
+    </script>
+
 </asp:Content>
 

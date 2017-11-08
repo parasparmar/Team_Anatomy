@@ -4,7 +4,7 @@
         <%--toastr--%>
     <%--<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />--%>
 
-     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" rel="stylesheet"/> 
+     <%--<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" rel="stylesheet"/>--%> 
 
     <style>
         /*.example-modal .modal {
@@ -208,7 +208,7 @@
 
 <asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">
          <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js" type="text/javascript"></script>--%>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> 
+     <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>--%> 
 
    <%-- <script type="text/javascript">
         //$(document).ready(function () {

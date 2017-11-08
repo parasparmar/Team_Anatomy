@@ -6,7 +6,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="headPlaceHolder" runat="Server">
     <%--  <link href="Sitel/plugins/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet" />
     <!-- iCheck for checkboxes and radio inputs -->
-    <link rel="stylesheet" href="AdminLTE/plugins/iCheck/all.css">--%>
+    <link rel="stylesheet" href="AdminLTE/plugins/iCheck/all.css">
     <style>
         /*#leave-box {
             display: none;
@@ -64,10 +64,6 @@
         }*/
     </style>
 
-
-    <%--<script src="../../bower_components/jquery/dist/jquery.min.js"></script>--%>
-    <!-- Bootstrap 3.3.7 -->
-    <%--<script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>--%>
 </asp:Content>
 
 
@@ -141,14 +137,14 @@
                 <asp:GridView ID="gvLeaveDetails" runat="server" CssClass="table table-bordered table-hover Datatable" OnRowDataBound="gvLeaveDetails_RowDataBound" AutoGenerateColumns="false">
 
                     <Columns>
-                        <asp:BoundField DataField="Date" HeaderText="Date"></asp:BoundField>
-                        <asp:BoundField DataField="day" HeaderText="day"></asp:BoundField>
-                        <asp:TemplateField HeaderText="Select Leave">
+                        <asp:BoundField DataField="Date" HeaderText="Date" HeaderStyle-CssClass="mid"></asp:BoundField>
+                        <asp:BoundField DataField="day" HeaderText="day" HeaderStyle-CssClass="mid"></asp:BoundField>
+                        <asp:TemplateField HeaderText="Select Leave" HeaderStyle-CssClass="mid">
                             <ItemTemplate>
                                 <asp:DropDownList ID="ddlSelectLeave" runat="server"></asp:DropDownList>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:BoundField DataField="roster" HeaderText="roster"></asp:BoundField>
+                        <%--<asp:BoundField DataField="roster" HeaderText="roster"></asp:BoundField>--%>
 
                     </Columns>
                 </asp:GridView>
@@ -241,8 +237,9 @@
 </asp:Content>
 
 <asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">
+<%--        <Link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>--%>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             var date;
@@ -412,32 +409,20 @@
                 }
             });
         };
-        //function toast() {
-        //    toastr["success"]("Hi User", "message");
-
-        //    toastr.options = {
-        //        "closeButton": false,
-        //        "debug": false,
-        //        "newestOnTop": false,
-        //        "progressBar": false,
-        //        "positionClass": "toast-top-right",
-        //        "preventDuplicates": false,
-        //        "onclick": null,
-        //        "showDuration": "300",
-        //        "hideDuration": "1000",
-        //        "timeOut": "5000",
-        //        "extendedTimeOut": "1000",
-        //        "showEasing": "swing",
-        //        "hideEasing": "linear",
-        //        "showMethod": "fadeIn",
-        //        "hideMethod": "fadeOut"
-        //    };
-        //}
+        
     </script>
-      <%--<script>
-        function openmodal() {
-            $('.modal').modal('show');
-        }
-    </script>--%>
+<%--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.1/jquery.toast.js" type="text/javascript"></script>--%>
+    
+      <script>
+          function toast() {
+              toastr.success('Have fun storming the castle!', 'Miracle Max Says');
+          }
+
+          //function show() {
+          //    $('.call').css({ 'display': 'block' });
+          //}
+    </script>
+
+        <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/1.3.1/js/toastr.js" type="text/javascript"></script>--%><%--//2.0.1--%>
 </asp:Content>
 

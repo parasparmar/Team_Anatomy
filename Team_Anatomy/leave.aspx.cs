@@ -85,7 +85,7 @@ public partial class leave : System.Web.UI.Page
         string[] seperator = { " - " };
         DateTime from_Date = Convert.ToDateTime(received.Split(seperator, StringSplitOptions.None).First<string>());
         DateTime end_Date = Convert.ToDateTime(received.Split(seperator, StringSplitOptions.None).Last<string>());
-        strsql = "select CONVERT(VARCHAR,xDate,106) as Date,'' day,'' Leave,'' Roster from [xGetdateBetween]('d','" + from_Date + "','" + end_Date + "') ";
+        strsql = "select CONVERT(VARCHAR,xDate,106) as Date,'' day,'' Leave,'' from [xGetdateBetween]('d','" + from_Date + "','" + end_Date + "') ";
         DataTable dt = my.GetData(strsql);
 
         gvLeaveDetails.DataSource = dt;
@@ -223,14 +223,15 @@ public partial class leave : System.Web.UI.Page
             xLeaveType = xDDL.SelectedValue.ToString();
 
             xDate = row.Cells[0].Text;
-            xRoster = row.Cells[3].Text;
+        //    xRoster = row.Cells[3].Text;
 
-            if (xRoster == "&nbsp;")
-            {
-                xRoster = "";
-            }
+            //if (xRoster == "&nbsp;")
+            //{
+            //    xRoster = "";
+            //}
 
-            strSQL = "INSERT INTO WFMP.tbl_datewise_leave VALUES('" + xDate + "','" + xLeaveType + "','" + xRoster + "','" + xLeaveBatchID + "')";
+            //strSQL = "INSERT INTO WFMP.tbl_datewise_leave VALUES('" + xDate + "','" + xLeaveType + "','" + xRoster + "','" + xLeaveBatchID + "')";
+            strSQL = "INSERT INTO WFMP.tbl_datewise_leave VALUES('" + xDate + "','" + xLeaveType + "','" + xLeaveBatchID + "')";
 
             try
             {
@@ -306,7 +307,8 @@ public partial class leave : System.Web.UI.Page
        int Rows= cmd.ExecuteNonQuery();
         con.Close();
         txt_cancel_reason.Text = String.Empty;
-
+        
+        //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Request Declined.', 'Success')", true);
         fillgvLeaveLog();
         if (Rows > 0) {
             //System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -328,9 +330,10 @@ public partial class leave : System.Web.UI.Page
             //ClientScript.RegisterClientScriptBlock(GetType(), "toast", "javascript: toast(); ");
             //ClientScript.RegisterStartupScript(GetType(), "toast", "javascript: toast(); ", true);/////////
 
-            //this.Page.ClientScript.RegisterClientScriptBlock(this.GetType(), "OpenPage", "<script>toast();</script>");
-            Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Cancellation is successfull.', 'Success')", true);
-
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "OpenPage", "<script>toastr.success('Have fun storming the castle!', 'Miracle Max Says');</script>", true);
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "Message", "toast();", true);
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Cancellation is successfull.')", true);
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "Message", "<script>$(document).ready(function(){ $('.call').css({ 'display': 'block' });});</script>", false);
         }
 
     }
