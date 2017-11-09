@@ -437,6 +437,12 @@
     <script>
         $(function () {
             //Date picker
+            
+            $('#tbDate_of_Birth').datepicker({
+                format: 'dd.mm.yyyy',
+                orientation: "bottom auto"
+            });
+
             $("[class*='datepicker']").datepicker({
                 autoclose: true
             })

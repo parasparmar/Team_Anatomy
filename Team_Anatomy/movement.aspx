@@ -80,7 +80,10 @@
                                     <asp:Panel ID="pnlEffectiveDate" CssClass="span" Visible="false" runat="server">
                                         <div class="form-group">
                                             <label>Effective From</label>
-                                            <asp:TextBox ID="tbEffectiveDate" CssClass="form-control datepicker" runat="server"></asp:TextBox>
+                                            <div class="input-group date">
+                                                <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                                <asp:TextBox ID="tbEffectiveDate" CssClass="form-control" runat="server"></asp:TextBox>
+                                            </div>
                                         </div>
                                     </asp:Panel>
                                 </div>
@@ -346,7 +349,17 @@
     <!-- Select2 -->
     <script src="AdminLTE/bower_components/select2/dist/js/select2.full.min.js"></script>
     <script src="Sitel/plugins/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
+    <script>
+        //Date picker
+     $(document).ready(function() {
+            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
 
+            function EndRequestHandler(sender, args) {
+                $('#tbEffectiveDate').datepicker({ dateFormat: 'dd-mm-yy' });
+            }
+
+     });
+        </script>
     <script>
         function pluginsInitializer() {
             $("#btnSubmit").attr('disabled', 'disabled');
@@ -354,11 +367,11 @@
             $('.select2').select2({
 
             });
-            //Date picker
-            $(".datepicker").datepicker({
-                autoclose: true,
-                format: 'dd-M-yyyy'
-            });
+           
+            //$('#tbEffectiveDate').datepicker({// "[class*='datepicker']"
+            //    autoclose: true,
+            //    format: 'dd-M-yyyy'
+            //});
 
             $("#cbCheckAll").change(function () {
                 var xChk = $(this).prop('checked');

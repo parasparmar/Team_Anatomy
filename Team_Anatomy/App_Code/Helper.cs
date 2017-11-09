@@ -14,11 +14,11 @@ public class Helper
 
     public Helper()
     {
-        SqlConnection mcon = new SqlConnection(getConnectionString());
-        if (mcon.State == ConnectionState.Closed || mcon.State == ConnectionState.Broken)
-        {
-            open_db();
-        }
+        //SqlConnection mcon = new SqlConnection();
+        //if (mcon.State == ConnectionState.Closed || mcon.State == ConnectionState.Broken)
+        //{
+        //    open_db();
+        //}
     }
 
     public string getConnectionString()

@@ -12,19 +12,20 @@ using System.Globalization;
 public partial class movement : System.Web.UI.Page
 {
     DataTable dt;
-    Helper my = new Helper();
+    Helper my;
     string strSQL = string.Empty;
     int MyEmpID = 0;
     TransferMode EmpTransferMode = TransferMode.NotSpecified;
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        my = new Helper();
         try
         {
             dt = Session["dtEmp"] as DataTable;
             if (dt.Rows.Count <= 0)
             {
-                Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "index.aspx",false);
+                Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "index.aspx", false);
             }
             else
             {

@@ -13,15 +13,15 @@ using System.Globalization;
 public partial class roster : System.Web.UI.Page
 {
     DataTable dtEmp;
-    Helper my = new Helper();
-    string strSQL = string.Empty;
+    Helper my;
+    private string strSQL { get; set; }
     private int MyEmpID { get; set; }
     private int MyRepMgr { get; set; }
     private int currentWeek { get; set; }
 
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        my = new Helper();
 
         if (!IsPostBack)
         {

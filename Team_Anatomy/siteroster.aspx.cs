@@ -15,7 +15,7 @@ using System.Text;
 public partial class myroster : System.Web.UI.Page
 {
     DataTable dtEmp;
-    Helper my = new Helper();
+    Helper my;
     // string strSQL { get; set; }
     private int MyEmpID { get; set; }
     private DateTime toDate { get; set; }
@@ -177,6 +177,7 @@ public partial class myroster : System.Web.UI.Page
     }
     protected void btnDownloadRoster_Click(object sender, EventArgs e)
     {
+        my = new Helper();
         string FileName = "Sitel " + ddlSite.SelectedItem.ToString() + " Roster ";
 
         string strSQL;

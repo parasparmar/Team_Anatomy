@@ -69,7 +69,7 @@
             white-space: nowrap;
         }
 
-        .datepicker{z-index:10000 !important}
+        /*.datepicker{z-index:10000 !important}*/
 
         div.divToggleButton label {
             display: block;
@@ -274,7 +274,7 @@
                                 </li>
                                 <!-- Control Sidebar Toggle Button -->
                                 <li>
-                                    <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                                    <%--<a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>--%>
                                 </li>
                             </ul>
                         </asp:ContentPlaceHolder>

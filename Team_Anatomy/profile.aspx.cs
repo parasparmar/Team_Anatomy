@@ -15,11 +15,11 @@ using System.Configuration;
 public partial class profile : System.Web.UI.Page
 {
     string myid;
-    Helper my = new Helper();
+    Helper my;
     DataTable dtEmp;
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        my = new Helper();
         if (!IsPostBack)
         {
             Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
@@ -28,7 +28,7 @@ public partial class profile : System.Web.UI.Page
         }
     }
 
-    
+
 
     protected void intialize_me()
     {
@@ -47,7 +47,7 @@ public partial class profile : System.Web.UI.Page
                 lblName.Text = dr["First_Name"].ToString() + " " + dr["Middle_Name"].ToString() + " " + dr["Last_Name"].ToString();
                 lblDesignation.Text = dr["DesignationID"].ToString();
                 lblDepartment.Text = dr["SkillSet"].ToString() + "-" + dr["SubSkillSet"].ToString();
-                lblDOJ.Text = Convert.ToDateTime(dr["DOJ"]).ToString("dd-MMMM-yyyy");
+                lblDOJ.Text = Convert.ToDateTime(dr["DOJ"]).ToString("dd-MMM-yyyy");
                 lblEmailID.Text = dr["Email_Office"].ToString();
                 lblContactNumber.Text = dr["Contact_Number"].ToString();
                 if (dr["UserImage"].ToString().Length > 0)
@@ -59,12 +59,12 @@ public partial class profile : System.Web.UI.Page
                 lblEmployee_Role.Text = dr["Job_Type"].ToString();
                 lblEmployee_Type.Text = dr["FunctionId"].ToString();
                 lblEmployee_Status.Text = dr["EmpStatus"].ToString();
-                lblUpdate_Date.Text = dr["Update_Date"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["Update_Date"].ToString()).ToString("dd-MMMM-yyyy HH:mm"); //dr["Update_Date"].ToString();
+                lblUpdate_Date.Text = dr["Update_Date"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["Update_Date"].ToString()).ToString("dd-MMM-yyyy HH:mm"); //dr["Update_Date"].ToString();
                 lblUpdated_by.Text = dr["Updated_by"].ToString();
                 lblSite.Text = dr["SiteID"].ToString();
                 /////---------------Personal Section 
                 tbGender.SelectedValue = dr["Gender"].ToString();
-                tbDate_of_Birth.Text = dr["Date_of_Birth"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["Date_of_Birth"].ToString()).ToString("dd-MMMM-yyyy");
+                tbDate_of_Birth.Text = dr["Date_of_Birth"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["Date_of_Birth"].ToString()).ToString("dd-MMM-yyyy");
                 tbHighest_Qualification.Text = dr["HighestQualification"].ToString();
                 //tbMarital_Status.Text = dr["Marital_Status"].ToString();
                 tbAnniversaryDate.Text = dr["AnniversaryDate"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["AnniversaryDate"].ToString()).ToString("dd-MMM-yyyy");
@@ -162,11 +162,17 @@ public partial class profile : System.Web.UI.Page
         string City = tbAddress_City.Text;
         string HighestQualification = tbHighest_Qualification.Text;
 
+
         DateTime Date_of_Birth;
+        if (!DateTime.TryParse(tbDate_of_Birth.Text.ToString(), out Date_of_Birth)) { tbDate_of_Birth.Text = "Not a Date"; }
         DateTime Anniversary_Date;
+        if (!DateTime.TryParse(tbAnniversaryDate.Text.ToString(), out Anniversary_Date)) { tbAnniversaryDate.Text = "Not a Date"; }
         Decimal Contact_Number;
+        if (!Decimal.TryParse(tbContact_Number.Text.ToString(), out Contact_Number)) { tbContact_Number.Text = "Not a valid Number"; }
         Decimal Alternate_Contact;
+        if (!Decimal.TryParse(tbAlternate_Contact.Text.ToString(), out Alternate_Contact)) { tbAlternate_Contact.Text = "Not a valid Number"; }
         Decimal Total_Work_Experience;
+        if (!Decimal.TryParse(tbTotal_Work_Experience.Text.ToString(), out Total_Work_Experience)) { tbTotal_Work_Experience.Text = "Not a valid Number"; }
 
 
 

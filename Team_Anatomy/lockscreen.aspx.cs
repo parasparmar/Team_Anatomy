@@ -9,10 +9,12 @@ using System.Data.SqlClient;
 
 public partial class lockscreen : System.Web.UI.Page
 {
-    Helper P = new Helper();
-    string myid = string.Empty;
+    Helper P;
+    string myid;
     protected void Page_Load(object sender, EventArgs e)
     {
+        P = new Helper();
+        myid = string.Empty;
         if (!Page.IsPostBack)
         {
             myid = Session["myid"].ToString();
