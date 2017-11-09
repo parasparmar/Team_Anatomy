@@ -10,17 +10,9 @@ using CD;
 
 public class Helper
 {
-    SqlConnection cn;
+    public Helper() { }
 
-    public Helper()
-    {
-        //SqlConnection mcon = new SqlConnection();
-        //if (mcon.State == ConnectionState.Closed || mcon.State == ConnectionState.Broken)
-        //{
-        //    open_db();
-        //}
-    }
-
+    private SqlConnection cn { get; set; }
     public string getConnectionString()
     {
         EDCryptor xEDCryptor = new EDCryptor();
@@ -84,7 +76,7 @@ public class Helper
         {
 
             // Paras 29-03-2017 : Don't close the connection here.
-            //close_conn();
+            close_conn();
 
         }
         return returnValue;
@@ -92,7 +84,7 @@ public class Helper
 
     public DataTable GetDataTableViaProcedure(ref SqlCommand cmd)
     {
-        if (cn.State == ConnectionState.Closed || cn.State == ConnectionState.Broken) { open_db(); }
+        open_db();
         DataTable dt = new DataTable();
         using (cmd)
         {
@@ -102,27 +94,22 @@ public class Helper
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             da.Fill(dt);
         }
-
+        close_conn();
         return dt;
     }
 
     public DataTable GetData(string sql)
     {
-        using (SqlConnection mcon = new SqlConnection(getConnectionString()))
+        open_db();
+        DataTable dt = new DataTable();
+        using (SqlDataAdapter da = new SqlDataAdapter(new SqlCommand(sql, cn)))
         {
-
-            DataTable dt = new DataTable();
-            using (SqlDataAdapter da = new SqlDataAdapter(new SqlCommand(sql, mcon)))
-            {
-                DataSet ds = new DataSet();
-                da.Fill(ds);
-                dt = ds.Tables[0];
-            }
-
-            //close_conn();
-            return dt;
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            dt = ds.Tables[0];
         }
-
+        close_conn();
+        return dt;
     }
 
     public DataSet return_dataset(string sql)
@@ -132,20 +119,23 @@ public class Helper
         SqlDataAdapter dap = new System.Data.SqlClient.SqlDataAdapter(new System.Data.SqlClient.SqlCommand(sql, cn));
         DataSet ds = new DataSet();
         dap.Fill(ds);
-        //close_conn();
+        close_conn();
         return ds;
     }
 
-    public void fill_listbox(ref ListBox list_name, string sp_name, string datatextfeild, string datavaluefeild, string defaultitem, string parameters)
+    public void fill_listbox(ref ListBox list_name, string sp_name, string dataTextField, string dataValueField, string defaultitem, string parameters)
     {
+        open_db();
         SqlCommand cmd = new SqlCommand();
-        SqlDataAdapter dap = new SqlDataAdapter();
-        DataSet ds = new DataSet();
+        cmd.CommandText = sp_name;
+        cmd.Connection = cn;
+        
+        
 
         try
         {
-            ExecuteDMLCommand(ref cmd, sp_name, "S");
-            //----------------------- Addning Muiltipal Parameters with there values by split using '#'.
+            //ExecuteDMLCommand(ref cmd, sp_name, "S");
+            //----------------------- Adding multiple Parameters with there values by split using '#'.
             if (parameters.Trim() != "")
             {
                 string[] multiple_parameter = parameters.Split(',');
@@ -156,7 +146,8 @@ public class Helper
                     cmd.Parameters.AddWithValue("@" + para_name, para_value);
                 }
             }
-
+            SqlDataAdapter dap = new SqlDataAdapter(cmd);
+            DataSet ds = new DataSet();
             dap.SelectCommand = cmd;
             dap.Fill(ds);
 
@@ -168,8 +159,8 @@ public class Helper
                 ds.Tables[0].Rows.Add(dr);
             }
             list_name.DataSource = ds.Tables[0];
-            list_name.DataTextField = datatextfeild;
-            list_name.DataValueField = datavaluefeild;
+            list_name.DataTextField = dataTextField;
+            list_name.DataValueField = dataValueField;
             list_name.DataBind();
 
 
@@ -184,9 +175,7 @@ public class Helper
             Log.thisException(e);
         }
         finally
-        {
-            dap.Dispose();
-            ds.Dispose();
+        {            
             close_conn();
         }
 
@@ -194,6 +183,7 @@ public class Helper
 
     public void fill_gridview(ref GridView gridname, string sql_string)
     {
+        open_db();
         SqlCommand cmd = new SqlCommand();
         SqlDataAdapter dap = new SqlDataAdapter();
         DataSet ds = new DataSet();
@@ -253,6 +243,7 @@ public class Helper
         SqlCommand cmd = new SqlCommand(strSQL, cn);
         var the_result = cmd.ExecuteScalar();
         int result = 0;
+        close_conn();
         if (Int32.TryParse(the_result.ToString(), out result))
         {
             return result;
@@ -261,22 +252,22 @@ public class Helper
         {
             return 0;
         };
+
     }
 
     public void fill_dropdown(Control drp_name, string sp_name, string datatextfield, string datavaluefield, string defaultitem, string parameters, string tran_type)
     {
-
+        open_db();        
         SqlCommand cmd = new SqlCommand(sp_name, cn);
         cmd.CommandType = CommandType.StoredProcedure;
-        SqlDataAdapter dap = new SqlDataAdapter();
-        DataSet ds = new DataSet();
+        
 
         try
         {
             DropDownList v = (DropDownList)drp_name;
-
-            ExecuteDMLCommand(ref cmd, sp_name, tran_type);
-            //----------------------- Addning Muiltipal Parameters with there values by split using '#' only if it is stored procedure.
+            
+        
+            //----------------------- Adding multiple Parameters with there values by split using '#' only if it is stored procedure.
             if (tran_type == "S")
             {
                 if (parameters.Trim() != "")
@@ -290,8 +281,9 @@ public class Helper
                     }
                 }
             }
-
+            SqlDataAdapter dap = new SqlDataAdapter(cmd);
             dap.SelectCommand = cmd;
+            DataSet ds = new DataSet();            
             dap.Fill(ds);
 
 
@@ -321,16 +313,14 @@ public class Helper
             Log.thisException(e);
         }
         finally
-        {
-            dap.Dispose();
-            ds.Dispose();
+        {            
             close_conn();
         }
     }
 
     public void append_dropdown(ref DropDownList drp_name, string sp_name, int TextPosition, int ValuePosition)
     {
-
+        open_db();
 
         using (SqlCommand cmd = new SqlCommand(sp_name, cn))
         {
@@ -349,6 +339,10 @@ public class Helper
                 catch (Exception Ex)
                 {
                     Console.Write(Ex.Message.ToString());
+                }
+                finally
+                {
+                    close_conn();
                 }
             }
         }

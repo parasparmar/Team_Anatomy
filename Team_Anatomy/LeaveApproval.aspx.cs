@@ -17,13 +17,13 @@ using System.Web.Script.Serialization;
 public partial class LeaveApproval : System.Web.UI.Page
 {
     DataTable dt;
-    Helper my = new Helper();
-    string strSQL = string.Empty;
-    int MyEmpID = 0;//
+    Helper my;
+    string strSQL;
+    int MyEmpID;
 
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        my = new Helper();
         try
         {
             dt = (DataTable)Session["dtEmp"];

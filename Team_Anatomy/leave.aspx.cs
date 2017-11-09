@@ -18,13 +18,13 @@ using System.Net;
 public partial class leave : System.Web.UI.Page
 {
     DataTable dt;
-    Helper my = new Helper();
-    string strsql = string.Empty;
-    int MyEmpID = 0;
+    Helper my;
+    string strsql;
+    int MyEmpID;
 
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        my = new Helper();
         try
         {
             dt = Session["dtEmp"] as DataTable;
@@ -37,10 +37,11 @@ public partial class leave : System.Web.UI.Page
                 // In Production Use the below
                 MyEmpID = Convert.ToInt32(dt.Rows[0]["Employee_Id"].ToString());
 
-                    if(!Int32.TryParse(MyEmpID.ToString(), out MyEmpID)){
-                        Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "index.aspx", false);
-                    }
-                
+                if (!Int32.TryParse(MyEmpID.ToString(), out MyEmpID))
+                {
+                    Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "index.aspx", false);
+                }
+
             }
 
         }
