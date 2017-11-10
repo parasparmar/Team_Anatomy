@@ -13,15 +13,15 @@ using System.Globalization;
 public partial class myroster : System.Web.UI.Page
 {
     DataTable dtEmp;
-    Helper my = new Helper();
-    string strSQL = string.Empty;
+    Helper my;
+    string strSQL;
     private int MyEmpID { get; set; }
     private int MyRepMgr { get; set; }
     private int currentWeek { get; set; }
 
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        my = new Helper();
 
         if (!IsPostBack)
         {
@@ -35,7 +35,7 @@ public partial class myroster : System.Web.UI.Page
                 else
                 {
                     // In Production Use the below
-                    MyEmpID = Convert.ToInt32(dtEmp.Rows[0]["Employee_Id"].ToString());
+                    this.MyEmpID = Convert.ToInt32(dtEmp.Rows[0]["Employee_Id"].ToString());
                     MyRepMgr = Convert.ToInt32(dtEmp.Rows[0]["RepMgrCode"].ToString());
                     currentWeek = my.getSingleton("SELECT [WeekId] FROM [CWFM_Umang].[WFMP].[tblRstWeeks] where GETDATE() between FrDate and ToDate");
                 }
@@ -48,6 +48,21 @@ public partial class myroster : System.Web.UI.Page
             Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
             title.Text = "My Roster";
             fillddlYear();
+        }
+        else
+        {
+            dtEmp = (DataTable)Session["dtEmp"];
+            if (dtEmp.Rows.Count <= 0)
+            {
+                Response.Redirect("index.aspx", false);
+            }
+            else
+            {
+                // In Production Use the below
+                this.MyEmpID = Convert.ToInt32(dtEmp.Rows[0]["Employee_Id"].ToString());
+                MyRepMgr = Convert.ToInt32(dtEmp.Rows[0]["RepMgrCode"].ToString());
+                currentWeek = my.getSingleton("SELECT [WeekId] FROM [CWFM_Umang].[WFMP].[tblRstWeeks] where GETDATE() between FrDate and ToDate");
+            }
         }
     }
 
@@ -83,7 +98,7 @@ public partial class myroster : System.Web.UI.Page
         if (ddlWeek.SelectedValue.Length > 0 && ddlYear.SelectedValue != "0")
         {
             int WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
-            fillgvRoster(MyEmpID, WeekID);
+            fillgvRoster(this.MyEmpID, WeekID);
         }
 
 
@@ -96,9 +111,9 @@ public partial class myroster : System.Web.UI.Page
         ltlRosterHeading.Text = "Week : " + ddlWeek.SelectedItem.Text;
         if (ddlWeek.SelectedValue.Length > 0 && ddlYear.SelectedValue != "0")
         {
-            int RepMgrCode = MyRepMgr;
+
             int WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
-            fillgvRoster(MyEmpID, WeekID);
+            fillgvRoster(this.MyEmpID, WeekID);
         }
 
     }
@@ -111,9 +126,9 @@ public partial class myroster : System.Web.UI.Page
         DataTable dtDates = my.GetData("Select * from [WFMP].[tblRstWeeks] where WeekId = " + WeekID);
         DateTime FromDate = Convert.ToDateTime(dtDates.Rows[0]["FrDate"].ToString());
         DateTime ToDate = Convert.ToDateTime(dtDates.Rows[0]["ToDate"].ToString());
-        
+
         SqlCommand cmd = new SqlCommand("[WFMP].[Roster_GetEmployeeSpecificRoster]");
-        cmd.Parameters.AddWithValue("@EmpID", MyEmpID);
+        cmd.Parameters.AddWithValue("@EmpID", this.MyEmpID);
         cmd.Parameters.AddWithValue("@FromDate", FromDate);
         cmd.Parameters.AddWithValue("@ToDate", ToDate);
         dtEmp = my.GetDataTableViaProcedure(ref cmd);
@@ -123,7 +138,7 @@ public partial class myroster : System.Web.UI.Page
         Pivot pvt = new Pivot(dtEmp);
         dtEmp = pvt.PivotData("ShiftCode", AggregateFunction.First, rowFields, columnFields);
 
-        
+
 
 
         int RowCount = dtEmp.Rows.Count;

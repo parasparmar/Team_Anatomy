@@ -14,12 +14,10 @@
     <link rel="stylesheet" href="AdminLTE/bower_components/bootstrap/dist/css/bootstrap.min.css">
 
     <!----------Toastr----------------->
-    <%--<link href="Sitel/plugins/Toastr/toastr.min.css" rel="stylesheet" />--%>
-        <%--<Link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.1/jquery.toast.css" rel="stylesheet" />--%>
+    
    <Link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
     <!-- bootstrap datepicker -->
     <link href="AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
-     <%--<link rel="stylesheet" href="../../bower_components/bootstrap-daterangepicker/daterangepicker.css">--%>
     <link rel="stylesheet" href="AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
 
     <!-- Font Awesome -->
@@ -31,14 +29,14 @@
     <link rel="stylesheet" href="AdminLTE/bower_components/select2/dist/css/select2.min.css">
 
     <link rel="stylesheet" href="AdminLTE/dist/css/AdminLTE.css">
-    <!-- AdminLTE Skins. Choose a skin from the css/skins
-       folder instead of downloading all of them to reduce the load. -->
+    <!-- AdminLTE Skins. Choose a skin from the css/ folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="AdminLTE/dist/css/skins/_all-skins.min.css">
     <!-- DataTables -->
-    <%--<link rel="stylesheet" href="/AdminLTE/bower_components/DataTables.net-bs/css/DataTables.bootstrap.min.css">--%>
+  
 
-    <link href="CDN/code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" /><%--<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />--%>
-    <link href="CDN/cdn.datatables.net/1.10.15/css/dataTables.jqueryui.min.css" rel="stylesheet" /><%--<link rel="stylesheet" href="https://cdn.DataTables.net/1.10.15/css/DataTables.jqueryui.min.css" />--%>
+    <link href="CDN/code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+    <link href="CDN/cdn.datatables.net/1.10.15/css/dataTables.jqueryui.min.css" rel="stylesheet" />
+
 
     <!-- bootstrap datepicker -->
     <link href="AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
@@ -287,7 +285,7 @@
                 <aside class="main-sidebar">
                     <!-- sidebar: style can be found in sidebar.less -->
                     <section class="sidebar">
-                        <!-- Sidebar user panel -->                        
+                        <!-- Sidebar user panel -->
                         <!-- search form -->
                         <div class="sidebar-form">
                             <div class="input-group">
@@ -632,11 +630,9 @@
 
     </div>
 
-    
+
 
     <!-- DataTables -->
-    
-    
 
     <script src="CDN/cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script><%--<script src="https://cdn.DataTables.net/1.10.15/js/jquery.DataTables.min.js"></script>--%>
     <script src="CDN/cdn.datatables.net/1.10.15/js/dataTables.jqueryui.min.js"></script><%--<script src="https://cdn.DataTables.net/1.10.15/js/DataTables.jqueryui.min.js"></script>--%>
@@ -691,15 +687,7 @@
                     { extend: 'csvHtml5', text: 'Export to CSV' },
                     { extend: 'pdfHtml5', text: 'Export to PDF' },
                 ],
-                //"rowCallback": function (row, data, index) {
-                //    if (index % 2 == 0) {
-                //        $(row).removeClass('odd even');
-                //        $(row).addClass('myodd');
-                //    } else {
-                //        $(row).removeClass('odd even');
-                //        $(row).addClass('myeven');
-                //    }
-                //}
+
 
             });
         });

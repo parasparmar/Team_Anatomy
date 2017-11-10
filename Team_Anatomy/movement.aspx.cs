@@ -11,14 +11,15 @@ using System.Globalization;
 
 public partial class movement : System.Web.UI.Page
 {
-    DataTable dt;
-    Helper my;
-    string strSQL = string.Empty;
-    int MyEmpID = 0;
-    TransferMode EmpTransferMode = TransferMode.NotSpecified;
+    private DataTable dt { get; set; }
+    private Helper my { get; set; }
+    private string strSQL { get; set; }
+    private int MyEmpID { get; set; }
+    private TransferMode EmpTransferMode{get;set;}
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        EmpTransferMode = TransferMode.NotSpecified;
         my = new Helper();
         try
         {

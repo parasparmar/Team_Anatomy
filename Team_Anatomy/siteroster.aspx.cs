@@ -22,7 +22,7 @@ public partial class myroster : System.Web.UI.Page
     private DateTime fromDate { get; set; }
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        my = new Helper();
 
         if (!IsPostBack)
         {
@@ -61,8 +61,8 @@ public partial class myroster : System.Web.UI.Page
         strSQL += " FROM [CWFM_Umang].[WFMP].[tblMappingMst] A ";
         strSQL += " Left Join [CWFM_Umang].[WFMP].[tblCountry] B on B.TransID = A.CountryID ";
         strSQL += " Left Join [CWFM_Umang].[WFMP].[tblSite] C on C.TransID = A.SiteID ";
-
-        DataTable dt = my.GetData(strSQL);
+        DataTable dt = new DataTable();
+        dt = my.GetData(strSQL);
         ddlCountry.DataSource = dt;
         ddlCountry.DataTextField = "Country";
         ddlCountry.DataValueField = "CountryID";

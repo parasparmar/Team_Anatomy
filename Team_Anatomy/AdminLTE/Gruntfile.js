@@ -8,11 +8,11 @@ module.exports = function (grunt) { // jshint ignore:line
       less : {
         // Compiles less files upon saving
         files: ['build/less/*.less'],
-        tasks: ['less:development', 'less:production', 'notify:less']
+        tasks: ['less:development', 'less:production', 'replace', 'notify:less']
       },
       js   : {
         // Compile js files upon saving
-        files: ['build/js/*.js', 'dist/js/app.js'],
+        files: ['build/js/*.js'],
         tasks: ['js', 'notify:js']
       },
       skins: {
@@ -117,7 +117,6 @@ module.exports = function (grunt) { // jshint ignore:line
       },
       production: {
         files: {
-          'dist/js/app.min.js'     : ['dist/js/app.js'],
           'dist/js/adminlte.min.js': ['dist/js/adminlte.js']
         }
       }
@@ -147,15 +146,40 @@ module.exports = function (grunt) { // jshint ignore:line
       },
       dist   : {
         src : [
+          'build/js/BoxRefresh.js',
+          'build/js/BoxWidget.js',
+          'build/js/ControlSidebar.js',
+          'build/js/DirectChat.js',
           'build/js/Layout.js',
           'build/js/PushMenu.js',
-          'build/js/Tree.js',
-          'build/js/ControlSidebar.js',
-          'build/js/BoxWidget.js',
           'build/js/TodoList.js',
-          'build/js/DirectChat.js'
+          'build/js/Tree.js'
         ],
         dest: 'dist/js/adminlte.js'
+      }
+    },
+
+    // Replace image paths in AdminLTE without plugins
+    replace: {
+      withoutPlugins   : {
+        src         : ['dist/css/alt/AdminLTE-without-plugins.css'],
+        dest        : 'dist/css/alt/AdminLTE-without-plugins.css',
+        replacements: [
+          {
+            from: '../img',
+            to  : '../../img'
+          }
+        ]
+      },
+      withoutPluginsMin: {
+        src         : ['dist/css/alt/AdminLTE-without-plugins.min.css'],
+        dest        : 'dist/css/alt/AdminLTE-without-plugins.min.css',
+        replacements: [
+          {
+            from: '../img',
+            to  : '../../img'
+          }
+        ]
       }
     },
 
@@ -272,11 +296,15 @@ module.exports = function (grunt) { // jshint ignore:line
   grunt.loadNpmTasks('grunt-contrib-concat')
   // Notify
   grunt.loadNpmTasks('grunt-notify')
+  // Replace
+  grunt.loadNpmTasks('grunt-text-replace')
 
   // Linting task
   grunt.registerTask('lint', ['jshint', 'csslint', 'bootlint'])
   // JS task
   grunt.registerTask('js', ['concat', 'uglify'])
+  // CSS Task
+  grunt.registerTask('css', ['less:development', 'less:production', 'replace'])
 
   // The default task (running 'grunt' in console) is 'watch'
   grunt.registerTask('default', ['watch'])

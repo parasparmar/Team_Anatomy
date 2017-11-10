@@ -286,7 +286,8 @@ public partial class roster : System.Web.UI.Page
     }
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
-
+        string toastr_script = "toastr.info('Please wait while the roster uploads.','Roster Compliance Checks: Begin', {closeButton:'false',debug:'false',newestOnTop:'true',progressBar:'true',positionClass:'toast-top-right',preventDuplicates:'true',onclick:null,showDuration: 300,  hideDuration: 1000,  timeOut: 5000,  extendedTimeOut: 1000,  showEasing: 'swing',  hideEasing: 'linear',  showMethod: 'fadeIn',  hideMethod: 'fadeOut'});";
+        Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message5", toastr_script, true);
         int RepMgrCode = Convert.ToInt32(ddlRepManager.SelectedValue);
         int WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
         int UpdatedBy = MyEmpID;
@@ -330,7 +331,7 @@ public partial class roster : System.Web.UI.Page
                         }
                         // Before an update to db, check for rules compliance
                         bool RosterRulesCompliance = isRosterRuleCompliant(ref ListOfR);
-                        
+
                         if (RosterRulesCompliance)
                         {
                             foreach (RosterRecord R in ListOfR)
@@ -372,18 +373,14 @@ public partial class roster : System.Web.UI.Page
                                 }
                             }
                             int rowsAffected = da.Update(X);
+
+                            Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message1", "toastr.success('The Roster has been successfully uploaded.','Roster Compliance Checks: Passed')", true);
                         }
                         else
                         {
-                            // in case of non compliance, point out to the user, reason for non compliance.
-                            var nonCompliantRosterees = ListOfR.Where(i => i.rules_WorkOffCompliance == false);
-                            foreach (var ncr in nonCompliantRosterees)
-                            {
-                                int emp = ncr.EmpCode;
-                                DateTime rDate = ncr.rDate;
 
-                            }
-
+                          
+                            Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message2", "toastr.error('Work-offs are not in compliance with policy: Minimum 1, Maximum 2 WO per week.','Upload Aborted!')", true);
                         }
                     }
                 }
@@ -510,7 +507,7 @@ public partial class roster : System.Web.UI.Page
         if (gvRoster.Rows.Count > 0)
         {
             loadApprovedLeaves();
-
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message3", "toastr.info('Leaves Approved at the Second Level have been loaded.','Approved Leaves Loaded')", true);
         }
     }
     protected void btnCancelledLeaves_Click(object sender, EventArgs e)
@@ -572,6 +569,11 @@ public partial class roster : System.Web.UI.Page
             btnCancelledLeaves.Text = "Load Cancelled Leaves";
             cbxCancelledLeaves.Checked = true;
         }
+
+        btnCancelledLeaves.CssClass = "btn btn-flat btn-warning form-control";
+        cbxCancelledLeaves.Checked = true;
+
+        Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message4", "toastr.info('Leaves cancelled by the employee have been loaded.','Cancelled Leaves Loaded')", true);
     }
     private int Role
     {

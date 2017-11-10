@@ -11,7 +11,6 @@ using CD;
 public class Helper
 {
     public Helper() { }
-
     private SqlConnection cn { get; set; }
     public string getConnectionString()
     {
@@ -20,7 +19,6 @@ public class Helper
         xString = xEDCryptor.DeCrypt(xString);
         return xString;
     }
-
     public void open_db()
     {
 
@@ -38,7 +36,6 @@ public class Helper
             Log.thisException(e);
         }
     }
-
     public void close_conn()
     {
         if (cn.State == ConnectionState.Open)
@@ -47,7 +44,6 @@ public class Helper
             cn.Dispose();
         }
     }
-
     public int ExecuteDMLCommand(ref SqlCommand cmd, string sql_string, string operation)
     {
         open_db();
@@ -81,7 +77,6 @@ public class Helper
         }
         return returnValue;
     }
-
     public DataTable GetDataTableViaProcedure(ref SqlCommand cmd)
     {
         open_db();
@@ -97,7 +92,6 @@ public class Helper
         close_conn();
         return dt;
     }
-
     public DataTable GetData(string sql)
     {
         open_db();
@@ -111,7 +105,6 @@ public class Helper
         close_conn();
         return dt;
     }
-
     public DataSet return_dataset(string sql)
     {
         open_db();
@@ -122,7 +115,6 @@ public class Helper
         close_conn();
         return ds;
     }
-
     public void fill_listbox(ref ListBox list_name, string sp_name, string dataTextField, string dataValueField, string defaultitem, string parameters)
     {
         open_db();
@@ -180,7 +172,6 @@ public class Helper
         }
 
     }
-
     public void fill_gridview(ref GridView gridname, string sql_string)
     {
         open_db();
@@ -226,7 +217,6 @@ public class Helper
             close_conn();
         }
     }
-
     public void set_pageheading(string heading, Page pagename)
     {
         Label lblheading = (Label)pagename.Master.FindControl("lblheading");
@@ -236,7 +226,6 @@ public class Helper
             lblheading.Text = heading;
         }
     }
-
     public int getSingleton(string strSQL)
     {
         open_db();
@@ -254,7 +243,6 @@ public class Helper
         };
 
     }
-
     public void fill_dropdown(Control drp_name, string sp_name, string datatextfield, string datavaluefield, string defaultitem, string parameters, string tran_type)
     {
         open_db();        
@@ -317,7 +305,6 @@ public class Helper
             close_conn();
         }
     }
-
     public void append_dropdown(ref DropDownList drp_name, string sp_name, int TextPosition, int ValuePosition)
     {
         open_db();

@@ -439,7 +439,7 @@
             //Date picker
             
             $('#tbDate_of_Birth').datepicker({
-                format: 'dd.mm.yyyy',
+                format: 'dd-MM-yyyy',
                 orientation: "bottom auto"
             });
 

@@ -145,7 +145,6 @@
                             </ItemTemplate>
                         </asp:TemplateField>
                         <%--<asp:BoundField DataField="roster" HeaderText="roster"></asp:BoundField>--%>
-
                     </Columns>
                 </asp:GridView>
 
@@ -237,7 +236,7 @@
 </asp:Content>
 
 <asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">
-<%--        <Link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <%--        <Link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
      <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>--%>
 
     <script type="text/javascript">
@@ -249,7 +248,7 @@
                 $.ajax({
                     type: "post",
                     dataType: "json",
-                    data:{},
+                    data: {},
                     contentType: "application/json; charset=utf-8",
                     url: "leave.aspx/getDates",
                     async: true,
@@ -270,17 +269,11 @@
             }
             var leave_id; var btn; var status;
             $(".btn-danger").click(function (e) {
-                //
                 e.preventDefault();
-                //alert("1");
                 btn = $(this);
                 $(".modal").modal("show");//.modal
                 leave_id = $(this).closest('tr').find('td:nth-child(7)').text();
                 $('#lblLeaveID').val(leave_id);
-                //alert(leave_id);
-                //$("#modal-danger").css({ "display": "block" });
-                //alert("2");
-                //$("#modal-danger").css({ "display": "block" }); alert("2");
 
             });
 
@@ -305,32 +298,19 @@
                         contentType: "application/json; charset=utf-8",
                         dataType: "json",
                         success: function (Record) {
-                            //disable();
-                            //alert("done");
                             $("#txt_cancel_reason").val("");
-                            //alert(btn.attr("class"));
-                            //btn.addClass("disabled");
-                            //$("#btn_Cancel").addClass("disabled");
                         },
                         error: function (Record) {
                             alert("Error: " + Record.d);
                         }
                     });
-                    //function disable() {
-                    //$("#btn_Cancel").attr("class", "btn btn-sm btn-danger disabled");
-                    //}
-                    //alert(btn.attr("class"));
+
                 }
             });
         });
 
-  
-        function pluginsInitializer() {
-            //var x = 1;
-            //$("#btn_proceed").click(function () {
-            //    $("#leave-box").css({ "display": "block" });
-            //});
 
+        function pluginsInitializer() {
             $("#gvLeaveLog tbody tr").each(function () {
                 $(this).find("th:nth-child(7)").hide();
                 $(this).find("th:nth-child(8)").hide();
@@ -345,51 +325,21 @@
                 $(this).find("td:nth-child(10)").hide();
             });
 
-            //$('#reservation').daterangepicker({
-            //    minDate: new Date(),
-            //});
-
             $('#reservation').daterangepicker({ format: 'DD-MMM-YYYY' })
-            //$('#reservation').change(function () {
-            //    var x = $('#reservation').val();
-
-            //    y = moment(x.substr(0, 10).trim()).format('DD-MMM-YYYY');
-            //    z = moment(x.substr(13, 10).trim()).format('DD-MMM-YYYY');
-
-            //    $('#reservation').val(y + ' - ' + z);
-            //})
-
-
 
             //Date range picker
-           
 
             $('#reservation').on('apply.daterangepicker', function (ev, picker) {
-                //var startdate = Thedate();
-                var startdate=picker.endDate.format('DD-MMM-YYYY');
+                var startdate = picker.endDate.format('DD-MMM-YYYY');
                 var enddate = picker.endDate.format('DD-MMM-YYYY');
                 picker.minDate = startdate;
                 picker.maxDate = enddate;
-
-                //alert("startdate: "+startdate + " enddate: "+ enddate);
             });
-
-
-
-
         }
-
-
-        //function xShowModal() {
-        //    $(".modal").modal("show");
-        //}
-
 
         $(function () {
             pluginsInitializer();
         });
-
-
 
         //On UpdatePanel Refresh
         var prm = Sys.WebForms.PageRequestManager.getInstance();
@@ -409,20 +359,13 @@
                 }
             });
         };
-        
-    </script>
-<%--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.1/jquery.toast.js" type="text/javascript"></script>--%>
-    
-      <script>
-          function toast() {
-              toastr.success('Have fun storming the castle!', 'Miracle Max Says');
-          }
 
-          //function show() {
-          //    $('.call').css({ 'display': 'block' });
-          //}
     </script>
+    <script>
+        function toast() {
+            toastr.success('Have fun storming the castle!', 'Miracle Max Says');
+        }
 
-        <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/1.3.1/js/toastr.js" type="text/javascript"></script>--%><%--//2.0.1--%>
+    </script>
 </asp:Content>
 

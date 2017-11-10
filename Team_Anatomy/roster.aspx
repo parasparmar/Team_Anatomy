@@ -281,7 +281,23 @@
                 format: 'dd-M-yyyy'
             });
 
-
+            //$().toastr({
+            //    "closeButton": false,
+            //    "debug": false,
+            //    "newestOnTop": false,
+            //    "progressBar": true,
+            //    "positionClass": "toast-top-right",
+            //    "preventDuplicates": true,
+            //    "onclick": null,
+            //    "showDuration": "300",
+            //    "hideDuration": "1000",
+            //    "timeOut": "5000",
+            //    "extendedTimeOut": "1000",
+            //    "showEasing": "swing",
+            //    "hideEasing": "linear",
+            //    "showMethod": "fadeIn",
+            //    "hideMethod": "fadeOut"
+            //});
 
             // Replication Code for Columns. 
             //03-Sep-2017 2.24 AM In Production support : paras.parmar@sitel.com

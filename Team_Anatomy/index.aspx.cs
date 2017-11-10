@@ -10,6 +10,7 @@ using System.Data.Sql;
 
 public partial class index : System.Web.UI.Page
 {
+
     string myID;
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -24,11 +25,13 @@ public partial class index : System.Web.UI.Page
         {
 
             Helper my = new Helper();
+            
             DataTable dt = my.GetData("WFMP.getEmployeeData '" + myID + "'");
             try
             {
                 if (dt.Rows.Count > 0)
                 {
+                    
                     Session["dtEmp"] = dt;
 
                     Response.Redirect("profile.aspx", false);
