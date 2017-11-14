@@ -235,7 +235,7 @@
     </script>--%>
     <script type="text/javascript">
         function toastA() {
-            toastr.success('Leave Approved', 'Success');
+            toastr.success('Leave Approved');//, 'Success'
             toastr.options = {
                 "showDuration": "0",
                 "hideDuration": "0",
@@ -247,7 +247,7 @@
             alert("Please enter comments");
         }
         function toastD() {
-            toastr.success('Leave Declined', 'Success');
+            toastr.success('Leave Declined');//, 'Success'
             toastr.options = {
                 "showDuration": "0",
                 "hideDuration": "0",

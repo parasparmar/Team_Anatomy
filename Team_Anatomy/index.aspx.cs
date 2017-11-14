@@ -34,7 +34,7 @@ public partial class index : System.Web.UI.Page
                     
                     Session["dtEmp"] = dt;
 
-                    Response.Redirect("profile.aspx", false);
+                    Response.Redirect("movement.aspx", false);
                 }
                 else
                 {

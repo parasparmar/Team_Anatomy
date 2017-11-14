@@ -172,12 +172,12 @@ public partial class LeaveApproval : System.Web.UI.Page
 
     protected void btn_appr_Click(object sender, EventArgs e)
     {
-        if (txt_reason.Text.ToString() == string.Empty)
-        {
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "a", "Alert();", true);
-        }
-        else
-        {
+        //if (txt_reason.Text.ToString() == string.Empty)
+        //{
+        //    ScriptManager.RegisterStartupScript(this, this.GetType(), "a", "Alert();", true);
+        //}
+        //else
+        //{
             //string ival = lblLeaveID.Text .TrimEnd(char[,] trimChars).ToString();
             string val = lblLeaveID.Text.ToString();
             //char trim = (',');
@@ -211,7 +211,7 @@ public partial class LeaveApproval : System.Web.UI.Page
             Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave is approved.')", true);
             //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave is approved.', 'Success')", true);
             fillddlRepManager();
-        }
+        //}
 
     }
     protected void btn_dec_Click(object sender, EventArgs e)

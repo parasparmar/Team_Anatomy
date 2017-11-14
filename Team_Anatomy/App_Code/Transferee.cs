@@ -58,7 +58,7 @@ public class Transferee
         dt = my.GetData(strSQL);
         rowsAffected = dt.Rows.Count;
 
-        if (rowsAffected==0)
+        if (rowsAffected == 0)
         {
             // For this EmpID, Unfinished movements (not approved or not declined ones) donot exist.
             rowsAffected = InsertToDB();
@@ -101,7 +101,7 @@ public class Transferee
             // For this EmpID, Unfinished movements (not approved or not declined ones) donot exist.
             rowsAffected = InsertToDB();
         }
-        else 
+        else
         {
             // Unfinished movements exist for this empID. The Department movement cannot proceed.
             rowsAffected = 0;
@@ -109,13 +109,19 @@ public class Transferee
         //rowsAffected = InsertToDB();
         return rowsAffected;
     }
+    public int ApproveTransfer()
+    {
 
-    public int ApproveTransfer() { return 0; }
+        return 0;
+    }
     private int InsertToDB()
     {
         string strSQL = "INSERT INTO [CWFM_Umang].[WFMP].[tbltrans_Movement]([FromDptLinkMstId],[ToDptLinkMstId],[FromMgr],[ToMgr],[EmpId],[Type] ";
         strSQL += " ,[State],[InitBy],[EffectiveDate],[UpdaterID],[UpdatedOn]) ";
         strSQL += " VALUES (@FromDptLinkMstId,@ToDptLinkMstId, @FromMgr,@ToMgr,@EmpId,@Type,@State,@InitBy,@EffectiveDate,@UpdaterID,@UpdatedOn)";
+        // We are initiating a transfer. The direction and type of transfer is already specified.
+        // However the state is supposed to be "Initiated" ie:1
+        this.State = 1;
 
         SqlCommand cmd = new SqlCommand(strSQL);
         cmd.Parameters.AddWithValue("@FromDptLinkMstId", FromDptLinkMstId);
