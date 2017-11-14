@@ -270,8 +270,8 @@
                                             <%--<div class="pull-left">
                                                 <a href="#" class="btn btn-default btn-flat">Profile</a>
                                             </div>--%>
-                                            <div><%--class="pull-right"--%>
-                                                <a href="#" class="btn btn-default btn-flat" style="width:100%">Sign out</a>
+                                            <div><%-- class="pull-right"--%>
+                                                <a href="#" class="btn btn-default btn-flat form-control">Sign out</a>
                                             </div>
                                         </li>
                                     </ul>
@@ -316,12 +316,20 @@
                                 <a href="team.aspx">
                                     <i class="fa fa-users"></i><span>My Team</span>
                                 </a>
-                            </li>
-                            <li>
-                                <a href="movement.aspx">
-                                    <i class="fa fa-random"></i><span>Movement</span>
+                            </li>                            
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-random"></i><span>Movements</span>
+                                    <span class="pull-right-container" style="margin-top: 0px;">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
                                 </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="movement.aspx"><i class="fa fa-random"></i><span>Movement</span></a></li>
+                                    <li><a href="TransferActions.aspx"><i class="fa fa-plus-square"></i><span>Transfer Actions</span></a></li>
+                                </ul>
                             </li>
+
                             <li class="treeview">
                                 <a href="#">
                                     <i class="fa fa-plane"></i><span>Leaves</span>

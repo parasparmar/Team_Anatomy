@@ -43,7 +43,7 @@
     <asp:UpdatePanel ID="UpdatePanel1" runat="server" EnableViewState="true" UpdateMode="Conditional">
         <ContentTemplate>
             <div class="row-fluid">
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <!-- Custom Tabs -->
                     <div class="box box-solid box-primary" style="height: auto;">
                         <div class="box-header with-border">
@@ -56,7 +56,7 @@
                         </div>
                         <div class="box-body">
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-4">
                                     <div id="divDepMovement" runat="server" class="input-group">
                                         <span class="input-group-addon">
                                             <asp:RadioButton ID="rdoDeptMovement" runat="server" GroupName="Movement" CssClass="flat-red"
@@ -87,7 +87,7 @@
                                         </div>
                                     </asp:Panel>
                                 </div>
-                                <div class="col-md-5">
+                                <div class="col-md-4">
                                     <asp:Panel ID="pnlMgrActions" CssClass="span" Visible="false" runat="server">
                                         <%--<input type="checkbox" checked runat="server" id="cbxTransferDirection" class="checkbox2ToggleSwitch" data-toggle="toggle" data-off="Transfer In" data-on="Transfer Out" />--%>
                                         <div class="input-group">

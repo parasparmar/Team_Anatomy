@@ -54,10 +54,6 @@ public partial class movement : System.Web.UI.Page
         DepartmentTransferIn = 4,
     }
 
-    protected void btnReset_Click(object sender, EventArgs e)
-    {
-
-    }
     protected void btnMgrMovement_Click(object sender, EventArgs e)
     {
         MovementHandler(MovementType.Manager);
@@ -127,7 +123,7 @@ public partial class movement : System.Web.UI.Page
                     string depmgrvalue = ddlDepartmentManager.SelectedValue.ToString();
                     if (depmgrvalue == "0" || depmgrvalue == null || string.IsNullOrEmpty(depmgrvalue))
                     {
-                        MyEmpID = 923563;
+                       // MyEmpID = 923563;
                     }
                     else
                     {
@@ -269,6 +265,7 @@ public partial class movement : System.Web.UI.Page
             }
         }
     }
+
     protected void HideColumn(GridView sender, string ColumnToHide)
     {
         // Hides a column given its header text
@@ -357,6 +354,12 @@ public partial class movement : System.Web.UI.Page
         }
 
     }
+    /// <summary>
+    /// gv_LeftHandSideTeamList_RowDataBound
+    /// This method disables the ability of the user in selecting employees who are already under transfers.
+    /// It does this by disabling the checkboxes that allow selection of the relevant rows in the table.
+    /// </summary>
+    /// <remarks>no parameters needed</remarks>
     protected void gv_LeftHandSideTeamList_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         GridViewRow gRow = e.Row;
@@ -481,6 +484,7 @@ public partial class movement : System.Web.UI.Page
         }
 
         Transferee M = new Transferee();
+        List<Transferee> Transfers = new List<Transferee>();
         string ntID = PageExtensionMethods.getMyWindowsID();
         string strSQL = "Select top 1 [Employee_ID],[DeptLinkId] from [CWFM_Umang].[WFMP].[tblMaster] where [ntName] = '" + ntID + "'";
         int Employee_Id = Convert.ToInt32(my.GetData(strSQL).Rows[0]["Employee_ID"].ToString());
@@ -501,9 +505,11 @@ public partial class movement : System.Web.UI.Page
                 M.Types = TypeOfMovement;
                 M.State = 0;
                 M.InitBy = Employee_Id;
+                M.InitOn = DateTime.Now;
                 M.EffectiveDate = D;
                 M.UpdaterID = Employee_Id;
                 M.UpdatedOn = DateTime.Now;
+                //Transfers.Add(M);
                 // Go...
                 rowsAffected = M.InitiateTransfer();
             }

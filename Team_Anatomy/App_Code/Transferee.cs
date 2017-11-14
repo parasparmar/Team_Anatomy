@@ -21,6 +21,7 @@ public class Transferee
     public int Types { get; set; }
     public int State { get; set; }
     public int InitBy { get; set; }
+    public DateTime InitOn { get; set; }
     public DateTime EffectiveDate { get; set; }
     public int UpdaterID { get; set; }
     public DateTime UpdatedOn { get; set; }
@@ -120,8 +121,8 @@ public class Transferee
         strSQL += " ,[State],[InitBy],[EffectiveDate],[UpdaterID],[UpdatedOn]) ";
         strSQL += " VALUES (@FromDptLinkMstId,@ToDptLinkMstId, @FromMgr,@ToMgr,@EmpId,@Type,@State,@InitBy,@EffectiveDate,@UpdaterID,@UpdatedOn)";
         // We are initiating a transfer. The direction and type of transfer is already specified.
-        // However the state is supposed to be "Initiated" ie:1
-        this.State = 1;
+        // However the state is supposed to be "Initiated" ie:0
+        // this.State = 0;
 
         SqlCommand cmd = new SqlCommand(strSQL);
         cmd.Parameters.AddWithValue("@FromDptLinkMstId", FromDptLinkMstId);
@@ -137,6 +138,10 @@ public class Transferee
         cmd.Parameters.AddWithValue("@UpdatedOn", UpdatedOn);
 
         return my.ExecuteDMLCommand(ref cmd, strSQL, "E");
+
+        //TODO: Now that we have updated the Transfer Log : tbltrans_Movement
+        //We need to update the tblMaster with the new repmgrcode
+
     }
     private int UpdateToDB()
     {

@@ -17,6 +17,11 @@
             display: block;
             z-index: 1;
         }*/
+
+        .content-wrapper {
+            min-height:897.76px !important;
+        }
+
         .badge {
             border-radius: 100%;
         }
@@ -29,9 +34,9 @@
         .bg-green {
             background: -ms-linear-gradient(left, rgba(39,148,0,1) 0%, rgba(255,77,151,1) 0%, rgba(255,5,113,1) 0%, rgba(255,10,116,1) 0%, rgba(255,41,126,1) 0%, rgba(39,148,0,1) 0%, rgba(39,148,0,1) 100%);
         }
-        .example-modal .modal {
+        /*.example-modal .modal {
             background: transparent !important;
-        }
+        }*/
 
         .left {
         /*float:left;*/
