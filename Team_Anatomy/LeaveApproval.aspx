@@ -115,8 +115,8 @@
                                 <asp:GridView ID="gvApprLeaveLog" runat="server"
                                     CssClass="table table-bordered table-hover "  AutoGenerateColumns="false"><%--DatatableOnPreRender="gv_PreRender"--%>
                                     <Columns>
-                                        <asp:BoundField DataField="ecn" HeaderText="Employee Id"></asp:BoundField>
-                                        <asp:BoundField DataField="name" HeaderText="Employee Name"></asp:BoundField>
+                                        <asp:BoundField DataField="ecn" HeaderText="Emp Code"></asp:BoundField>
+                                        <asp:BoundField DataField="name" HeaderText="Name"></asp:BoundField>
                                         <asp:BoundField DataField="from_date" HeaderText="From Date"></asp:BoundField>
                                         <asp:BoundField DataField="to_date" HeaderText="To Date"></asp:BoundField>
                                         <asp:BoundField DataField="leave_reason" HeaderText="Leave Reason"></asp:BoundField>
@@ -279,10 +279,12 @@
 
             $("#gvApprLeaveLog tbody tr").each(function () {
                 $(this).find("th:nth-child(12)").hide();
+                $(this).find("th:nth-child(9)").hide();
             });
 
             $("#gvApprLeaveLog tbody tr").each(function () {
                 $(this).find("td:nth-child(12)").hide();
+                $(this).find("td:nth-child(9)").hide();
             });
 
             //$("#gvdatewiseAppr tbody tr").each(function () {

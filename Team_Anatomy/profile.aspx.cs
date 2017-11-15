@@ -60,7 +60,7 @@ public partial class profile : System.Web.UI.Page
                 lblEmployee_Type.Text = dr["FunctionId"].ToString();
                 lblEmployee_Status.Text = dr["EmpStatus"].ToString();
                 lblUpdate_Date.Text = dr["Update_Date"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["Update_Date"].ToString()).ToString("dd-MMM-yyyy HH:mm"); //dr["Update_Date"].ToString();
-                lblUpdated_by.Text = dr["Updated_by"].ToString();
+                //lblUpdated_by.Text = dr["Updated_by"].ToString();
                 lblSite.Text = dr["SiteID"].ToString();
                 /////---------------Personal Section 
                 tbGender.SelectedValue = dr["Gender"].ToString();

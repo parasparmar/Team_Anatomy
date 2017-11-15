@@ -208,7 +208,7 @@ public partial class LeaveApproval : System.Web.UI.Page
             //FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
             ScriptManager.RegisterStartupScript(this, this.GetType(), "show", "toastA();", true);
             FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
-            Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave is approved.')", true);
+            //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave is approved.')", true);
             //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave is approved.', 'Success')", true);
             fillddlRepManager();
         //}
@@ -252,19 +252,19 @@ public partial class LeaveApproval : System.Web.UI.Page
             txt_reason.Text = String.Empty;
             lblLeaveID.Text = String.Empty; ;
             lblEmployeeName.Text = "";
-            if (decider == "disable")
-            {
-                ////btn_dec.ID.Enabled = false;
-                //Button btn_dec = (Button)sender;
-                //string buttonId = btn_dec.ID+1;
-                //string buttonText = btn_dec.Text + 1;
-                //string buttonClass = btn_dec.CssClass + 1;
-                //btn_dec.Attributes.Add("class", "buttonClass");
+            //if (decider == "disable")
+            //{
+            //    ////btn_dec.ID.Enabled = false;
+            //    //Button btn_dec = (Button)sender;
+            //    //string buttonId = btn_dec.ID+1;
+            //    //string buttonText = btn_dec.Text + 1;
+            //    //string buttonClass = btn_dec.CssClass + 1;
+            //    //btn_dec.Attributes.Add("class", "buttonClass");
 
-                ////(FindControl(buttonId) as Button).Enabled = false;
-                //Button tb1 = (Button)FindControl(btn_dec);
-                //tb1.Enabled = false;
-            }
+            //    ////(FindControl(buttonId) as Button).Enabled = false;
+            //    //Button tb1 = (Button)FindControl(btn_dec);
+            //    //tb1.Enabled = false;
+            //}
             ScriptManager.RegisterStartupScript(this, this.GetType(), "show", "toastD();", true);
         }
         ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "hideModal();", true);

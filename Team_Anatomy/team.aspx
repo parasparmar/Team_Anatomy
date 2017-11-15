@@ -41,9 +41,10 @@
                                 <asp:GridView ID="gv_TeamList" runat="server" CssClass="table table-condensed table-responsive datatable display compact hover stripe" AutoGenerateColumns="false"
                                     OnPreRender="gv_PreRender" ShowHeader="true" OnRowCommand="gv_TeamList_RowCommand" Style="border: none">
                                     <Columns>
-                                        <asp:ButtonField HeaderText="Action" ButtonType="Button" ControlStyle-CssClass="btn btn-primary btn-xs" CommandName="Select" Text=">> " />
-                                        <asp:BoundField DataField="Employee_ID" HeaderText="Employee Id" />
+                                        <%--<asp:ButtonField HeaderText="Action" ButtonType="Button" ControlStyle-CssClass="btn btn-primary btn-xs" CommandName="Select" Text=">> " />--%>
+                                        <asp:BoundField DataField="Employee_ID" HeaderText="Emp Code" />
                                         <asp:BoundField DataField="Name" HeaderText="Name" />
+                                        <asp:BoundField DataField="Contact_Number" HeaderText="Contact Number" />
                                         <asp:BoundField DataField="EMAIL_ID" HeaderText="Email" />
                                         <%--<asp:BoundField DataField="PMSPhase" HeaderText="Phase" />
                                         <asp:BoundField DataField="PCStart" HeaderText="PC Start" />
@@ -59,7 +60,7 @@
                                 </asp:GridView>
                             </div>
                         </div>
-                        <asp:Panel CssClass="box-footer" ID="pnlActions" runat="server">
+                        <%--<asp:Panel CssClass="box-footer" ID="pnlActions" runat="server">
                             <div class="input-group">
                                 <span class="input-group-btn">
                                     <asp:Button ID="btnRHR" runat="server" CssClass="btn btn-primary btn-flat" Text="Initiate Referral to HR" />
@@ -68,7 +69,7 @@
                                     
                                 </span>
                             </div>
-                        </asp:Panel>
+                        </asp:Panel>--%>
                         <!-- /.box-footer-->
                     </div>
                     <!--tabcontent-->

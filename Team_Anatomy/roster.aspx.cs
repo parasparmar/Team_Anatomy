@@ -286,8 +286,8 @@ public partial class roster : System.Web.UI.Page
     }
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
-        string toastr_script = "toastr.info('Please wait while the roster uploads.','Roster Compliance Checks: Begin', {closeButton:'false',debug:'false',newestOnTop:'true',progressBar:'true',positionClass:'toast-top-right',preventDuplicates:'true',onclick:null,showDuration: 300,  hideDuration: 1000,  timeOut: 5000,  extendedTimeOut: 1000,  showEasing: 'swing',  hideEasing: 'linear',  showMethod: 'fadeIn',  hideMethod: 'fadeOut'});";
-        Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message5", toastr_script, true);
+        //string toastr_script = "toastr.info('Please wait while the roster uploads.','Roster Compliance Checks: Begin', {closeButton:'false',debug:'false',newestOnTop:'true',progressBar:'true',positionClass:'toast-top-right',preventDuplicates:'true',onclick:null,showDuration: 300,  hideDuration: 1000,  timeOut: 5000,  extendedTimeOut: 1000,  showEasing: 'swing',  hideEasing: 'linear',  showMethod: 'fadeIn',  hideMethod: 'fadeOut'});";
+        //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message5", toastr_script, true);
         int RepMgrCode = Convert.ToInt32(ddlRepManager.SelectedValue);
         int WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
         int UpdatedBy = MyEmpID;
@@ -378,8 +378,8 @@ public partial class roster : System.Web.UI.Page
                         }
                         else
                         {
-
-                          
+                            // ToDo:ListofR<employee> has prop rules_WorkOffCompliance which will point to the employee who fails
+                            // the rosterWO compliance.
                             Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message2", "toastr.error('Work-offs are not in compliance with policy: Minimum 1, Maximum 2 WO per week.','Upload Aborted!')", true);
                         }
                     }
@@ -398,16 +398,16 @@ public partial class roster : System.Web.UI.Page
     {
 
         bool complianceStatus = true;
-        var employees = ListOfR.Where(i => i.ShiftID == 49).Distinct(new EmployeeComparer());
+        var employees = ListOfR.Distinct(new EmployeeComparer());
         var employeeWorkoffs = ListOfR.Where(i => i.ShiftID == 49);
-        int WOCount = 0;
         foreach (var employee in employees)
         {
             employee.WOCount = employeeWorkoffs.Count(i => i.EmpCode == employee.EmpCode);
         }
         foreach (var employee in employees)
         {
-            if (employee.WOCount > 2 || employee.WOCount < 1)
+
+            if (employee.WOCount < 1 || employee.WOCount > 2)
             {
                 employee.rules_WorkOffCompliance = false;
                 complianceStatus = false && complianceStatus;

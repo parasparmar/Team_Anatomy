@@ -65,6 +65,13 @@
                             <b>Contact Number</b> <a class="pull-right">
                                 <asp:Label ID="lblContactNumber" runat="server"></asp:Label></a>
                         </li>
+                        <li class="list-group-item">
+                            <b>Site</b>
+                            <a class="pull-right">
+                                <asp:Label ID="lblSite" runat="server"></asp:Label>
+                            </a>
+
+                        </li>
                     </ul>
 
                     <%--<a href="#" class="btn btn-primary btn-block"><b>Request Rectification</b></a>--%>
@@ -108,27 +115,15 @@
                             </a>
 
                         </li>
-                        <li class="list-group-item">
+                        <%--<li class="list-group-item">
                             <strong>Updated by</strong>
                             <a class="pull-right">
                                 <asp:Label ID="lblUpdated_by" runat="server"></asp:Label>
                             </a>
 
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Update_Date</strong>
-                            <a class="pull-right">
-                                <asp:Label ID="lblUpdate_Date" runat="server"></asp:Label>
-                            </a>
-
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Site</strong>
-                            <a class="pull-right">
-                                <asp:Label ID="lblSite" runat="server"></asp:Label>
-                            </a>
-
-                        </li>
+                        </li>--%>
+                        
+                        
 
                     </ul>
                     <%-- <a href="#" class="btn btn-primary btn-block"><b>Request Rectification</b></a>--%>
@@ -263,6 +258,12 @@
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
                                     <asp:Button ID="btnPersonalSubmit" runat="server" CssClass="btn btn-danger" Text="Submit" OnClick="btnPersonalSubmit_Click" />
+
+                            <label class=" control-label pull-right">last updated on &nbsp
+                            <a class="pull-right">
+                                <asp:Label ID="lblUpdate_Date" runat="server"></asp:Label>
+                            </a></label>
+
                                 </div>
                             </div>
                         </div>

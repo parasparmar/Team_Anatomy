@@ -122,10 +122,14 @@
             color: #3c8dbc;
         }
 
+        .dropdown {
+            margin-right:10px;
+        }
             .content-header > .breadcrumb {
                 float: right;
                 font-size: 12px;
                 padding: 5px;
+                padding-right:1%;
             }
 
         .pageheader {
@@ -181,6 +185,7 @@
             color: #666;
             margin: 0px;
             padding: 0px 15px;
+            padding-right:5%;
             border-top: 1px solid #ddd;
             overflow: auto;
             clear: both;
