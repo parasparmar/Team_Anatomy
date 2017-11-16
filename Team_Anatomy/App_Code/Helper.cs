@@ -50,7 +50,6 @@ public class Helper
         int returnValue = 0;
         try
         {
-            //cmd = new SqlCommand(sql_string, cn);
             cmd.Connection = cn;
             if (operation == "E")
             {
@@ -121,8 +120,8 @@ public class Helper
         SqlCommand cmd = new SqlCommand();
         cmd.CommandText = sp_name;
         cmd.Connection = cn;
-        
-        
+
+
 
         try
         {
@@ -167,7 +166,7 @@ public class Helper
             Log.thisException(e);
         }
         finally
-        {            
+        {
             close_conn();
         }
 
@@ -245,16 +244,16 @@ public class Helper
     }
     public void fill_dropdown(Control drp_name, string sp_name, string datatextfield, string datavaluefield, string defaultitem, string parameters, string tran_type)
     {
-        open_db();        
+        open_db();
         SqlCommand cmd = new SqlCommand(sp_name, cn);
         cmd.CommandType = CommandType.StoredProcedure;
-        
+
 
         try
         {
             DropDownList v = (DropDownList)drp_name;
-            
-        
+
+
             //----------------------- Adding multiple Parameters with there values by split using '#' only if it is stored procedure.
             if (tran_type == "S")
             {
@@ -271,7 +270,7 @@ public class Helper
             }
             SqlDataAdapter dap = new SqlDataAdapter(cmd);
             dap.SelectCommand = cmd;
-            DataSet ds = new DataSet();            
+            DataSet ds = new DataSet();
             dap.Fill(ds);
 
 
@@ -301,7 +300,7 @@ public class Helper
             Log.thisException(e);
         }
         finally
-        {            
+        {
             close_conn();
         }
     }

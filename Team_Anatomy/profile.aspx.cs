@@ -55,7 +55,7 @@ public partial class profile : System.Web.UI.Page
                     imgbtnUserImage.ImageUrl = "sitel/user_images/" + dr["UserImage"].ToString();
 
                 }
-                lblSupervisor.Text = dr["RepMgrCode"].ToString();
+                lblSupervisor.Text = dr["RepMgrName"].ToString();
                 lblEmployee_Role.Text = dr["Job_Type"].ToString();
                 lblEmployee_Type.Text = dr["FunctionId"].ToString();
                 lblEmployee_Status.Text = dr["EmpStatus"].ToString();
@@ -66,11 +66,12 @@ public partial class profile : System.Web.UI.Page
                 tbGender.SelectedValue = dr["Gender"].ToString();
                 tbDate_of_Birth.Text = dr["Date_of_Birth"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["Date_of_Birth"].ToString()).ToString("dd-MMM-yyyy");
                 tbHighest_Qualification.Text = dr["HighestQualification"].ToString();
-                //tbMarital_Status.Text = dr["Marital_Status"].ToString();
+                tbMaritalStatus.Text = dr["MaritalStatus"].ToString();
                 tbAnniversaryDate.Text = dr["AnniversaryDate"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["AnniversaryDate"].ToString()).ToString("dd-MMM-yyyy");
                 tbContact_Number.Text = dr["Contact_Number"].ToString();
                 tbAlternate_Contact.Text = dr["Alternate_Contact"].ToString();
                 tbEmergencyContactPerson.Text = dr["EmergencyContactPerson"].ToString();
+                tbEmergencyContactName.Text = dr["EmergencyContactName"].ToString();
                 tbEmail_id.Text = dr["Email_Personal"].ToString();
                 /////---------------Transport Section 
                 tbTransport_User.Text = dr["Transport"].ToString();
@@ -148,13 +149,14 @@ public partial class profile : System.Web.UI.Page
         myid = dr["ntName"].ToString();
         int Employee_ID = Convert.ToInt32(lblEmployee_ID.Text);
         string Gender = tbGender.SelectedItem.ToString();
-        string Marital_Status = tbMarital_Status.SelectedItem.ToString();
+        string MaritalStatus = tbMaritalStatus.SelectedItem.ToString();
         string Address_Country = tbAddress_Country.Text;
         string Address_City = tbAddress_City.Text;
         string Address1 = tbAddress_Line_1.Text;
         string Address2 = tbAddress_Line_2.Text;
         string Landmark = tbAddress_Landmark.Text;
         string Permanent_Address_City = tbPermanent_Address_City.Text;
+        string EmergencyContactName = tbEmergencyContactName.Text;
         string EmergencyContactPerson = tbEmergencyContactPerson.Text;
         string Email_Personal = tbEmail_id.Text;
         bool Transport = tbTransport_User.SelectedItem.ToString() == "Yes" ? true : false;
@@ -219,6 +221,7 @@ public partial class profile : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@Email_Personal", Email_Personal);
 
 
+                    cmd.Parameters.AddWithValue("@MaritalStatus", MaritalStatus);
                     cmd.Parameters.AddWithValue("@HighestQualification", HighestQualification);
                     cmd.Parameters.AddWithValue("@Transport", Transport);
                     cmd.Parameters.AddWithValue("@Address1", Address1);
@@ -230,6 +233,7 @@ public partial class profile : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@Skill2", Skill2);
                     cmd.Parameters.AddWithValue("@Skill3", Skill3);
 
+                    cmd.Parameters.AddWithValue("@EmergencyContactName", EmergencyContactName);
                     cmd.Parameters.AddWithValue("@EmergencyContactPerson", EmergencyContactPerson);
                     cmd.Parameters.AddWithValue("@Updated_by", Updated_by);
                     cmd.Parameters.AddWithValue("@Update_Date", Update_Date);

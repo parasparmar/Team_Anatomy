@@ -8,6 +8,8 @@ using System.Data.SqlClient;
 public class Transferee
 {
     public Transferee() { }
+
+    public int MovementId { get; set; }
     public int FromDptLinkMstId { get; set; }
     public int ToDptLinkMstId { get; set; }
     public int FunctionID { get; set; }
@@ -88,6 +90,27 @@ public class Transferee
         }
         return rowsAffected;
     }
+
+    public int ActionTransfer(Transferee T)
+    {        
+        string strSQL = "UPDATE [CWFM_Umang].[WFMP].[tbltrans_Movement] ";
+        strSQL += " SET [State] = @State, [UpdaterID] = @UpdaterID, [UpdatedOn] = @UpdatedOn, [EffectiveDate] = @EffectiveDate";
+        strSQL += " WHERE [Id]=@MovementId";
+        using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
+        {
+            cn.Open();
+            using (SqlCommand cmd = new SqlCommand(strSQL, cn))
+            {
+                cmd.Parameters.AddWithValue("@State", State);
+                cmd.Parameters.AddWithValue("@UpdaterID", UpdaterID);
+                cmd.Parameters.AddWithValue("@UpdatedOn", UpdatedOn);
+                cmd.Parameters.AddWithValue("@EffectiveDate", EffectiveDate);
+                cmd.Parameters.AddWithValue("@MovementId", MovementId);
+
+                return cmd.ExecuteNonQuery();
+            }
+        }
+    }
     public int InitiateDepartmentTransfer()
     {
         // Check for unactioned previous department / manager movements.
@@ -117,28 +140,37 @@ public class Transferee
     }
     private int InsertToDB()
     {
-        string strSQL = "INSERT INTO [CWFM_Umang].[WFMP].[tbltrans_Movement]([FromDptLinkMstId],[ToDptLinkMstId],[FromMgr],[ToMgr],[EmpId],[Type] ";
-        strSQL += " ,[State],[InitBy],[EffectiveDate],[UpdaterID],[UpdatedOn]) ";
-        strSQL += " VALUES (@FromDptLinkMstId,@ToDptLinkMstId, @FromMgr,@ToMgr,@EmpId,@Type,@State,@InitBy,@EffectiveDate,@UpdaterID,@UpdatedOn)";
+
+        string strSQL = "INSERT INTO [WFMP].[tbltrans_Movement] ";
+        strSQL += " ([FromDptLinkMstId],[ToDptLinkMstId],[FromMgr],[ToMgr],[EmpId],[Type],[State],[InitBy],[InitOn]";
+        strSQL += " ,[EffectiveDate],[UpdaterID],[UpdatedOn])";
+        strSQL += " VALUES (@FromDptLinkMstId,@ToDptLinkMstId,@FromMgr,@ToMgr,@EmpId,@Type,@State,@InitBy";
+        strSQL += " ,@InitOn,@EffectiveDate,@UpdaterID,@UpdatedOn)";
+
         // We are initiating a transfer. The direction and type of transfer is already specified.
         // However the state is supposed to be "Initiated" ie:0
         // this.State = 0;
+        using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
+        {
+            cn.Open();
+            using (SqlCommand cmd = new SqlCommand(strSQL, cn))
+            {
+                cmd.Parameters.AddWithValue("@FromDptLinkMstId", FromDptLinkMstId);
+                cmd.Parameters.AddWithValue("@ToDptLinkMstId", ToDptLinkMstId);
+                cmd.Parameters.AddWithValue("@FromMgr", FromMgr);
+                cmd.Parameters.AddWithValue("@ToMgr", ToMgr);
+                cmd.Parameters.AddWithValue("@EmpId", EmpId);
+                cmd.Parameters.AddWithValue("@Type", Types);
+                cmd.Parameters.AddWithValue("@State", State);
+                cmd.Parameters.AddWithValue("@InitBy", InitBy);
+                cmd.Parameters.AddWithValue("@InitOn", InitOn);
+                cmd.Parameters.AddWithValue("@EffectiveDate", EffectiveDate);
+                cmd.Parameters.AddWithValue("@UpdaterID", UpdaterID);
+                cmd.Parameters.AddWithValue("@UpdatedOn", UpdatedOn);
 
-        SqlCommand cmd = new SqlCommand(strSQL);
-        cmd.Parameters.AddWithValue("@FromDptLinkMstId", FromDptLinkMstId);
-        cmd.Parameters.AddWithValue("@ToDptLinkMstId", ToDptLinkMstId);
-        cmd.Parameters.AddWithValue("@FromMgr", FromMgr);
-        cmd.Parameters.AddWithValue("@ToMgr", ToMgr);
-        cmd.Parameters.AddWithValue("@EmpId", EmpId);
-        cmd.Parameters.AddWithValue("@Type", Types);
-        cmd.Parameters.AddWithValue("@State", State);
-        cmd.Parameters.AddWithValue("@InitBy", InitBy);
-        cmd.Parameters.AddWithValue("@EffectiveDate", EffectiveDate);
-        cmd.Parameters.AddWithValue("@UpdaterID", UpdaterID);
-        cmd.Parameters.AddWithValue("@UpdatedOn", UpdatedOn);
-
-        return my.ExecuteDMLCommand(ref cmd, strSQL, "E");
-
+                return cmd.ExecuteNonQuery();
+            }
+        }
         //TODO: Now that we have updated the Transfer Log : tbltrans_Movement
         //We need to update the tblMaster with the new repmgrcode
 
@@ -150,20 +182,52 @@ public class Transferee
         strSQL += " , [UpdatedOn] = @UpdatedOn";
         strSQL += " WHERE [EmpId] = @EmpId and [FromMgr] = @FromMgr and [ToMgr] = @ToMgr and [Type] = @Type and [EffectiveDate] = @EffectiveDate";
 
-        SqlCommand cmd = new SqlCommand(strSQL);
+        using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
+        {
+            cn.Open();
+            using (SqlCommand cmd = new SqlCommand(strSQL, cn))
+            {
 
-        cmd.Parameters.AddWithValue("@FromDptLinkMstId", FromDptLinkMstId);
-        cmd.Parameters.AddWithValue("@ToDptLinkMstId", ToDptLinkMstId);
-        cmd.Parameters.AddWithValue("@FromMgr", FromMgr);
-        cmd.Parameters.AddWithValue("@ToMgr", ToMgr);
-        cmd.Parameters.AddWithValue("@EmpId", EmpId);
-        cmd.Parameters.AddWithValue("@Type", Types);
-        cmd.Parameters.AddWithValue("@State", State);
-        cmd.Parameters.AddWithValue("@EffectiveDate", EffectiveDate);
-        cmd.Parameters.AddWithValue("@UpdaterID", UpdaterID);
-        cmd.Parameters.AddWithValue("@UpdatedOn", UpdatedOn);
+                cmd.Parameters.AddWithValue("@FromDptLinkMstId", FromDptLinkMstId);
+                cmd.Parameters.AddWithValue("@ToDptLinkMstId", ToDptLinkMstId);
+                cmd.Parameters.AddWithValue("@FromMgr", FromMgr);
+                cmd.Parameters.AddWithValue("@ToMgr", ToMgr);
+                cmd.Parameters.AddWithValue("@EmpId", EmpId);
+                cmd.Parameters.AddWithValue("@Type", Types);
+                cmd.Parameters.AddWithValue("@State", State);
+                cmd.Parameters.AddWithValue("@EffectiveDate", EffectiveDate);
+                cmd.Parameters.AddWithValue("@UpdaterID", UpdaterID);
+                cmd.Parameters.AddWithValue("@UpdatedOn", UpdatedOn);
 
-        return my.ExecuteDMLCommand(ref cmd, strSQL, "E");
+                return cmd.ExecuteNonQuery();
+            }
+        }
+    }
+    public Transferee(int MovementID)
+    {
+
+        string StrSQL = "[WFMP].[Transfer_getTransfereeUsingMovementID]";
+        SqlCommand cmd = new SqlCommand(StrSQL);
+        cmd.Parameters.AddWithValue("@Id", MovementID);
+        DataTable dt = my.GetDataTableViaProcedure(ref cmd);
+        if (dt.Rows.Count == 1)
+        {
+
+            DataRow d = dt.Rows[0];
+            this.MovementId = Convert.ToInt32(d["Id"].ToString());
+            this.FromDptLinkMstId = d["FromDptLinkMstId"].ToString() == string.Empty ? 0 : Convert.ToInt32(d["FromDptLinkMstId"].ToString());
+            this.ToDptLinkMstId = d["ToDptLinkMstId"].ToString() == string.Empty ? 0 : Convert.ToInt32(d["ToDptLinkMstId"].ToString());
+            this.FromMgr = Convert.ToInt32(d["FromMgr"].ToString());
+            this.ToMgr = Convert.ToInt32(d["ToMgr"].ToString());
+            this.EmpId = Convert.ToInt32(d["EmpId"].ToString());
+            this.Types = Convert.ToInt32(d["Type"].ToString());
+            this.State = Convert.ToInt32(d["State"].ToString());
+            this.InitBy = Convert.ToInt32(d["InitBy"].ToString());
+            this.InitOn = Convert.ToDateTime(d["InitOn"].ToString());
+            this.EffectiveDate = d["EffectiveDate"].ToString() == string.Empty ? DateTime.Now : Convert.ToDateTime(d["EffectiveDate"].ToString());
+            this.UpdaterID = Convert.ToInt32(d["UpdaterID"].ToString());
+            this.UpdatedOn = d["UpdatedOn"].ToString() == string.Empty ? DateTime.Now : Convert.ToDateTime(d["UpdatedOn"].ToString());
+        }
     }
 }
 

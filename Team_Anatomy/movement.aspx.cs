@@ -11,11 +11,11 @@ using System.Globalization;
 
 public partial class movement : System.Web.UI.Page
 {
-    private DataTable dt { get; set; }
+    private DataTable dtEmp { get; set; }
     private Helper my { get; set; }
     private string strSQL { get; set; }
     private int MyEmpID { get; set; }
-    private TransferMode EmpTransferMode{get;set;}
+    private TransferMode EmpTransferMode { get; set; }
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -23,14 +23,14 @@ public partial class movement : System.Web.UI.Page
         my = new Helper();
         try
         {
-            dt = Session["dtEmp"] as DataTable;
-            if (dt.Rows.Count <= 0)
+            dtEmp = Session["dtEmp"] as DataTable;
+            if (dtEmp.Rows.Count <= 0)
             {
                 Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "index.aspx", false);
             }
             else
             {
-                MyEmpID = Convert.ToInt32(dt.Rows[0]["Employee_Id"].ToString());
+                MyEmpID = Convert.ToInt32(dtEmp.Rows[0]["Employee_Id"].ToString());
             }
 
         }
@@ -123,7 +123,7 @@ public partial class movement : System.Web.UI.Page
                     string depmgrvalue = ddlDepartmentManager.SelectedValue.ToString();
                     if (depmgrvalue == "0" || depmgrvalue == null || string.IsNullOrEmpty(depmgrvalue))
                     {
-                       // MyEmpID = 923563;
+                        // MyEmpID = 923563;
                     }
                     else
                     {
@@ -286,7 +286,7 @@ public partial class movement : System.Web.UI.Page
     }
     private void fillTeamList(int EmpCode, string gvTeamList)
     {
-        if (dt.Rows.Count > 0)
+        if (dtEmp.Rows.Count > 0)
         {
             GridView v = (GridView)Page.FindControlRecursive(gvTeamList);
             v.DataSource = my.GetData("Exec [WFMP].[Transfer_TeamList] " + EmpCode);
@@ -299,7 +299,7 @@ public partial class movement : System.Web.UI.Page
     }
     private void fillTeamList(int EmpCode, ref GridView gvTeamList)
     {
-        if (dt.Rows.Count > 0)
+        if (dtEmp.Rows.Count > 0)
         {
             gvTeamList.DataSource = my.GetData("Exec [WFMP].[Transfer_TeamList] " + EmpCode);
             gvTeamList.DataBind();
@@ -485,11 +485,10 @@ public partial class movement : System.Web.UI.Page
 
         Transferee M = new Transferee();
         List<Transferee> Transfers = new List<Transferee>();
-        string ntID = PageExtensionMethods.getMyWindowsID();
-        string strSQL = "Select top 1 [Employee_ID],[DeptLinkId] from [CWFM_Umang].[WFMP].[tblMaster] where [ntName] = '" + ntID + "'";
-        int Employee_Id = Convert.ToInt32(my.GetData(strSQL).Rows[0]["Employee_ID"].ToString());
+        string ntID = dtEmp.Rows[0]["ntName"].ToString();        
+        int Employee_Id = Convert.ToInt32(dtEmp.Rows[0]["Employee_ID"].ToString());
         DateTime D = Convert.ToDateTime(tbEffectiveDate.Text.ToString());
-        int FromDptLinkMstId = Convert.ToInt32(dt.Rows[0]["DeptLinkId"].ToString());
+        int FromDptLinkMstId = Convert.ToInt32(dtEmp.Rows[0]["DeptLinkId"].ToString());
         int ToDptLinkMstId = FromDptLinkMstId;
 
         foreach (GridViewRow gvrow in gv_LeftHandSideTeamList.Rows)
@@ -529,12 +528,10 @@ public partial class movement : System.Web.UI.Page
         int TypeOfMovement = (int)TransferMode.DepartmentTransferOut;
         M.Types = TypeOfMovement;
 
-        string ntID = PageExtensionMethods.getMyWindowsID();
-        string strSQL = "Select top 1 [Employee_ID],[DeptLinkId] from [CWFM_Umang].[WFMP].[tblMaster] where [ntName] = '" + ntID + "'";
-        DataTable dt = my.GetData(strSQL);
-        int Employee_Id = Convert.ToInt32(dt.Rows[0]["Employee_ID"].ToString());
+        string ntID = dtEmp.Rows[0]["ntName"].ToString();
+        int Employee_Id = Convert.ToInt32(dtEmp.Rows[0]["Employee_ID"].ToString());
         DateTime D = Convert.ToDateTime(tbEffectiveDate.Text.ToString());
-        int FromDptLinkMstId = Convert.ToInt32(dt.Rows[0]["DeptLinkId"].ToString());
+        int FromDptLinkMstId = Convert.ToInt32(dtEmp.Rows[0]["DeptLinkId"].ToString());
         int ToDptLinkMstId = 0;
 
         // Locate the ToDptLinkMstId

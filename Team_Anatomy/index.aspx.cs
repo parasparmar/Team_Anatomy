@@ -20,21 +20,20 @@ public partial class index : System.Web.UI.Page
             ViewState["PreviousPageUrl"] = Request.UrlReferrer.ToString();
         }
         myID = PageExtensionMethods.getMyWindowsID().ToString();
-        //myID = "Ctirt002";
+        //myID = "paloz001";
         if (myID != "IDNotFound")
         {
 
             Helper my = new Helper();
-            
+
             DataTable dt = my.GetData("WFMP.getEmployeeData '" + myID + "'");
             try
             {
                 if (dt.Rows.Count > 0)
                 {
-                    
-                    Session["dtEmp"] = dt;
 
-                    Response.Redirect("TransferActions.aspx", false);
+                    Session["dtEmp"] = dt;
+                    Response.Redirect("profile.aspx", false);
                 }
                 else
                 {
@@ -46,7 +45,6 @@ public partial class index : System.Web.UI.Page
             catch (Exception Ex)
             {
                 Response.Write(Ex.Message);
-
             }
         }
         else

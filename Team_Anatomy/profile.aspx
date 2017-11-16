@@ -196,20 +196,20 @@
                             </div>
                             <div class="form-group">
                                 <label for="tbMarital_Status" class="col-sm-2 control-label">Marital Status</label>
-                                <div class="col-sm-10">
+                                <div class="col-sm-4">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-user-plus"></i></span>
-                                        <asp:DropDownList ItemType="text" CssClass="form-control select" ID="tbMarital_Status" runat="server">
+                                        <asp:DropDownList ItemType="text" CssClass="form-control select" ID="tbMaritalStatus" runat="server">
                                             <asp:ListItem Text="Married"></asp:ListItem>
                                             <asp:ListItem Text="Not Married"></asp:ListItem>
                                             <asp:ListItem Text="Not Specified"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputSkills" class="col-sm-2 control-label">Anniversary (if Married)</label>
-                                <div class="col-sm-10">
+<%--                            </div>
+                            <div class="form-group">--%>
+                                <label for="inputSkills" class="col-sm-2 control-label">Anniversary Date</label>
+                                <div class="col-sm-4">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-calendar-check-o"></i></span>
                                         <asp:TextBox ID="tbAnniversaryDate" CssClass="form-control datepicker" runat="server"></asp:TextBox>
@@ -219,27 +219,38 @@
                             </div>
                             <div class="form-group">
                                 <label for="tbContact_Number" class="col-sm-2 control-label">Contact Number</label>
-                                <div class="col-sm-10">
+                                <div class="col-sm-4">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-mobile"></i></span>
                                         <asp:TextBox ID="tbContact_Number" CssClass="form-control" runat="server"></asp:TextBox>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
+<%--                            </div>
+                            <div class="form-group">--%>
                                 <label for="tbAlternate_Contact" class="col-sm-2 control-label">Alternate Number</label>
-                                <div class="col-sm-10">
+                                <div class="col-sm-4">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
                                         <asp:TextBox ID="tbAlternate_Contact" CssClass="form-control" runat="server"></asp:TextBox>
                                     </div>
                                 </div>
                             </div>
+
+                            <%--<label>Emergency Contact Person Details</label>--%>
+
                             <div class="form-group">
-                                <label for="tb" class="col-sm-2 control-label">Emergency Contact Person</label>
-                                <div class="col-sm-10">
+                                <label for="tbEmergencyContactName" class="col-sm-2 control-label">Emergency Contact Name</label>
+                                <div class="col-sm-4">
                                     <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
+                                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                        <asp:TextBox ID="tbEmergencyContactName" CssClass="form-control" runat="server"></asp:TextBox>
+                                    </div>
+                                </div>
+
+                                <label for="tbEmergencyContactNumber" class="col-sm-2 control-label">Emergency Contact Number</label>
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-phone"></i></span>
                                         <asp:TextBox ID="tbEmergencyContactPerson" CssClass="form-control" runat="server"></asp:TextBox>
                                     </div>
                                 </div>
@@ -259,10 +270,12 @@
                                 <div class="col-sm-offset-2 col-sm-10">
                                     <asp:Button ID="btnPersonalSubmit" runat="server" CssClass="btn btn-danger" Text="Submit" OnClick="btnPersonalSubmit_Click" />
 
-                            <label class=" control-label pull-right">last updated on &nbsp
+                                    <label class=" control-label pull-right">
+                                        last updated on &nbsp
                             <a class="pull-right">
                                 <asp:Label ID="lblUpdate_Date" runat="server"></asp:Label>
-                            </a></label>
+                            </a>
+                                    </label>
 
                                 </div>
                             </div>
@@ -414,11 +427,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <%--<div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
                                     The user profile image can also be updated simply by clicking on it and providing the new image.
                                 </div>
-                            </div>
+                            </div>--%>
                         </div>
                     </div>
                     <!-- /.tab-pane Edit Profile Image-->
@@ -436,9 +449,22 @@
     <!-- Select2 -->
     <script src="AdminLTE/bower_components/select2/dist/js/select2.full.min.js"></script>
     <script>
+        if ($("#tbMaritalStatus option:selected").val() == 'Not Married' || $("#tbMaritalStatus option:selected").val() == 'Not Specified') {
+            $("#tbAnniversaryDate").prop('disabled', true);
+        }
+
+
         $(function () {
+
+            $("#tbMaritalStatus").change(function () {
+                if ($("#tbMaritalStatus option:selected").val() == 'Not Married' || $("#tbMaritalStatus option:selected").val() == 'Not Specified') {
+                    $("#tbAnniversaryDate").prop('disabled', true);
+                    $('#tbAnniversaryDate').val("").datepicker("update");
+                }
+                else { $("#tbAnniversaryDate").prop('disabled', false); }
+            });
+
             //Date picker
-            
             $('#tbDate_of_Birth').datepicker({
                 format: 'dd-MM-yyyy',
                 orientation: "bottom auto"
