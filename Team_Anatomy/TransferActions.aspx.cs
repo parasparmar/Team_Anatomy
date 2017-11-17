@@ -203,5 +203,6 @@ public partial class TransferActions : System.Web.UI.Page
         rowsAffected = A.ActionTransfer(A);
         fillGvPendingTransfers();
         fillGvCompletedTransfers();
+        Page.Response.Redirect(Page.Request.Url.ToString(), true);
     }
 }

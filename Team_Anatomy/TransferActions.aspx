@@ -24,11 +24,11 @@
 <asp:Content ID="Content4" ContentPlaceHolderID="pageheader" runat="Server">
     <ol class="breadcrumb">
         <li><a href="index.aspx"><i class="iconfa-home"></i>Home</a></li>
-        <li class="active"><a href="movement.aspx"><i class="fa fa-plus-square"></i>Transfer Actions</a></li>
+        <li class="active"><a href="movement.aspx"><i class="fa fa-flag-o"></i>Transfer Actions</a></li>
     </ol>
 
     <div class="pageheader">
-        <div class="pageicon"><span class="fa fa-plus-square"></span></div>
+        <div class="pageicon"><span class="fa fa-flag-o"></span></div>
         <div class="pagetitle">
             <h5>Approve or Decline Employee and Team movements</h5>
             <h1>Transfer Actions</h1>
@@ -40,7 +40,7 @@
     <!-- Pending Transfers List -->
     <div class="box box-warning">
         <div class="box-header">
-            <i class="fa fa-plus-square"></i>
+            <i class="fa fa-flag-o"></i>
             <h3 class="box-title">Pending Transfers</h3>
             <div class="box-tools pull-right">
             </div>
@@ -55,12 +55,12 @@
 
                     <asp:BoundField DataField="EmpName" HeaderText="Employee" />
                     <asp:BoundField DataField="MovementType" HeaderText="Type" />
-                    <asp:BoundField DataField="EffectiveDate" HeaderText="Effective" DataFormatString="{0:dd-MMM-yy}" />
+                    <asp:BoundField DataField="EffectiveDate" HeaderText="Effective" DataFormatString="{0:dd-MMM-yyyy}" />
                     <asp:BoundField DataField="FromMgrName" HeaderText="From" />
                     <asp:BoundField DataField="ToMgrName" HeaderText="To" />
 
                     <asp:BoundField DataField="InitiatedBy" HeaderText="Initiator" />
-                    <asp:BoundField DataField="InitOn" HeaderText="Initiated" DataFormatString="{0:dd-MMM-yy HH:mm}" />
+                    <asp:BoundField DataField="InitOn" HeaderText="Initiated"  DataFormatString="{0:dd-MMM-yyyy HH:mm:ss.ms}" />
                     <asp:BoundField DataField="MovementProgress" HeaderText="Status" />
                     <asp:TemplateField HeaderText="Pending Action">
                         <ItemTemplate>
@@ -94,7 +94,7 @@
     <!-- Completed Transfers List -->
     <div class="box box-success">
         <div class="box-header">
-            <i class="fa fa-random"></i>
+            <i class="fa fa-flag-checkered"></i>
             <h3 class="box-title">Completed Transfers</h3>
             <div class="box-tools pull-right">
             </div>
@@ -110,14 +110,14 @@
 
                     <asp:BoundField DataField="EmpName" HeaderText="Employee" />
                     <asp:BoundField DataField="MovementType" HeaderText="Type" />
-                    <asp:BoundField DataField="EffectiveDate" HeaderText="Effective" DataFormatString="{0:dd-MMM-yy}" />
+                    <asp:BoundField DataField="EffectiveDate" HeaderText="Effective" DataFormatString="{0:dd-MMM-yyyy}" />
                     <asp:BoundField DataField="FromMgrName" HeaderText="From" />
                     <asp:BoundField DataField="ToMgrName" HeaderText="To" />
 
                     <asp:BoundField DataField="InitiatedBy" HeaderText="Initiator" />
-                    <asp:BoundField DataField="InitOn" HeaderText="Initiated" DataFormatString="{0:dd-MMM-yy HH:mm}" />
+                    <asp:BoundField DataField="InitOn" HeaderText="Initiated" DataFormatString="{0:dd-MMM-yyyy HH:mm:ss.ms}" />
                     <asp:BoundField DataField="MovementProgress" HeaderText="Status" />
-                    <asp:BoundField DataField="UpdatedOn" HeaderText="Completed" DataFormatString="{0:dd-MMM-yy HH:mm}" />
+                    <asp:BoundField DataField="UpdatedOn" HeaderText="Completed" DataFormatString="{0:dd-MMM-yyyy HH:mm:ss.ms}" />
                     <asp:BoundField DataField="Id" HeaderText="MovementID" />
                 </Columns>
 

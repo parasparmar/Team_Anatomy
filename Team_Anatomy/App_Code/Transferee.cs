@@ -92,25 +92,19 @@ public class Transferee
     }
 
     public int ActionTransfer(Transferee T)
-    {        
-        string strSQL = "UPDATE [CWFM_Umang].[WFMP].[tbltrans_Movement] ";
-        strSQL += " SET [State] = @State, [UpdaterID] = @UpdaterID, [UpdatedOn] = @UpdatedOn, [EffectiveDate] = @EffectiveDate";
-        strSQL += " WHERE [Id]=@MovementId";
-        using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
-        {
-            cn.Open();
-            using (SqlCommand cmd = new SqlCommand(strSQL, cn))
-            {
-                cmd.Parameters.AddWithValue("@State", State);
-                cmd.Parameters.AddWithValue("@UpdaterID", UpdaterID);
-                cmd.Parameters.AddWithValue("@UpdatedOn", UpdatedOn);
-                cmd.Parameters.AddWithValue("@EffectiveDate", EffectiveDate);
-                cmd.Parameters.AddWithValue("@MovementId", MovementId);
+    {
 
-                return cmd.ExecuteNonQuery();
-            }
-        }
+        string strSQL = "[WFMP].[Transfer_ApproveAndCommitToMaster]";
+
+
+        SqlCommand cmd = new SqlCommand(strSQL);
+        cmd.Parameters.AddWithValue("@State", State);
+        cmd.Parameters.AddWithValue("@UpdaterID", UpdaterID);
+        cmd.Parameters.AddWithValue("@EffectiveDate", EffectiveDate);
+        cmd.Parameters.AddWithValue("@MovementId", MovementId);
+        return my.ExecuteDMLCommand(ref cmd, strSQL, "S");
     }
+
     public int InitiateDepartmentTransfer()
     {
         // Check for unactioned previous department / manager movements.

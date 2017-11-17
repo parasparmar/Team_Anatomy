@@ -331,7 +331,7 @@
                                 </a>
                                 <ul class="treeview-menu">
                                     <li><a href="movement.aspx"><i class="fa fa-random"></i><span>Movement</span></a></li>
-                                    <li><a href="TransferActions.aspx"><i class="fa fa-plus-square"></i><span>Transfer Actions</span></a></li>
+                                    <li><a href="TransferActions.aspx"><i class="fa fa-flag-o"></i><span>Transfer Actions</span></a></li>
                                 </ul>
                             </li>
 

@@ -265,7 +265,6 @@ public partial class movement : System.Web.UI.Page
             }
         }
     }
-
     protected void HideColumn(GridView sender, string ColumnToHide)
     {
         // Hides a column given its header text

@@ -122,9 +122,6 @@
                             </a>
 
                         </li>--%>
-                        
-                        
-
                     </ul>
                     <%-- <a href="#" class="btn btn-primary btn-block"><b>Request Rectification</b></a>--%>
                 </div>
@@ -206,7 +203,7 @@
                                         </asp:DropDownList>
                                     </div>
                                 </div>
-<%--                            </div>
+                                <%--                            </div>
                             <div class="form-group">--%>
                                 <label for="inputSkills" class="col-sm-2 control-label">Anniversary Date</label>
                                 <div class="col-sm-4">
@@ -217,6 +214,7 @@
 
                                 </div>
                             </div>
+                            <br>
                             <div class="form-group">
                                 <label for="tbContact_Number" class="col-sm-2 control-label">Contact Number</label>
                                 <div class="col-sm-4">
@@ -224,8 +222,10 @@
                                         <span class="input-group-addon"><i class="fa fa-mobile"></i></span>
                                         <asp:TextBox ID="tbContact_Number" CssClass="form-control" runat="server"></asp:TextBox>
                                     </div>
+                                    <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ControlToValidate="tbContact_Number" ErrorMessage="Invalid Number Format" ForeColor="Red" ValidationExpression="[0-9]{10}"></asp:RegularExpressionValidator>
+
                                 </div>
-<%--                            </div>
+                                <%--                            </div>
                             <div class="form-group">--%>
                                 <label for="tbAlternate_Contact" class="col-sm-2 control-label">Alternate Number</label>
                                 <div class="col-sm-4">
@@ -233,11 +233,12 @@
                                         <span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
                                         <asp:TextBox ID="tbAlternate_Contact" CssClass="form-control" runat="server"></asp:TextBox>
                                     </div>
+                                    <asp:RegularExpressionValidator ID="RegularExpressionValidator2" runat="server" ControlToValidate="tbAlternate_Contact" ErrorMessage="Invalid Number Format" ForeColor="Red" ValidationExpression="[0-9]{10}"></asp:RegularExpressionValidator>
                                 </div>
                             </div>
 
                             <%--<label>Emergency Contact Person Details</label>--%>
-
+                            
                             <div class="form-group">
                                 <label for="tbEmergencyContactName" class="col-sm-2 control-label">Emergency Contact Name</label>
                                 <div class="col-sm-4">
@@ -245,6 +246,8 @@
                                         <span class="input-group-addon"><i class="fa fa-user"></i></span>
                                         <asp:TextBox ID="tbEmergencyContactName" CssClass="form-control" runat="server"></asp:TextBox>
                                     </div>
+                                    <asp:RegularExpressionValidator ID="RegularExpressionValidator4" runat="server" ControlToValidate="tbEmergencyContactName" ErrorMessage="Only alphabets are allowed" ForeColor="Red" ValidationExpression="^[a-zA-Z ]+$"></asp:RegularExpressionValidator>
+
                                 </div>
 
                                 <label for="tbEmergencyContactNumber" class="col-sm-2 control-label">Emergency Contact Number</label>
@@ -253,6 +256,7 @@
                                         <span class="input-group-addon"><i class="fa fa-phone"></i></span>
                                         <asp:TextBox ID="tbEmergencyContactPerson" CssClass="form-control" runat="server"></asp:TextBox>
                                     </div>
+                                    <asp:RegularExpressionValidator ID="RegularExpressionValidator3" runat="server" ControlToValidate="tbEmergencyContactPerson" ErrorMessage="Invalid Number Format" ForeColor="Red" ValidationExpression="[0-9]{10}"></asp:RegularExpressionValidator>
                                 </div>
                             </div>
 
@@ -264,6 +268,7 @@
                                         <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
                                         <asp:TextBox ID="tbEmail_id" CssClass="form-control" type="email" runat="server" placeholder="Email"></asp:TextBox>
                                     </div>
+                                    <asp:RegularExpressionValidator ID="regexEmailValid" runat="server" ForeColor="Red" ValidationExpression="\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" ControlToValidate="tbEmail_id" ErrorMessage="Invalid Email Format"></asp:RegularExpressionValidator>
                                 </div>
                             </div>
                             <div class="form-group">

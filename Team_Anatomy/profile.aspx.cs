@@ -273,6 +273,8 @@ public partial class profile : System.Web.UI.Page
             Response.Write(Ex.Message);
         }
 
+        Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Data uploaded successfull.')", true);
+
     }
 
 
