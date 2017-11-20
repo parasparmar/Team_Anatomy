@@ -274,7 +274,7 @@
                                                             </asp:TemplateField>
                                                             <asp:BoundField DataField="Employee_ID" HeaderText="Employee Id" />
                                                             <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                            <asp:BoundField DataField="State" HeaderText="Status" />
+                                                            <asp:BoundField DataField="State" HeaderText="Status" />                                                            
                                                         </Columns>
                                                         <EmptyDataTemplate>
                                                             <h5>No Team Members found.</h5>
@@ -355,7 +355,14 @@
             Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
 
             function EndRequestHandler(sender, args) {
-                $('#tbEffectiveDate').datepicker({ dateFormat: 'dd-mm-yy' });
+                $('#tbEffectiveDate').datepicker({
+                    dateFormat: 'dd-mm-yy',
+                    todayHighlight: true,
+                    //Default: true,
+                    //defaultDate: new Date(),//'now',
+                    //defaultViewDate://'now',// or 'now'
+                    autoclose: true
+                });
             }
 
      });

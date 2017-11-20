@@ -225,7 +225,7 @@ public partial class myroster : System.Web.UI.Page
             d.Columns.Remove("LOBID");
             d.Columns.Remove("ResType");
 
-            string[] rowFields = { "ECN", "NAME", "TL_ECN", "TEAM_LEADER" };
+            string[] rowFields = { "ECN", "NAME", "PROCESS", "TL_ECN", "TEAM_LEADER" };
             string[] columnFields = { "ShiftDate" };
             Pivot pvt = new Pivot(d);
             d = pvt.PivotData("ShiftCode", AggregateFunction.First, rowFields, columnFields);

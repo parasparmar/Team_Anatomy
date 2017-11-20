@@ -132,9 +132,13 @@ public partial class TransferActions : System.Web.UI.Page
         try
         {
             DataTable dtCompletedTransfers = dtAllMyTransferees.Select("State>0").CopyToDataTable();
+            DataView dv = dtCompletedTransfers.DefaultView;
+            dv.Sort = "UpdatedOn desc";
+            DataTable sortedDT = dv.ToTable();
+
             if (dtCompletedTransfers.Rows.Count > 0)
             {
-                gvCompletedTransfers.DataSource = dtCompletedTransfers;
+                gvCompletedTransfers.DataSource = sortedDT;
                 gvCompletedTransfers.DataBind();
             }
         }

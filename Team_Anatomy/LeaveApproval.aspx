@@ -17,7 +17,9 @@
             display: block;
             z-index: 1;
         }*/
-
+        .red {
+            color:red;
+        }
         .content-wrapper {
             min-height:897.76px !important;
         }
@@ -182,9 +184,9 @@
                                     <%--<asp:BoundField DataField="ROSTER" HeaderText="Roster"></asp:BoundField>--%>
                                 </Columns>
                             </asp:GridView>
-                            <br>
-                            <asp:TextBox ID="txt_reason" TextMode="multiline" Columns="74" Rows="2" runat="server" CssClass="form-control"></asp:TextBox>
-                            
+                            <%--<br>--%>
+                            <asp:TextBox ID="txt_reason" TextMode="multiline" Columns="74" Rows="2" runat="server" CssClass="form-control" placeholder="Enter comments...."></asp:TextBox>
+                            <asp:Label ID="alert" Visible="false" runat="server" CssClass="red" Text="Leave decline reason required"></asp:Label>
                             <asp:Label ID="lblLeaveID" runat="server" Visible="false"></asp:Label>            
                                            
                         </div>
@@ -262,13 +264,17 @@
         }
         function openModal() {
             $("#modal-details").modal("show");//#modal-details
+            $('.modal-backdrop').hide();
         }
         function hideModal() {
             //$("#modal-details").modal("hide");//#modal-details
             $('#modal-details').modal('hide');//#modal-details
             $('.modal-backdrop').hide();
-            //$('#modal-details').hide();
-            
+            $('.modal-backdrop').hide();
+            //$('#modal-details').hide();    
+        }
+        function hideModalBack() {
+            $('.modal-backdrop').hide();
         }
         function pluginsInitializer() {
             //var x = 1;

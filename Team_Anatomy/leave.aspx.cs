@@ -128,7 +128,7 @@ public partial class leave : System.Web.UI.Page
     private void clearfields()
     {
         ddl_leave_dropdown.ClearSelection();
-        txt_leave_reason.InnerText = String.Empty;
+        txt_leave_reason.Text=string.Empty;//.InnerText 
         gvLeaveDetails.DataSource = null;
         gvLeaveDetails.DataBind();
     }
@@ -186,7 +186,7 @@ public partial class leave : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@EmpCode", MyEmpID);
         cmd.Parameters.AddWithValue("@from_date", from_Date);
         cmd.Parameters.AddWithValue("@to_date", end_Date);
-        cmd.Parameters.AddWithValue("@leave_reason", txt_leave_reason.Value.ToString());
+        cmd.Parameters.AddWithValue("@leave_reason", txt_leave_reason.Text.ToString());
         cmd.Parameters.Add("@xLEAVE_BATCH_ID", SqlDbType.VarChar, 500);
         cmd.Parameters["@xLEAVE_BATCH_ID"].Direction = ParameterDirection.Output;
         cmd.Connection = con;

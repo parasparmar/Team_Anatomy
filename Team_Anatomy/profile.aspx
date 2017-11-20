@@ -472,8 +472,14 @@
             //Date picker
             $('#tbDate_of_Birth').datepicker({
                 format: 'dd-MM-yyyy',
-                orientation: "bottom auto"
+                orientation: "bottom auto",
+                autoclose: true
             });
+            $('#tbAnniversaryDate').datepicker({
+                format: 'dd-MM-yyyy',
+                autoclose: true
+            });
+            
 
             $("[class*='datepicker']").datepicker({
                 autoclose: true

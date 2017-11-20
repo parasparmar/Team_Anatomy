@@ -199,7 +199,7 @@ public partial class movement : System.Web.UI.Page
 
                     if (ddlFromMgr.Items.Count > 1)
                     {
-                        ddlToMgr.Items.Insert(0, new ListItem("---", "0"));
+                        ddlToMgr.Items.Insert(0, new ListItem("---", "9999999999"));
                         ddlToMgr.SelectedIndex = 0;
                     }
 
@@ -232,29 +232,16 @@ public partial class movement : System.Web.UI.Page
                     ddlFromMgr.DataSource = my.GetData(strSQL);
                     ddlFromMgr.DataTextField = "Name";
                     ddlFromMgr.DataValueField = "Employee_ID";
-                    //ListItem LI2 = new ListItem("Please Select", "0");
-                    //ddlFromMgr.Items.Insert(0, LI2);
                     ddlFromMgr.DataBind();
-
-
-
-                    // divDepMovement.Visible = false;
-
-
 
                     rdobtnMgrPush.Checked = false;
                     rdobtnMgrPull.Checked = true;
                     ltlMovementTypeHeading.Text = "Reporting Manager Movement : Request Transfer In";
-                    //ltlDirection.Text = "<i class=\"content-header pageicon fa fa-arrow-circle-left\" style=\"padding-top:10%\"></i>";
-                    //ltlDirection.Text = "<i class=\"content-header pageicon fa fa-arrow-circle-right\" style=\"padding-top:10%\"></i>";
-                    //ltlDirection.Text = "<i class=\"fa fa-arrow-circle-right\"></i>";
                     fillTeamList(MyEmpID, ref gv_RightHandSideTeamList);
                     gv_LeftHandSideTeamList.DataSource = null;
                     gv_LeftHandSideTeamList.DataBind();
-                    //HideColumn(gv_RightHandSideTeamList, "Selection");
-                    //UnHideColumn(gv_LeftHandSideTeamList, "Selection");
 
-                    ddlFromMgr.Items.Insert(0, new ListItem("---", "0"));
+                    ddlFromMgr.Items.Insert(0, new ListItem("---", "1"));
                     ddlFromMgr.SelectedIndex = 0;
 
                     break;
@@ -362,7 +349,7 @@ public partial class movement : System.Web.UI.Page
     protected void gv_LeftHandSideTeamList_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         GridViewRow gRow = e.Row;
-        if (gRow.RowIndex > 0)
+        if (gRow.RowIndex >= 0)
         {
             string status = gRow.Cells[3].Text.ToString();
             CheckBox cbTeamListID = (CheckBox)gRow.FindControl("cbMyTeamListID");
@@ -483,8 +470,8 @@ public partial class movement : System.Web.UI.Page
         }
 
         Transferee M = new Transferee();
-        List<Transferee> Transfers = new List<Transferee>();
-        string ntID = dtEmp.Rows[0]["ntName"].ToString();        
+
+        string ntID = dtEmp.Rows[0]["ntName"].ToString();
         int Employee_Id = Convert.ToInt32(dtEmp.Rows[0]["Employee_ID"].ToString());
         DateTime D = Convert.ToDateTime(tbEffectiveDate.Text.ToString());
         int FromDptLinkMstId = Convert.ToInt32(dtEmp.Rows[0]["DeptLinkId"].ToString());
@@ -507,9 +494,12 @@ public partial class movement : System.Web.UI.Page
                 M.EffectiveDate = D;
                 M.UpdaterID = Employee_Id;
                 M.UpdatedOn = DateTime.Now;
+
                 //Transfers.Add(M);
                 // Go...
+
                 rowsAffected = M.InitiateTransfer();
+
             }
 
         }

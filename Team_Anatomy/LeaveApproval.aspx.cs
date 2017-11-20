@@ -90,6 +90,7 @@ public partial class LeaveApproval : System.Web.UI.Page
 
     protected void btn_detail_Click(object sender, EventArgs e)
     {
+        alert.Visible = false;
         //        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "none",
         //"<script>$('.modal').modal('show');</script>", false);
 
@@ -216,7 +217,7 @@ public partial class LeaveApproval : System.Web.UI.Page
     }
     protected void btn_dec_Click(object sender, EventArgs e)
     {
-
+        
         string val = lblLeaveID.Text .ToString();
         char trim = (',');
         string id = val.TrimEnd(trim);
@@ -226,11 +227,14 @@ public partial class LeaveApproval : System.Web.UI.Page
         string comments = comment.TrimEnd(trim);
         if (comments == string.Empty)
         { //ClientScript.RegisterStartupScript(GetType(), "Message", "<SCRIPT type='text/javascript'>alert('Please enter decline reason');</script>");
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "Message", "<SCRIPT type='text/javascript'>alert('Please enter decline reason');</script>", false);
+            alert.Visible = true;
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
+           string abc = comments.TrimEnd(trim);
+           txt_reason.Text = abc;
+        //ScriptManager.RegisterStartupScript(this, this.GetType(), "Message", "<SCRIPT type='text/javascript'>alert('Please enter decline reason');</script>", false);
         }
 
         else{
-
             SqlConnection con = new SqlConnection(my.getConnectionString());
             con.Open();
 
@@ -266,6 +270,7 @@ public partial class LeaveApproval : System.Web.UI.Page
             //    //tb1.Enabled = false;
             //}
             ScriptManager.RegisterStartupScript(this, this.GetType(), "show", "toastD();", true);
+            alert.Visible = false;
         }
         ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "hideModal();", true);
             //FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));

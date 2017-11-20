@@ -64,7 +64,16 @@ public class Transferee
         if (rowsAffected == 0)
         {
             // For this EmpID, Unfinished movements (not approved or not declined ones) donot exist.
-            rowsAffected = InsertToDB();
+            int LocalMovementID = InsertToDB();
+
+            // When there is no From Mgr, the employees fall in the unaligned case. There is no second level approval process to be followed. 
+            if (this.FromMgr == 0 || string.IsNullOrEmpty(this.FromMgr.ToString()))
+            {
+                MovementId = LocalMovementID;
+                FromMgr = ToMgr;
+                State = 2;
+                ActionTransfer(this);
+            }
         }
         else
         {
@@ -87,6 +96,13 @@ public class Transferee
                     rowsAffected = UpdateToDB();
                 }
             }
+            else if (string.IsNullOrEmpty(dt.Rows[0]["FromMgr"].ToString()))
+            {
+                // Employees with 0 or Null RepMGR codes are unaligned employees. The can be new or have missing alignment data.
+                // As a process they need to be aligned to the initiating reporting manager directly without second level approval.
+
+                rowsAffected = UpdateToDB();
+            }
         }
         return rowsAffected;
     }
@@ -95,14 +111,21 @@ public class Transferee
     {
 
         string strSQL = "[WFMP].[Transfer_ApproveAndCommitToMaster]";
+        using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
+        {
+            cn.Open();
+            using (SqlCommand cmd = new SqlCommand(strSQL, cn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@MovementId", MovementId);
+                cmd.Parameters.AddWithValue("@State", State);
+                cmd.Parameters.AddWithValue("@UpdaterID", UpdaterID);
+                cmd.Parameters.AddWithValue("@EffectiveDate", EffectiveDate);
 
-
-        SqlCommand cmd = new SqlCommand(strSQL);
-        cmd.Parameters.AddWithValue("@State", State);
-        cmd.Parameters.AddWithValue("@UpdaterID", UpdaterID);
-        cmd.Parameters.AddWithValue("@EffectiveDate", EffectiveDate);
-        cmd.Parameters.AddWithValue("@MovementId", MovementId);
-        return my.ExecuteDMLCommand(ref cmd, strSQL, "S");
+                cmd.ExecuteNonQuery();
+            }
+        }
+        return 1;
     }
 
     public int InitiateDepartmentTransfer()
@@ -134,12 +157,12 @@ public class Transferee
     }
     private int InsertToDB()
     {
-
+        int MovementId = 0;
         string strSQL = "INSERT INTO [WFMP].[tbltrans_Movement] ";
         strSQL += " ([FromDptLinkMstId],[ToDptLinkMstId],[FromMgr],[ToMgr],[EmpId],[Type],[State],[InitBy],[InitOn]";
         strSQL += " ,[EffectiveDate],[UpdaterID],[UpdatedOn])";
         strSQL += " VALUES (@FromDptLinkMstId,@ToDptLinkMstId,@FromMgr,@ToMgr,@EmpId,@Type,@State,@InitBy";
-        strSQL += " ,@InitOn,@EffectiveDate,@UpdaterID,@UpdatedOn)";
+        strSQL += " ,@InitOn,@EffectiveDate,@UpdaterID,@UpdatedOn); Select @MovementId = SCOPE_IDENTITY();";
 
         // We are initiating a transfer. The direction and type of transfer is already specified.
         // However the state is supposed to be "Initiated" ie:0
@@ -149,6 +172,11 @@ public class Transferee
             cn.Open();
             using (SqlCommand cmd = new SqlCommand(strSQL, cn))
             {
+                SqlParameter MovId = new SqlParameter("@MovementId", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(MovId);
                 cmd.Parameters.AddWithValue("@FromDptLinkMstId", FromDptLinkMstId);
                 cmd.Parameters.AddWithValue("@ToDptLinkMstId", ToDptLinkMstId);
                 cmd.Parameters.AddWithValue("@FromMgr", FromMgr);
@@ -161,20 +189,24 @@ public class Transferee
                 cmd.Parameters.AddWithValue("@EffectiveDate", EffectiveDate);
                 cmd.Parameters.AddWithValue("@UpdaterID", UpdaterID);
                 cmd.Parameters.AddWithValue("@UpdatedOn", UpdatedOn);
+                cmd.ExecuteNonQuery();
+                // idAsNullableInt remains null
+                MovementId = MovId.Value as int? ?? default(int);
 
-                return cmd.ExecuteNonQuery();
+
+
             }
         }
         //TODO: Now that we have updated the Transfer Log : tbltrans_Movement
         //We need to update the tblMaster with the new repmgrcode
-
+        return MovementId;
     }
     private int UpdateToDB()
     {
         string strSQL = "UPDATE [CWFM_Umang].[WFMP].[tbltrans_Movement]";
         strSQL += " SET [FromDptLinkMstId] = @FromDptLinkMstId,[ToDptLinkMstId]=@ToDptLinkMstId, [State] = @State, [UpdaterID] = @UpdaterID ";
         strSQL += " , [UpdatedOn] = @UpdatedOn";
-        strSQL += " WHERE [EmpId] = @EmpId and [FromMgr] = @FromMgr and [ToMgr] = @ToMgr and [Type] = @Type and [EffectiveDate] = @EffectiveDate";
+        strSQL += " WHERE [Id] = @MovementId";
 
         using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
         {
@@ -184,14 +216,10 @@ public class Transferee
 
                 cmd.Parameters.AddWithValue("@FromDptLinkMstId", FromDptLinkMstId);
                 cmd.Parameters.AddWithValue("@ToDptLinkMstId", ToDptLinkMstId);
-                cmd.Parameters.AddWithValue("@FromMgr", FromMgr);
-                cmd.Parameters.AddWithValue("@ToMgr", ToMgr);
-                cmd.Parameters.AddWithValue("@EmpId", EmpId);
-                cmd.Parameters.AddWithValue("@Type", Types);
                 cmd.Parameters.AddWithValue("@State", State);
-                cmd.Parameters.AddWithValue("@EffectiveDate", EffectiveDate);
                 cmd.Parameters.AddWithValue("@UpdaterID", UpdaterID);
                 cmd.Parameters.AddWithValue("@UpdatedOn", UpdatedOn);
+                cmd.Parameters.AddWithValue("@MovementId", MovementId);
 
                 return cmd.ExecuteNonQuery();
             }
@@ -222,6 +250,18 @@ public class Transferee
             this.UpdaterID = Convert.ToInt32(d["UpdaterID"].ToString());
             this.UpdatedOn = d["UpdatedOn"].ToString() == string.Empty ? DateTime.Now : Convert.ToDateTime(d["UpdatedOn"].ToString());
         }
+    }
+}
+public static class MovementType
+{
+    public static String Manager { get { return "Manager"; } }
+    public static String Department { get { return "Department"; } }
+    public static String TransferOut { get { return "TransferOut"; } }
+    public static String TransferIn { get { return "TransferIn"; } }
+
+    public static bool HasProperty(this Type obj, string propertyName)
+    {
+        return obj.GetProperty(propertyName) != null;
     }
 }
 
