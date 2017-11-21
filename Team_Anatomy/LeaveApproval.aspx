@@ -62,15 +62,15 @@
 <asp:Content ID="Content4" ContentPlaceHolderID="pageheader" runat="Server">
     <ol class="breadcrumb">
         <li><a href="Summary.aspx"><i class="iconfa-home"></i>Home</a></li>
-        <li class="active"><a href="leaveApproval.aspx"><i class="fa fa-plane"></i>Employee Leave Requests</a></li>
+        <li class="active"><a href="leaveApproval.aspx"><i class="fa fa-toggle-on"></i>Employee Leave Requests</a></li>
     </ol>
 
     <div class="pageheader">
-        <div class="pageicon"><span class="fa fa-plane"></span></div>
+        <div class="pageicon"><span class="fa fa-toggle-on"></span></div>
         <%--fa-exclamation / fa-plane / fa-calendar-times-o--%>
         <div class="pagetitle">
-            <h5>Review leave request</h5>
-            <h1>Employee Leave Request</h1>
+            <h5>Review reportee leave request</h5>
+            <h1>Approve/Deny Leave Request</h1>
         </div>
     </div>
 </asp:Content>
@@ -92,7 +92,7 @@
                                     </asp:DropDownList>
                                 </div>
                             </div>--%>
-                            <h5>View Leaves of Employees</h5>
+                            <h4 class="box-title">View Leaves of Employees</h4>
                         </div>
                         <div class="box-body">
                             <div class="row">

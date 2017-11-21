@@ -4,7 +4,7 @@
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="headPlaceHolder" runat="Server">
-    <%--  <link href="Sitel/plugins/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet" />
+      <link href="Sitel/plugins/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet" />
     <!-- iCheck for checkboxes and radio inputs -->
     <link rel="stylesheet" href="AdminLTE/plugins/iCheck/all.css">
     <style>
@@ -17,9 +17,14 @@
                 width: 38%;
             }
         }*/
+
+        #pnlLeaveBox {
+            display:none;
+        }
+
     </style>
-    <%--toastr--%>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
+<%--    toastr
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />--%>
 
 
 
@@ -76,10 +81,9 @@
 
     <div class="pageheader">
         <div class="pageicon"><span class="fa fa-plane"></span></div>
-        <%--fa-exclamation / fa-plane / fa-calendar-times-o--%>
         <div class="pagetitle">
             <h5>Initiate leave request</h5>
-            <h1>Leave Request</h1>
+            <h1>Request Leave</h1>
         </div>
     </div>
     <!--pageheader-->
@@ -88,7 +92,7 @@
 <asp:Content ID="Content5" ContentPlaceHolderID="The_Body" runat="Server">
 
 
-    <div class="box box-primary">
+    <div class="box box-solid box-primary">
         <div class="box-header with-border">
             <h3 class="box-title">Apply Leave</h3>
         </div>
@@ -131,7 +135,7 @@
         </div>
     </div>
 
-    <div class="box box-primary" id="pnlLeaveBox" visible="false">
+    <div class="box box-solid box-primary" id="pnlLeaveBox">
         <div class="box-header with-border">
             <h3 class="box-title">Select Leave Type for each day</h3>
         </div>
@@ -159,7 +163,7 @@
         </div>
     </div>
 
-    <div class="box box-primary">
+    <div class="box box-solid box-primary">
         <div class="box-header with-border">
             <h3 class="box-title">Leave Log</h3>
         </div>
@@ -251,7 +255,7 @@
                 $.ajax({
                     type: "post",
                     dataType: "json",
-                    data: {},
+                    data:{},
                     contentType: "application/json; charset=utf-8",
                     url: "leave.aspx/getDates",
                     async: true,
@@ -362,13 +366,20 @@
                 }
             });
         };
-
+        
     </script>
-    <script>
-        function toast() {
-            toastr.success('Have fun storming the castle!', 'Miracle Max Says');
-        }
+<%--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.1/jquery.toast.js" type="text/javascript"></script>--%>
+    
+      <script>
+          function toast() {
+              toastr.success('Have fun storming the castle!', 'Miracle Max Says');
+          }
 
+          function show() {
+              $('#pnlLeaveBox').css({ 'display': 'block' });
+          }
     </script>
+
+        <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/1.3.1/js/toastr.js" type="text/javascript"></script>--%><%--//2.0.1--%>
 </asp:Content>
 

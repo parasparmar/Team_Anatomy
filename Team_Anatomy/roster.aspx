@@ -33,8 +33,8 @@
     <div class="pageheader">
         <div class="pageicon"><span class="fa fa-calendar-check-o"></span></div>
         <div class="pagetitle">
-            <h5>Create, Maintain and Upload Reportee Rosters, Swaps and Leaves</h5>
-            <h1>Team Roster</h1>
+            <h5>Create, Maintain and Upload Reportee Rosters</h5>
+            <h1>My Team Roster</h1>
         </div>
     </div>
     <!--pageheader-->
@@ -49,11 +49,11 @@
                         <div class="box-header with-border">
                             <h4 class="box-title">
                                 <asp:Literal ID="ltlReportingMgrsTeam" Text="Roster For Team" runat="server"></asp:Literal></h4>
-                            <div class="box-tools pull-right">
+<%--                            <div class="box-tools pull-right">
                                 <button class="btn btn-box-tool" type="button" data-widget="collapse">
                                     <i class="fa fa-minus"></i>
                                 </button>
-                            </div>
+                            </div>--%>
                         </div>
                         <div class="box-body">
                             <div class="row">

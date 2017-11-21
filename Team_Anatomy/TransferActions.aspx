@@ -31,7 +31,7 @@
         <div class="pageicon"><span class="fa fa-flag-o"></span></div>
         <div class="pagetitle">
             <h5>Approve or Decline Employee and Team movements</h5>
-            <h1>Transfer Actions</h1>
+            <h1>Movement Transfer Actions</h1>
         </div>
     </div>
     <!--pageheader-->
@@ -40,7 +40,7 @@
     <!-- Pending Transfers List -->
     <div class="box box-warning">
         <div class="box-header">
-            <i class="fa fa-flag-o"></i>
+            <i class="fa fa-flag"></i>
             <h3 class="box-title">Pending Transfers</h3>
             <div class="box-tools pull-right">
             </div>

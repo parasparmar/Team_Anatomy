@@ -23,13 +23,13 @@
 <asp:Content ID="Content4" ContentPlaceHolderID="pageheader" runat="Server">
     <ol class="breadcrumb">
         <li><a href="index.aspx"><i class="iconfa-home"></i>Home</a></li>
-        <li class="active"><a href="myroster.aspx"><i class="fa fa-calendar-check-o"></i>Roster</a></li>
+        <li class="active"><a href="myroster.aspx"><i class="fa fa-calendar-plus-o"></i>My Roster</a></li>
     </ol>
 
     <div class="pageheader">
-        <div class="pageicon"><span class="fa fa-calendar-check-o"></span></div>
+        <div class="pageicon"><span class="fa fa-calendar-plus-o"></span></div>
         <div class="pagetitle">
-            <h5>View Roster, Swaps and Leaves for my Team</h5>
+            <h5>View My Roster</h5><%--, Swaps and Leaves for my Team--%>
             <h1>My Roster</h1>
         </div>
     </div>
@@ -43,11 +43,11 @@
                 <div class="box-header with-border">
                     <h4 class="box-title">
                         <asp:Literal ID="ltlReportingMgrsTeam" Text="Roster For Team" runat="server"></asp:Literal></h4>
-                    <div class="box-tools pull-right">
+<%--                    <div class="box-tools pull-right">
                         <button class="btn btn-box-tool" type="button" data-widget="collapse">
                             <i class="fa fa-minus"></i>
                         </button>
-                    </div>
+                    </div>--%>
                 </div>
                 <div class="box-body">
                     <div class="row">

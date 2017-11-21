@@ -15,7 +15,7 @@
     <div class="pageheader">
         <div class="pageicon"><span class="fa fa-users"></span></div>
         <div class="pagetitle">
-            <h5>Team Management Tasks</h5>
+            <h5>View My Team Infromation</h5>
             <h1>My Team</h1>
         </div>
     </div>
@@ -29,12 +29,12 @@
                     <!-- Custom Tabs -->
                     <div class="box box-solid box-primary" style="height: auto;">
                         <div class="box-header with-border">
-                            <h4 class="box-title">The Team List</h4>
-                            <div class="box-tools pull-right">
+                            <h4 class="box-title">My Team List</h4>
+<%--                            <div class="box-tools pull-right">
                                 <button class="btn btn-box-tool" type="button" data-widget="collapse">
                                     <i class="fa fa-minus"></i>
                                 </button>
-                            </div>
+                            </div>--%>
                         </div>
                         <div class="box-body">
                             <div class="form-group">

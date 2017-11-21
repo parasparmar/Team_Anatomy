@@ -156,10 +156,12 @@ public partial class movement : System.Web.UI.Page
                 case "TransferOut":
 
                     // Fill From Mgr Dropdown.
-                    strSQL = "SELECT Distinct B.[Employee_ID],REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') as Name ";
-                    strSQL += " FROM [CWFM_Umang].[WFMP].[tblMaster] A inner join [CWFM_Umang].[WFMP].[tblMaster] B on B.Employee_ID = A.RepMgrCode";
-                    strSQL += " where B.Employee_ID = " + MyEmpID;
-                    strSQL += " order by REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') ASC";
+                    strSQL = "SELECT Distinct A.[Employee_ID] ";
+                    strSQL += " ,REPLACE(dbo.ToProperCase(A.First_Name) + ' ' + dbo.ToProperCase(A.Middle_Name) + ' ' +dbo.ToProperCase(A.Last_Name),' ',' ') as Name   ";
+                    strSQL += " FROM [CWFM_Umang].[WFMP].[tblMaster] A  ";
+                    strSQL += " where A.isReportingManager > 0 and A.Employee_ID = " + MyEmpID;
+                    strSQL += " order by REPLACE(dbo.ToProperCase(A.First_Name) + ' ' + dbo.ToProperCase(A.Middle_Name) + ' ' +dbo.ToProperCase(A.Last_Name),' ',' ') ASC ";
+
 
                     ddlFromMgr.DataSource = my.GetData(strSQL);
                     ddlFromMgr.DataTextField = "Name";
@@ -206,22 +208,14 @@ public partial class movement : System.Web.UI.Page
                     break;
 
                 case "TransferIn":
-                    strSQL = "SELECT Distinct B.[Employee_ID],REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') as Name ";
-                    strSQL += " FROM [CWFM_Umang].[WFMP].[tblMaster] A inner join [CWFM_Umang].[WFMP].[tblMaster] B on B.Employee_ID = A.RepMgrCode";
-                    strSQL += " where B.Employee_ID = " + MyEmpID;
+                    strSQL = "SELECT Distinct A.[Employee_ID],REPLACE(dbo.ToProperCase(A.First_Name) + ' ' + dbo.ToProperCase(A.Middle_Name) + ' ' +dbo.ToProperCase(A.Last_Name),' ',' ') as Name  ";
+                    strSQL += " FROM [CWFM_Umang].[WFMP].[tblMaster] A where A.isReportingManager > 0 and A.Employee_ID = ";
+                    strSQL += MyEmpID;
 
                     ddlToMgr.DataSource = my.GetData(strSQL);
                     ddlToMgr.DataTextField = "Name";
                     ddlToMgr.DataValueField = "Employee_ID";
                     ddlToMgr.DataBind();
-
-
-
-                    // Fill From Mgr Dropdown.
-                    //strSQL = "SELECT Distinct B.[Employee_ID],REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') as Name ";
-                    //strSQL += " FROM [CWFM_Umang].[WFMP].[tblMaster] A inner join [CWFM_Umang].[WFMP].[tblMaster] B on B.Employee_ID = A.RepMgrCode";
-                    //strSQL += " where B.isReportingManager > 0 and B.Employee_ID <> " + MyEmpID;
-                    //strSQL += " order by REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') ASC";
 
                     strSQL = "SELECT 0 as 'Employee_ID','Un-Mapped Employees' as Name union SELECT Distinct B.[Employee_ID] ";
                     strSQL += "  ,REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),'  ',' ') as Name  ";

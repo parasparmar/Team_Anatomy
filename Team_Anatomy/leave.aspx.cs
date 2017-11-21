@@ -64,6 +64,10 @@ public partial class leave : System.Web.UI.Page
     }
     protected void btn_proceed_Click(object sender, EventArgs e)
     {
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Message", "<script>$(document).ready(function(){ $('#pnlLeaveBox').css({ 'display': 'block' });})</script>", false);
+
+
+        //pnlLeaveBox.Visible = true;
         fillgvLeaveDetails();
     }
     protected void reservation_TextChanged(object sender, EventArgs e)

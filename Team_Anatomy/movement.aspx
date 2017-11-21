@@ -33,8 +33,8 @@
     <div class="pageheader">
         <div class="pageicon"><span class="fa fa-random"></span></div>
         <div class="pagetitle">
-            <h5>Request to initiate and accept employee and team movements</h5>
-            <h1>Movement</h1>
+            <h5>Initiate or Request an employee or team movement</h5>
+            <h1>Initiate Movement</h1>
         </div>
     </div>
     <!--pageheader-->
@@ -48,11 +48,11 @@
                     <div class="box box-solid box-primary" style="height: auto;">
                         <div class="box-header with-border">
                             <h4 class="box-title">Choose a Movement Type</h4>
-                            <div class="box-tools pull-right">
+                            <%--<div class="box-tools pull-right">
                                 <button class="btn btn-box-tool" type="button" data-widget="collapse">
                                     <i class="fa fa-minus"></i>
                                 </button>
-                            </div>
+                            </div>--%>
                         </div>
                         <div class="box-body">
                             <div class="row">
@@ -117,11 +117,11 @@
                             <div class="box-header with-border">
                                 <h4 class="box-title">
                                     <asp:Literal ID="ltlMovementTypeHeading" runat="server" Text="Movement Type : "></asp:Literal></h4>
-                                <div class="box-tools pull-right">
+<%--                                <div class="box-tools pull-right">
                                     <button class="btn btn-box-tool" type="button" data-widget="collapse">
                                         <i class="fa fa-minus"></i>
                                     </button>
-                                </div>
+                                </div>--%>
                             </div>
                             <div class="box-body">
 

@@ -29,7 +29,7 @@
     <div class="pageheader">
         <div class="pageicon"><span class="fa fa-building"></span></div>
         <div class="pagetitle">
-            <h5>Administration View of Roster, Swaps and Leaves for the Entire Site</h5>
+            <h5>Administration View of Roster and Leaves for the Entire Site</h5>
             <h1>Site Rosters</h1>
         </div>
     </div>
@@ -43,11 +43,11 @@
                 <div class="box-header with-border">
                     <h4 class="box-title">
                         <asp:Literal ID="ltlReportingMgrsTeam" Text="Roster For Site" runat="server"></asp:Literal></h4>
-                    <div class="box-tools pull-right">
+<%--                    <div class="box-tools pull-right">
                         <button class="btn btn-box-tool" type="button" data-widget="collapse">
                             <i class="fa fa-minus"></i>
                         </button>
-                    </div>
+                    </div>--%>
                 </div>
                 <div class="box-body">
                     <div class="row">
