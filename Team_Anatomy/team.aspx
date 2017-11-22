@@ -41,17 +41,11 @@
                                 <asp:GridView ID="gv_TeamList" runat="server" CssClass="table table-condensed table-responsive datatable display compact hover stripe" AutoGenerateColumns="false"
                                     OnPreRender="gv_PreRender" ShowHeader="true" OnRowCommand="gv_TeamList_RowCommand" Style="border: none">
                                     <Columns>
-                                        <%--<asp:ButtonField HeaderText="Action" ButtonType="Button" ControlStyle-CssClass="btn btn-primary btn-xs" CommandName="Select" Text=">> " />--%>
                                         <asp:BoundField DataField="Employee_ID" HeaderText="Emp Code" />
                                         <asp:BoundField DataField="Name" HeaderText="Name" />
                                         <asp:BoundField DataField="Contact_Number" HeaderText="Contact Number" />
                                         <asp:BoundField DataField="EMAIL_ID" HeaderText="Email" />
-                                        <%--<asp:BoundField DataField="PMSPhase" HeaderText="Phase" />
-                                        <asp:BoundField DataField="PCStart" HeaderText="PC Start" />
-                                        <asp:BoundField DataField="PCYear" HeaderText="PC Year" />
-                                        <asp:BoundField DataField="CanLock" HeaderText="Lock" />
-                                        <asp:BoundField DataField="OverallGrace" HeaderText="Grace" />
-                                        <asp:BoundField DataField="SlabType" HeaderText="Slab Type" />--%>
+                                        
                                     </Columns>
                                     <EmptyDataTemplate>
                                         <h5>There are no Team Members are currently mapped to me.</h5>

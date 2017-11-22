@@ -24,6 +24,8 @@ public partial class profile : System.Web.UI.Page
         {
             Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
             title.Text = "Profile";
+            
+            fillOptionLists();
             intialize_me();
         }
     }
@@ -60,12 +62,12 @@ public partial class profile : System.Web.UI.Page
                 lblEmployee_Type.Text = dr["FunctionId"].ToString();
                 lblEmployee_Status.Text = dr["EmpStatus"].ToString();
                 lblUpdate_Date.Text = dr["Update_Date"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["Update_Date"].ToString()).ToString("dd-MMM-yyyy HH:mm"); //dr["Update_Date"].ToString();
-                //lblUpdated_by.Text = dr["Updated_by"].ToString();
+               
                 lblSite.Text = dr["SiteID"].ToString();
                 /////---------------Personal Section 
                 tbGender.SelectedValue = dr["Gender"].ToString();
                 tbDate_of_Birth.Text = dr["Date_of_Birth"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["Date_of_Birth"].ToString()).ToString("dd-MMM-yyyy");
-                tbHighest_Qualification.Text = dr["HighestQualification"].ToString();
+                tbQualification.Text = dr["Qualification"].ToString();
                 tbMaritalStatus.Text = dr["MaritalStatus"].ToString();
                 tbAnniversaryDate.Text = dr["AnniversaryDate"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["AnniversaryDate"].ToString()).ToString("dd-MMM-yyyy");
                 tbContact_Number.Text = dr["Contact_Number"].ToString();
@@ -148,8 +150,8 @@ public partial class profile : System.Web.UI.Page
 
         myid = dr["ntName"].ToString();
         int Employee_ID = Convert.ToInt32(lblEmployee_ID.Text);
-        string Gender = tbGender.SelectedItem.ToString();
-        string MaritalStatus = tbMaritalStatus.SelectedItem.ToString();
+        int Gender = Convert.ToInt32(tbGender.SelectedValue.ToString());
+        int MaritalStatus = Convert.ToInt32(tbMaritalStatus.SelectedValue.ToString());
         string Address_Country = tbAddress_Country.Text;
         string Address_City = tbAddress_City.Text;
         string Address1 = tbAddress_Line_1.Text;
@@ -162,7 +164,7 @@ public partial class profile : System.Web.UI.Page
         bool Transport = tbTransport_User.SelectedItem.ToString() == "Yes" ? true : false;
         string Country = tbAddress_Country.Text;
         string City = tbAddress_City.Text;
-        string HighestQualification = tbHighest_Qualification.Text;
+        int Qualification = Convert.ToInt32(tbQualification.SelectedValue.ToString());
 
 
         DateTime Date_of_Birth;
@@ -222,7 +224,7 @@ public partial class profile : System.Web.UI.Page
 
 
                     cmd.Parameters.AddWithValue("@MaritalStatus", MaritalStatus);
-                    cmd.Parameters.AddWithValue("@HighestQualification", HighestQualification);
+                    cmd.Parameters.AddWithValue("@Qualification", Qualification);
                     cmd.Parameters.AddWithValue("@Transport", Transport);
                     cmd.Parameters.AddWithValue("@Address1", Address1);
                     cmd.Parameters.AddWithValue("@Address2", Address2);
@@ -276,7 +278,23 @@ public partial class profile : System.Web.UI.Page
         Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Data uploaded successfull.')", true);
 
     }
+    protected void fillOptionLists()
+    {
+        string strSQL = string.Empty;
+        //Fill tbGender
+        strSQL = "SELECT [Id],[Gender] FROM [CWFM_Umang].[WFMP].[tblGender]";
+        my.append_dropdown(ref tbGender, strSQL, 1, 0);
 
+        //Fill tbQualification
+        strSQL = "SELECT [Id], [Qualification] FROM [CWFM_Umang].[WFMP].[tblQualification]";
+        tbQualification.Items.Insert(0, new ListItem("Please select your highest (pursued/pursuing) education level"));
+        my.append_dropdown(ref tbQualification, strSQL, 1, 0);
+
+        //Fill tbMaritalStatus
+        strSQL = "SELECT [Id],[MaritalStatus] FROM [CWFM_Umang].[WFMP].[tblMaritalStatus]";
+        my.append_dropdown(ref tbMaritalStatus, strSQL, 1, 0);
+
+    }
 
 
 

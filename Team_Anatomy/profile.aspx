@@ -156,9 +156,6 @@
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-genderless"></i></span>
                                         <asp:DropDownList ItemType="text" CssClass="form-control select" ID="tbGender" runat="server" placeholder="Gender" type="text">
-                                            <asp:ListItem Text="Male"></asp:ListItem>
-                                            <asp:ListItem Text="Female"></asp:ListItem>
-                                            <asp:ListItem Text="Not Specified"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>
@@ -173,20 +170,11 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="tbHighest_Qualification" class="col-sm-2 control-label">Highest Qualification</label>
+                                <label for="tbQualification" class="col-sm-2 control-label">Highest Qualification</label>
                                 <div class="col-sm-10">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-university"></i></span>
-                                        <asp:DropDownList ItemType="text" CssClass="form-control  select2" ID="tbHighest_Qualification" Style="width: 100%" runat="server">
-                                            <asp:ListItem Value="" Text="Please select your highest education level"></asp:ListItem>
-                                            <asp:ListItem Value="NONE" Text="Some High School"></asp:ListItem>
-                                            <asp:ListItem Value="HS" Text="High School"></asp:ListItem>
-                                            <asp:ListItem Value="DIPLOMA" Text="Diploma"></asp:ListItem>
-                                            <asp:ListItem Value="COLLEGE" Text="College"></asp:ListItem>
-                                            <asp:ListItem Value="ASSOCIATE" Text="Associate's Degree"></asp:ListItem>
-                                            <asp:ListItem Value="BACHELOR" Text="Bachelor's Degree"></asp:ListItem>
-                                            <asp:ListItem Value="MASTER" Text="Master's Degree"></asp:ListItem>
-                                            <asp:ListItem Value="DOCTOR" Text="Doctorate Degree"></asp:ListItem>
+                                        <asp:DropDownList ItemType="text" CssClass="form-control  select2" ID="tbQualification" Style="width: 100%" runat="server">
                                         </asp:DropDownList>
                                     </div>
                                 </div>
@@ -197,9 +185,6 @@
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-user-plus"></i></span>
                                         <asp:DropDownList ItemType="text" CssClass="form-control select" ID="tbMaritalStatus" runat="server">
-                                            <asp:ListItem Text="Married"></asp:ListItem>
-                                            <asp:ListItem Text="Not Married"></asp:ListItem>
-                                            <asp:ListItem Text="Not Specified"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>
@@ -238,7 +223,7 @@
                             </div>
 
                             <%--<label>Emergency Contact Person Details</label>--%>
-                            
+
                             <div class="form-group">
                                 <label for="tbEmergencyContactName" class="col-sm-2 control-label">Emergency Contact Name</label>
                                 <div class="col-sm-4">
@@ -274,16 +259,15 @@
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
                                     <asp:Button ID="btnPersonalSubmit" runat="server" CssClass="btn btn-danger" Text="Submit" OnClick="btnPersonalSubmit_Click" />
-
                                     <label class=" control-label pull-right">
                                         last updated on &nbsp
-                            <a class="pull-right">
-                                <asp:Label ID="lblUpdate_Date" runat="server"></asp:Label>
-                            </a>
+                                        <a class="pull-right">
+                                            <asp:Label ID="lblUpdate_Date" runat="server"></asp:Label>
+                                        </a>
                                     </label>
 
                                 </div>
-                            </div>
+                            </div><!--Submit Button-->
                         </div>
                     </div>
                     <!-- /.tab-pane Edit Personal Data-->
@@ -356,15 +340,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="col-sm-offset-2 col-sm-10">
-                                    <asp:Button ID="btnTransportSubmit" CssClass="btn btn-danger" runat="server" Text="Submit" OnClick="btnPersonalSubmit_Click" />
-
-                                </div>
-                            </div>
+                           
                         </div>
                     </div>
-                    <!-- /.tab-pane -->
+                    <!-- /.tab-pane Transport -->
                     <div class="tab-pane" id="work_experience">
                         <div class="form-horizontal">
                             <div class="form-group">
@@ -410,11 +389,6 @@
                                         <span class="input-group-addon"><i class="fa fa-bicycle"></i></span>
                                         <select id="tbSkill_Set_3" class="form-control select2" selectionmode="multiple" multiple="true" style="width: 100%" runat="server"></select>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-offset-2 col-sm-10">
-                                    <asp:Button ID="btnExperienceSubmit" CssClass="btn btn-danger" runat="server" Text="Submit" OnClick="btnPersonalSubmit_Click" />
                                 </div>
                             </div>
                         </div>
@@ -479,7 +453,7 @@
                 format: 'dd-MM-yyyy',
                 autoclose: true
             });
-            
+
 
             $("[class*='datepicker']").datepicker({
                 autoclose: true
@@ -502,7 +476,7 @@
                 var data = new FormData();
                 var myid = $("#lblNTID").text() + "_0." + fileExtension;
                 //alert(myid);
-                for (var i = 0; i < files.length; i++) {                    
+                for (var i = 0; i < files.length; i++) {
                     data.append(files[i].name, files[i], myid);
                 }
 

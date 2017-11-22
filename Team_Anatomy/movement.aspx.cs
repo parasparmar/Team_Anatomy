@@ -169,10 +169,10 @@ public partial class movement : System.Web.UI.Page
                     ddlFromMgr.DataBind();
 
                     // Fill To Mgr Dropdown.
-                    strSQL = "SELECT Distinct B.[Employee_ID],REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') as Name ";
-                    strSQL += " FROM [CWFM_Umang].[WFMP].[tblMaster] A inner join [CWFM_Umang].[WFMP].[tblMaster] B on B.Employee_ID = A.RepMgrCode ";
-                    strSQL += " where B.isReportingManager > 0 and B.Employee_ID <> " + MyEmpID;
-                    strSQL += " order by REPLACE(dbo.ToProperCase(B.First_Name) + ' ' + dbo.ToProperCase(B.Middle_Name) + ' ' +dbo.ToProperCase(B.Last_Name),' ',' ') ASC";
+                    strSQL = "SELECT Distinct A.[Employee_ID],REPLACE(dbo.ToProperCase(A.First_Name) + ' ' + dbo.ToProperCase(A.Middle_Name) + ' ' +dbo.ToProperCase(A.Last_Name),' ',' ') as Name ";
+                    strSQL += " FROM [CWFM_Umang].[WFMP].[tblMaster] A ";
+                    strSQL += " where A.isReportingManager > 0 and A.Employee_ID <> " + MyEmpID;
+                    strSQL += " order by REPLACE(dbo.ToProperCase(A.First_Name) + ' ' + dbo.ToProperCase(A.Middle_Name) + ' ' +dbo.ToProperCase(A.Last_Name),' ',' ') ASC";
 
                     ddlToMgr.DataSource = my.GetData(strSQL);
                     ddlToMgr.DataTextField = "Name";
