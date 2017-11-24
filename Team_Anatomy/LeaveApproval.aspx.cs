@@ -13,6 +13,7 @@ using System.Security.Principal;
 using System.Net;
 using System.Web.Services;
 using System.Web.Script.Serialization;
+//using System.Threading.Tasks;
 
 public partial class LeaveApproval : System.Web.UI.Page
 {
@@ -212,6 +213,9 @@ public partial class LeaveApproval : System.Web.UI.Page
             //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave is approved.')", true);
             //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave is approved.', 'Success')", true);
             fillddlRepManager();
+
+            //System.Threading.Thread.Sleep(3000);
+            //Page.Response.Redirect(Page.Request.Url.ToString(), true);
         //}
 
     }
@@ -271,6 +275,8 @@ public partial class LeaveApproval : System.Web.UI.Page
             //}
             ScriptManager.RegisterStartupScript(this, this.GetType(), "show", "toastD();", true);
             alert.Visible = false;
+
+            //Page.Response.Redirect(Page.Request.Url.ToString(), true);
         }
         ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "hideModal();", true);
             //FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));

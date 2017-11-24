@@ -68,18 +68,20 @@ public partial class roster : System.Web.UI.Page
                 pnlAmIRvwMgr.Visible = true;
                 strSQL += " and A.IsReportingManager = 1";
                 i = new ListItem("My Reportees", MyEmpID.ToString(), true);
+                btnSubmit.Enabled = true;
                 break;
 
             case (int)role.TeamManager:
                 pnlAmIRvwMgr.Visible = true;
                 i = new ListItem("My Team", MyEmpID.ToString(), true);
+                btnSubmit.Enabled = true;
                 break;
 
             case (int)role.MySelf:
                 pnlAmIRvwMgr.Visible = true;
 
-                i = new ListItem("My Team's Roster", MyRepMgr.ToString(), true);
-
+                i = new ListItem("My Team's Roster", MyEmpID.ToString(), true);//MyRepMgr
+                btnSubmit.Enabled = false;
                 break;
         }
 

@@ -4,7 +4,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="headPlaceHolder" runat="Server">
     <style>
         .cursor {
-            cursor:pointer;
+            cursor: pointer;
         }
     </style>
 </asp:Content>
@@ -128,17 +128,9 @@
                 <!-- /.box-body -->
             </div>
             <!-- /.box -->
+
+
         </div>
-
-        <%--        <asp:Panel ID="resultofsave" runat="server" Visible="true" CssClass="col-md-8">
-            <div class="alert alert-success alert-dismissible">
-                <button class="close" aria-hidden="true" type="button" data-dismiss="alert">×</button>
-                <h4><i class="icon fa fa-check"></i>
-                    <asp:Literal ID="ltlresultofsave" Text="Saved Successfully!" runat="server"></asp:Literal></h4>
-                <asp:Label ID="lblresultofsave" Text="Your data has been saved successfully." runat="server"></asp:Label>
-            </div>
-        </asp:Panel>--%>
-
         <div class="col-md-8">
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
@@ -188,8 +180,7 @@
                                         </asp:DropDownList>
                                     </div>
                                 </div>
-                                <%--                            </div>
-                            <div class="form-group">--%>
+
                                 <label for="inputSkills" class="col-sm-2 control-label">Anniversary Date</label>
                                 <div class="col-sm-4">
                                     <div class="input-group">
@@ -210,8 +201,7 @@
                                     <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ControlToValidate="tbContact_Number" ErrorMessage="Invalid Number Format" ForeColor="Red" ValidationExpression="[0-9]{10}"></asp:RegularExpressionValidator>
 
                                 </div>
-                                <%--                            </div>
-                            <div class="form-group">--%>
+
                                 <label for="tbAlternate_Contact" class="col-sm-2 control-label">Alternate Number</label>
                                 <div class="col-sm-4">
                                     <div class="input-group">
@@ -256,18 +246,7 @@
                                     <asp:RegularExpressionValidator ID="regexEmailValid" runat="server" ForeColor="Red" ValidationExpression="\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" ControlToValidate="tbEmail_id" ErrorMessage="Invalid Email Format"></asp:RegularExpressionValidator>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="col-sm-offset-2 col-sm-10">
-                                    <asp:Button ID="btnPersonalSubmit" runat="server" CssClass="btn btn-danger" Text="Submit" OnClick="btnPersonalSubmit_Click" />
-                                    <label class=" control-label pull-right">
-                                        last updated on &nbsp
-                                        <a class="pull-right">
-                                            <asp:Label ID="lblUpdate_Date" runat="server"></asp:Label>
-                                        </a>
-                                    </label>
 
-                                </div>
-                            </div><!--Submit Button-->
                         </div>
                     </div>
                     <!-- /.tab-pane Edit Personal Data-->
@@ -340,7 +319,7 @@
                                     </div>
                                 </div>
                             </div>
-                           
+
                         </div>
                     </div>
                     <!-- /.tab-pane Transport -->
@@ -394,7 +373,6 @@
                         </div>
                     </div>
                     <!-- /.tab-pane -->
-
                     <div class="tab-pane" id="profile_image">
 
                         <div class="form-horizontal">
@@ -406,20 +384,31 @@
                                     </div>
                                 </div>
                             </div>
-                            <%--<div class="form-group">
-                                <div class="col-sm-offset-2 col-sm-10">
-                                    The user profile image can also be updated simply by clicking on it and providing the new image.
-                                </div>
-                            </div>--%>
                         </div>
                     </div>
                     <!-- /.tab-pane Edit Profile Image-->
                 </div>
                 <!-- /.tab-content -->
+                <div class="box-footer">
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <asp:Button ID="btnSubmit" runat="server" CssClass="btn btn-danger" Text="Submit" OnClick="btnSubmit_Click" />
+                            <label class=" control-label pull-right">
+                                last updated on &nbsp
+                                        <a class="pull-right">
+                                            <asp:Label ID="lblUpdate_Date" runat="server"></asp:Label>
+                                        </a>
+                            </label>
+
+                        </div>
+                    </div>
+                    <!--Submit Button-->
+                </div>
             </div>
             <!-- /.nav-tabs-custom -->
         </div>
         <!-- /.box -->
+
     </div>
     <!-- /.col -->
 

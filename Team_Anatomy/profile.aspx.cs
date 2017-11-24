@@ -65,10 +65,10 @@ public partial class profile : System.Web.UI.Page
                
                 lblSite.Text = dr["SiteID"].ToString();
                 /////---------------Personal Section 
-                tbGender.SelectedValue = dr["Gender"].ToString();
+                tbGender.Items.FindByText(dr["Gender"].ToString()).Selected=true;
                 tbDate_of_Birth.Text = dr["Date_of_Birth"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["Date_of_Birth"].ToString()).ToString("dd-MMM-yyyy");
-                tbQualification.Text = dr["Qualification"].ToString();
-                tbMaritalStatus.Text = dr["MaritalStatus"].ToString();
+                tbQualification.Items.FindByText(dr["Qualification"].ToString()).Selected = true;
+                tbMaritalStatus.Items.FindByText(dr["MaritalStatus"].ToString()).Selected = true;
                 tbAnniversaryDate.Text = dr["AnniversaryDate"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["AnniversaryDate"].ToString()).ToString("dd-MMM-yyyy");
                 tbContact_Number.Text = dr["Contact_Number"].ToString();
                 tbAlternate_Contact.Text = dr["Alternate_Contact"].ToString();
@@ -143,7 +143,7 @@ public partial class profile : System.Web.UI.Page
 
 
     }
-    protected void btnPersonalSubmit_Click(object sender, EventArgs e)
+    protected void btnSubmit_Click(object sender, EventArgs e)
     {
         dtEmp = (DataTable)Session["dtEmp"];
         DataRow dr = dtEmp.Rows[0];

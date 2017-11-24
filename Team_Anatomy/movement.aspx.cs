@@ -31,6 +31,7 @@ public partial class movement : System.Web.UI.Page
             else
             {
                 MyEmpID = Convert.ToInt32(dtEmp.Rows[0]["Employee_Id"].ToString());
+                enableMovements(MyEmpID);
             }
 
         }
@@ -45,6 +46,19 @@ public partial class movement : System.Web.UI.Page
 
 
     }
+
+    protected void enableMovements(int EmpID)
+    {
+        string strSQL = "SELECT [IsReportingManager] FROM [CWFM_Umang].[WFMP].[tblMaster] where Employee_ID = " + EmpID;
+        bool isReportingManager = Convert.ToBoolean(my.getSingleton(strSQL));
+        if (isReportingManager)
+        {
+            divDepMovement.Visible = true;
+            divMgrMovement.Visible = true;
+
+        }
+    }
+
     public enum TransferMode : int
     {
         NotSpecified = 0,

@@ -48,11 +48,6 @@
                     <div class="box box-solid box-primary" style="height: auto;">
                         <div class="box-header with-border">
                             <h4 class="box-title">Choose a Movement Type</h4>
-                            <%--<div class="box-tools pull-right">
-                                <button class="btn btn-box-tool" type="button" data-widget="collapse">
-                                    <i class="fa fa-minus"></i>
-                                </button>
-                            </div>--%>
                         </div>
                         <div class="box-body">
                             <div class="row">
@@ -83,7 +78,9 @@
                                             <div class="input-group date">
                                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                                 <asp:TextBox ID="tbEffectiveDate" CssClass="form-control" runat="server"></asp:TextBox>
+
                                             </div>
+                                            <asp:RequiredFieldValidator ID="datevalidator" runat="server" ControlToValidate="tbEffectiveDate" Text="Please enter a valid date"></asp:RequiredFieldValidator>
                                         </div>
                                     </asp:Panel>
                                 </div>
@@ -117,11 +114,6 @@
                             <div class="box-header with-border">
                                 <h4 class="box-title">
                                     <asp:Literal ID="ltlMovementTypeHeading" runat="server" Text="Movement Type : "></asp:Literal></h4>
-<%--                                <div class="box-tools pull-right">
-                                    <button class="btn btn-box-tool" type="button" data-widget="collapse">
-                                        <i class="fa fa-minus"></i>
-                                    </button>
-                                </div>--%>
                             </div>
                             <div class="box-body">
 
@@ -202,7 +194,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <asp:GridView ID="gv_DepMgrTeamList" runat="server" CssClass="table table-condensed table-responsive" AutoGenerateColumns="false"
-                                                        OnPreRender="gv_PreRender" ShowHeader="true" Style="border: none" DataKeyNames="Employee_ID" OnRowDataBound="gv_DepMgrTeamList_RowDataBound" >
+                                                        OnPreRender="gv_PreRender" ShowHeader="true" Style="border: none" DataKeyNames="Employee_ID" OnRowDataBound="gv_DepMgrTeamList_RowDataBound">
                                                         <Columns>
                                                             <asp:TemplateField HeaderText="Selection">
                                                                 <HeaderTemplate>
@@ -224,7 +216,8 @@
                                                 </div>
                                             </div>
                                             <!---The Dep Mgr's Team---->
-                                        </div><!-- Team List for Department Movements-->
+                                        </div>
+                                        <!-- Team List for Department Movements-->
                                     </asp:Panel>
                                     <!--Choose Dep and Teams---->
                                     <asp:Panel ID="pnlMgrMovement" runat="server" CssClass="box-body" Visible="false">
@@ -274,7 +267,7 @@
                                                             </asp:TemplateField>
                                                             <asp:BoundField DataField="Employee_ID" HeaderText="Employee Id" />
                                                             <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                            <asp:BoundField DataField="State" HeaderText="Status" />                                                            
+                                                            <asp:BoundField DataField="State" HeaderText="Status" />
                                                         </Columns>
                                                         <EmptyDataTemplate>
                                                             <h5>No Team Members found.</h5>
@@ -351,7 +344,7 @@
     <script src="Sitel/plugins/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
     <script>
         //Date picker
-     $(document).ready(function() {
+        $(document).ready(function () {
             Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
 
             function EndRequestHandler(sender, args) {
@@ -365,20 +358,13 @@
                 });
             }
 
-     });
-        </script>
+        });
+    </script>
     <script>
         function pluginsInitializer() {
             $("#btnSubmit").attr('disabled', 'disabled');
             //Initialize Select2 Elements
-            $('.select2').select2({
-
-            });
-           
-            //$('#tbEffectiveDate').datepicker({// "[class*='datepicker']"
-            //    autoclose: true,
-            //    format: 'dd-M-yyyy'
-            //});
+            $('.select2').select2({});
 
             $("#cbCheckAll").change(function () {
                 var xChk = $(this).prop('checked');

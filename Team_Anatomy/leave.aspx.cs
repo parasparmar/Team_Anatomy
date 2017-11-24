@@ -69,6 +69,8 @@ public partial class leave : System.Web.UI.Page
 
         //pnlLeaveBox.Visible = true;
         fillgvLeaveDetails();
+        //ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
+        //  ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Key1", "pluginsInitializer()", true);
     }
     protected void reservation_TextChanged(object sender, EventArgs e)
     {
@@ -76,6 +78,9 @@ public partial class leave : System.Web.UI.Page
         string[] seperator = { " - " };
         DateTime fromDate = Convert.ToDateTime(received.Split(seperator, StringSplitOptions.None).First<string>());
         DateTime endDate = Convert.ToDateTime(received.Split(seperator, StringSplitOptions.None).Last<string>());
+        //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Key1", "pluginsInitializer()", true);
+
+
     }
 
     private void fillgvLeaveDetails()
@@ -89,6 +94,8 @@ public partial class leave : System.Web.UI.Page
 
         gvLeaveDetails.DataSource = dt;
         gvLeaveDetails.DataBind();
+
+        //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Key2", "pluginsInitializer()", true);
 
     }
 
@@ -124,6 +131,11 @@ public partial class leave : System.Web.UI.Page
 
         SqlCommand cmd = new SqlCommand(strsql);
         cmd.Parameters.AddWithValue("@ECN", Convert.ToInt32(MyEmpID.ToString()));
+        //DataTable dt1 = my.GetDataTableViaProcedure(ref cmd);
+        //ddlRepManager.DataSource = dt1;
+        //ddlRepManager.DataTextField = "MgrName";
+        //ddlRepManager.DataValueField = "MgrID";
+        //ddlRepManager.DataBind();
         DataTable dt = my.GetDataTableViaProcedure(ref cmd);
         gvLeaveLog.DataSource = dt;
         gvLeaveLog.DataBind();
@@ -158,12 +170,14 @@ public partial class leave : System.Web.UI.Page
             {
                 dt = 1;
             }
-
+            //int dt = Convert.ToInt32(date);
+            //DateTime canceldate = Convert.ToDateTime(date);
+            //from_date
             string fdate = gvr.Cells[0].Text.ToString();
             DateTime fromdate = Convert.ToDateTime(fdate);
             DateTime today = DateTime.Today;
 
-            if (stat1 == "Declined" || today > fromdate || dt == 1 || stat2 == "declined")//
+            if (stat1 == "Declined" || today > fromdate || dt==1 || stat2 == "declined")//
             {
                 btn.CssClass = "btn btn-sm btn-danger disabled";
                 btn.Enabled = false;
@@ -193,59 +207,85 @@ public partial class leave : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@leave_reason", txt_leave_reason.Text.ToString());
         cmd.Parameters.Add("@xLEAVE_BATCH_ID", SqlDbType.VarChar, 500);
         cmd.Parameters["@xLEAVE_BATCH_ID"].Direction = ParameterDirection.Output;
+        cmd.Parameters.Add("@stop", SqlDbType.Int);
+        cmd.Parameters["@stop"].Direction = ParameterDirection.Output;
         cmd.Connection = con;
 
         cmd.ExecuteNonQuery();
         con.Close();
-        string xLeaveBatchID = cmd.Parameters["@xLEAVE_BATCH_ID"].Value.ToString();
 
-
-
-        string xRoster;
-        foreach (GridViewRow row in gvLeaveDetails.Rows)
+        string dec = cmd.Parameters["@stop"].Value.ToString();
+        if (String.IsNullOrEmpty(dec))
+            
         {
-            String xLeaveType;
-            String xDate;
-            //ddlSelectLeave
+            string xLeaveBatchID = cmd.Parameters["@xLEAVE_BATCH_ID"].Value.ToString();
 
-            DropDownList xDDL = (DropDownList)row.FindControl("ddlSelectLeave");
 
-            xLeaveType = xDDL.SelectedValue.ToString();
 
-            xDate = row.Cells[0].Text;
-            //    xRoster = row.Cells[3].Text;
-
-            //if (xRoster == "&nbsp;")
-            //{
-            //    xRoster = "";
-            //}
-
-            //strSQL = "INSERT INTO WFMP.tbl_datewise_leave VALUES('" + xDate + "','" + xLeaveType + "','" + xRoster + "','" + xLeaveBatchID + "')";
-            strSQL = "INSERT INTO WFMP.tbl_datewise_leave VALUES('" + xDate + "','" + xLeaveType + "','" + xLeaveBatchID + "')";
-
-            try
+            string xRoster;
+            foreach (GridViewRow row in gvLeaveDetails.Rows)
             {
-                con.Open();
-                cmd = new SqlCommand(strSQL, con);
-                cmd.ExecuteNonQuery();
-                con.Close();
+                String xLeaveType;
+                String xDate;
+                //ddlSelectLeave
+
+                DropDownList xDDL = (DropDownList)row.FindControl("ddlSelectLeave");
+
+                xLeaveType = xDDL.SelectedValue.ToString();
+
+                xDate = row.Cells[0].Text;
+                //    xRoster = row.Cells[3].Text;
+
+                //if (xRoster == "&nbsp;")
+                //{
+                //    xRoster = "";
+                //}
+
+                //strSQL = "INSERT INTO WFMP.tbl_datewise_leave VALUES('" + xDate + "','" + xLeaveType + "','" + xRoster + "','" + xLeaveBatchID + "')";
+                strSQL = "INSERT INTO WFMP.tbl_datewise_leave(LeaveDate,leave_type,leave_batch_id) VALUES('" + xDate + "','" + xLeaveType + "','" + xLeaveBatchID + "')";
+
+                try
+                {
+                    con.Open();
+                    cmd = new SqlCommand(strSQL, con);
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+                catch (Exception ex)
+                {
+
+                }
+
             }
-            catch (Exception ex)
+            fillgvLeaveLog();
+        }
+        else
+        {
+            int stop = Convert.ToInt32(dec);
+            if (stop == 1)
             {
+                //ScriptManager.RegisterStartupScript(this, this.GetType(), "show", "error();", true);
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.warning('Current Leave applied coincides with previous uncalled leave .Kindly Reapply.')", true);
 
             }
 
         }
-        fillgvLeaveLog();
-        clearfields();
+        
+            clearfields();      
     }
     protected void gvLeaveLog_RowEditing(object sender, System.Web.UI.WebControls.GridViewEditEventArgs e)
     {
-
+        //gvLeaveLog.EditIndex = e.NewEditIndex;
+        //fillgvLeaveLog();
     }
+    //(object sender, System.Web.UI.WebControls.GridViewEditEventArgs e)   
+
+
+
     protected void gvLeaveLog_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
-
+        //gvLeaveLog.EditIndex = -1;
+        //fillgvLeaveLog();
     }
     protected void gvLeaveLog_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
     {
@@ -255,8 +295,13 @@ public partial class leave : System.Web.UI.Page
     string tdate { get; set; }//imp
     protected void btn_Cancel_Click(object sender, EventArgs e)
     {
+        //    
+        //ScriptManager.RegisterStartupScript(this, this.GetType(), "xKeyx", "xShowModal()", true);
+        //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "xKeyx", "openmodal", true);
         Button btn = (Button)sender;
         GridViewRow row = (GridViewRow)btn.NamingContainer;
+
+
         fdate = row.Cells[0].Text.ToString();
         tdate = row.Cells[1].Text.ToString();
     }
@@ -265,9 +310,11 @@ public partial class leave : System.Web.UI.Page
     {
 
         string cancel_reason = txt_cancel_reason.Text.ToString();
-        string id = (lblLeaveID.Value);
+        string id = (lblLeaveID.Value); 
         SqlConnection con = new SqlConnection(my.getConnectionString());
         con.Open();
+        //string fdate = row.Cells[0].Text.ToString();
+        //string tdate = row.Cells[1].Text.ToString();
         DateTime from_date = Convert.ToDateTime(fdate);
         DateTime to_date = Convert.ToDateTime(tdate);
         DateTime date = DateTime.Now;
@@ -281,40 +328,69 @@ public partial class leave : System.Web.UI.Page
 
         SqlCommand cmd = new SqlCommand(Sql, con);
         cmd.Connection = con;
-        int Rows = cmd.ExecuteNonQuery();
+       int Rows= cmd.ExecuteNonQuery();
         con.Close();
         txt_cancel_reason.Text = String.Empty;
-
-
+        
+        //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Request Declined.', 'Success')", true);
         fillgvLeaveLog();
-        if (Rows > 0)
-        {
-            Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Cancellation is successfull.')", true);
+        if (Rows > 0) {
+            //System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
+            //sb.Append(@"<script language='javascript'>");
+
+            //sb.Append(@"toast();");
+
+            //sb.Append(@"</script>");
+
+
+
+            //if (!ClientScript.IsStartupScriptRegistered("JSScript"))
+            //{
+
+            //    ClientScript.RegisterStartupScript(this.GetType(), "JSScript", sb.ToString());
+
+            //}
+            //ClientScript.RegisterClientScriptBlock(GetType(), "toast", "javascript: toast(); ");
+            //ClientScript.RegisterStartupScript(GetType(), "toast", "javascript: toast(); ", true);/////////
+
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "OpenPage", "<script>toastr.success('Have fun storming the castle!', 'Miracle Max Says');</script>", true);
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "Message", "toast();", true);
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Cancellation is successfull.')", true);
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "Message", "<script>$(document).ready(function(){ $('.call').css({ 'display': 'block' });});</script>", false);
         }
 
     }
     protected void gvLeaveLog_SelectedIndexChanged(object sender, EventArgs e)
     {
+        //Accessing BoundField Column
 
+        //GridViewRow gr = gvLeaveLog.SelectedRow;
+        //Label lbl = (Label)gr.FindControl("leave_batch_id");
+        //string id = lbl.Text;
     }
 
-
-
+  
+   
 
     [WebMethod]
     public static string getDates()
     {
         Helper my = new Helper();
+
         String strSQL = "CWFM_UMANG.WFMP.[getMinDateforLeaveRequest]";
         SqlCommand cmd = new SqlCommand(strSQL);
         DataTable dtMinDate = my.GetDataTableViaProcedure(ref cmd);
-        string minDate = dtMinDate.Rows[0]["minDate"].ToString();
+        string minDate =dtMinDate.Rows[0]["minDate"].ToString();
+        //JavaScriptSerializer js = new JavaScriptSerializer();
+
+        //return js.Serialize(minDate); 
         return (minDate);
+
 
     }
 
 }
 
-
+        
 

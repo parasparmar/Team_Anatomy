@@ -43,11 +43,6 @@
                 <div class="box-header with-border">
                     <h4 class="box-title">
                         <asp:Literal ID="ltlReportingMgrsTeam" Text="Roster For Site" runat="server"></asp:Literal></h4>
-<%--                    <div class="box-tools pull-right">
-                        <button class="btn btn-box-tool" type="button" data-widget="collapse">
-                            <i class="fa fa-minus"></i>
-                        </button>
-                    </div>--%>
                 </div>
                 <div class="box-body">
                     <div class="row">
@@ -162,7 +157,7 @@
     <script src="AdminLTE/bower_components/select2/dist/js/select2.full.min.js"></script>
     <script>
         $(function () {
-            
+
             //Initialize Select2 Elements
             $("[class*='select2']").select2();
             //Date picker

@@ -1,10 +1,13 @@
-﻿<%@ Page Title="LeaveRequest" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="leave.aspx.cs" Inherits="leave" %>
+﻿<%@ Page Title="LeaveRequest" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="leave.aspx.cs"  Inherits="leave" %>
 
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="headPlaceHolder" runat="Server">
-      <link href="Sitel/plugins/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet" />
+    <%--  <link href="Sitel/plugins/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet" />
+        <%--toastr--%>
+<%--    <Link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />--%>
+    <%--•//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js--%>
     <!-- iCheck for checkboxes and radio inputs -->
     <link rel="stylesheet" href="AdminLTE/plugins/iCheck/all.css">
     <style>
@@ -23,8 +26,7 @@
         }
 
     </style>
-<%--    toastr
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />--%>
+    
 
 
 
@@ -81,6 +83,7 @@
 
     <div class="pageheader">
         <div class="pageicon"><span class="fa fa-plane"></span></div>
+        <%--fa-exclamation / fa-plane / fa-calendar-times-o--%>
         <div class="pagetitle">
             <h5>Initiate leave request</h5>
             <h1>Request Leave</h1>
@@ -123,14 +126,14 @@
                         <label>Leave Reason</label>
                         <asp:TextBox ID="txt_leave_reason" CssClass="form-control" runat="server" placeholder="Enter Reason....." ></asp:TextBox>
                         <%--<textarea id="txt_leave_reason" placeholder="Enter Reason....." class="form-control" runat="server"></textarea>--%>
-                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" Display="Dynamic" ErrorMessage="Leave Reason required" ForeColor="Red" ControlToValidate="txt_leave_reason"></asp:RequiredFieldValidator>
-                        <asp:RegularExpressionValidator ID="RegularExpressionValidator4" runat="server" Display="Dynamic" ControlToValidate="txt_leave_reason" ErrorMessage="enter valid reason" ForeColor="Red" ValidationExpression="^[a-zA-Z ]+$"></asp:RegularExpressionValidator>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" Display="Dynamic" ErrorMessage="Leave Reason required" ForeColor="Red" ControlToValidate="txt_leave_reason" ValidationGroup="Proceed"></asp:RequiredFieldValidator>
+                        <asp:RegularExpressionValidator ID="RegularExpressionValidator4" runat="server" Display="Dynamic" ControlToValidate="txt_leave_reason" ErrorMessage="enter valid reason" ForeColor="Red" ValidationExpression="^[a-zA-Z ]+$" ValidationGroup="Proceed"></asp:RegularExpressionValidator>
                     </div>
                 </div>
             </div>
         </div>
         <div class="box-footer">
-            <asp:Button ID="btn_proceed" CssClass="btn btn-primary pull-right" runat="server" Text="Proceed" OnClick="btn_proceed_Click" />
+            <asp:Button ID="btn_proceed" CssClass="btn btn-primary pull-right" runat="server" Text="Proceed" OnClick="btn_proceed_Click" ValidationGroup="Proceed"/><%--CausesValidation="False" --%>
             <%--<button class="btn btn-primary" type="submit" id="proceed">Proceed</button>--%>
         </div>
     </div>
@@ -158,7 +161,7 @@
             </div>
         </div>
         <div class="box-footer">
-            <asp:Button ID="btn_submit" CssClass="btn btn-primary pull-right" runat="server" Text="Submit" OnClick="btn_submit_Click" />
+            <asp:Button ID="btn_submit" CssClass="btn btn-primary pull-right" runat="server" Text="Submit" OnClick="btn_submit_Click" CausesValidation="False"/>
             <%--<button class="btn btn-primary" type="submit">Submit</button>--%>
         </div>
     </div>
@@ -224,12 +227,14 @@
                 </div>
                 <div class="modal-body">
                     <asp:TextBox ID="txt_cancel_reason" TextMode="multiline" Columns="74" Rows="3" runat="server" CssClass="form-control" placeholder="Enter reason for cancelling leave request....."></asp:TextBox>
+                    <asp:RequiredFieldValidator id="RequiredFieldValidator2" ControlToValidate="txt_cancel_reason" ErrorMessage="enter cancel reason" ForeColor="Red"
+                    runat="server" ValidationGroup="Save"></asp:RequiredFieldValidator> 
                     <asp:HiddenField ID="lblLeaveID" runat="server"></asp:HiddenField>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
                     <%--<button type="button" id="btn_save_cancel_reason" class="btn btn-primary">Save changes</button>--%>
-                    <asp:Button ID="btn_save_cancel_reason" runat="server" Text="Save" CssClass="btn btn-primary" OnClick="btn_save_cancel_reason_Click" /><%----%>
+                    <asp:Button ID="btn_save_cancel_reason" runat="server" Text="Save" CssClass="btn btn-primary" OnClick="btn_save_cancel_reason_Click" ValidationGroup="Save" /><%--CausesValidation="false"--%>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -243,7 +248,7 @@
 </asp:Content>
 
 <asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">
-    <%--        <Link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+<%--        <Link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
      <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>--%>
 
     <script type="text/javascript">
@@ -276,15 +281,21 @@
             }
             var leave_id; var btn; var status;
             $(".btn-danger").click(function (e) {
+                //
                 e.preventDefault();
+                //alert("1");
                 btn = $(this);
                 $(".modal").modal("show");//.modal
                 leave_id = $(this).closest('tr').find('td:nth-child(7)').text();
                 $('#lblLeaveID').val(leave_id);
+                //alert(leave_id);
+                //$("#modal-danger").css({ "display": "block" });
+                //alert("2");
+                //$("#modal-danger").css({ "display": "block" }); alert("2");
 
             });
 
-
+            
 
 
             $("#btn_save_cancel_reason-----").click(function () {
@@ -305,19 +316,32 @@
                         contentType: "application/json; charset=utf-8",
                         dataType: "json",
                         success: function (Record) {
+                            //disable();
+                            //alert("done");
                             $("#txt_cancel_reason").val("");
+                            //alert(btn.attr("class"));
+                            //btn.addClass("disabled");
+                            //$("#btn_Cancel").addClass("disabled");
                         },
                         error: function (Record) {
                             alert("Error: " + Record.d);
                         }
                     });
-
+                    //function disable() {
+                    //$("#btn_Cancel").attr("class", "btn btn-sm btn-danger disabled");
+                    //}
+                    //alert(btn.attr("class"));
                 }
             });
         });
 
-
+        
         function pluginsInitializer() {
+            //var x = 1;
+            //$("#btn_proceed").click(function () {
+            //    $("#leave-box").css({ "display": "block" });
+            //});
+
             $("#gvLeaveLog tbody tr").each(function () {
                 $(this).find("th:nth-child(7)").hide();
                 $(this).find("th:nth-child(8)").hide();
@@ -332,21 +356,52 @@
                 $(this).find("td:nth-child(10)").hide();
             });
 
-            $('#reservation').daterangepicker({ format: 'DD-MMM-YYYY' })
+            //$('#reservation').daterangepicker({
+            //    minDate: new Date(),
+            //});
+
+            $('#reservation').daterangepicker({ format: 'DD-MMM-YYYY' });
+            //$('#reservation').change(function () {
+            //    var x = $('#reservation').val();
+
+            //    y = moment(x.substr(0, 10).trim()).format('DD-MMM-YYYY');
+            //    z = moment(x.substr(13, 10).trim()).format('DD-MMM-YYYY');
+
+            //    $('#reservation').val(y + ' - ' + z);
+            //})
+
+
 
             //Date range picker
+           
 
             $('#reservation').on('apply.daterangepicker', function (ev, picker) {
-                var startdate = picker.endDate.format('DD-MMM-YYYY');
+                //var startdate = Thedate();
+                var startdate=picker.endDate.format('DD-MMM-YYYY');
                 var enddate = picker.endDate.format('DD-MMM-YYYY');
                 picker.minDate = startdate;
                 picker.maxDate = enddate;
+
+                //alert("startdate: "+startdate + " enddate: "+ enddate);
             });
+
+
+
+
         }
+
+
+        //function xShowModal() {
+        //    $(".modal").modal("show");
+        //}
+
 
         $(function () {
             pluginsInitializer();
         });
+
+        
+
 
         //On UpdatePanel Refresh
         var prm = Sys.WebForms.PageRequestManager.getInstance();
@@ -377,6 +432,10 @@
 
           function show() {
               $('#pnlLeaveBox').css({ 'display': 'block' });
+          }
+
+          function error() {
+              alert("applied date range is already in leave log . Kindly reapply");
           }
     </script>
 
