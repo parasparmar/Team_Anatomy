@@ -20,7 +20,7 @@ public partial class index : System.Web.UI.Page
             ViewState["PreviousPageUrl"] = Request.UrlReferrer.ToString();
         }
         myID = PageExtensionMethods.getMyWindowsID().ToString();
-        //myID = "tmokh001";
+        //myID = "avish001";
         if (myID != "IDNotFound")
         {
 

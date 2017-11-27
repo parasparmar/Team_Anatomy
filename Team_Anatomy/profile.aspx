@@ -231,7 +231,7 @@
                                         <span class="input-group-addon"><i class="fa fa-phone"></i></span>
                                         <asp:TextBox ID="tbEmergencyContactPerson" CssClass="form-control" runat="server"></asp:TextBox>
                                     </div>
-                                    <asp:RegularExpressionValidator ID="RegularExpressionValidator3" runat="server" ControlToValidate="tbEmergencyContactPerson" ErrorMessage="Invalid Number Format" ForeColor="Red" ValidationExpression="[0-9]{10}"></asp:RegularExpressionValidator>
+                                    <asp:RegularExpressionValidator ID="RegularExpressionValidator3" runat="server" ControlToValidate="tbEmergencyContactPerson" ErrorMessage="Invalid Number Format" ForeColor="Red" ValidationExpression="[0-9]{10}|0"></asp:RegularExpressionValidator>
                                 </div>
                             </div>
 

@@ -149,8 +149,11 @@ public partial class LeaveApproval : System.Web.UI.Page
                         btn_dec.Enabled = false;
                     }
                 }
-
-
+                else
+                {
+                    btn_appr.Enabled = true;
+                    btn_dec.Enabled = true;
+                }
             }
         }
 

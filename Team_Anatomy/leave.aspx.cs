@@ -257,7 +257,10 @@ public partial class leave : System.Web.UI.Page
                 }
 
             }
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave applied successfully.')", true);
+
             fillgvLeaveLog();
+
         }
         else
         {

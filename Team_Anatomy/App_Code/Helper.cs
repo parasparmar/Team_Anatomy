@@ -232,6 +232,7 @@ public class Helper
         var the_result = cmd.ExecuteScalar();
         int result = 0;
         close_conn();
+        
         if (Int32.TryParse(the_result.ToString(), out result))
         {
             return result;
