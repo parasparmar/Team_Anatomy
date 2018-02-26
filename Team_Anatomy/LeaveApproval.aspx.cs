@@ -207,7 +207,7 @@ public partial class LeaveApproval : System.Web.UI.Page
             int Rows = cmd.ExecuteNonQuery();
             con.Close();
             txt_reason.Text = String.Empty;
-            lblLeaveID.Text = String.Empty; ;
+            lblLeaveID.Text = String.Empty; 
             lblEmployeeName.Text = "";
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "hideModal();", true);
             //FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));

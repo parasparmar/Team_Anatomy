@@ -215,13 +215,13 @@
                             <%--<label>Emergency Contact Person Details</label>--%>
 
                             <div class="form-group">
-                                <label for="tbEmergencyContactName" class="col-sm-2 control-label">Emergency Contact Name</label>
+                                <label for="tbEmergencyContactPerson" class="col-sm-2 control-label">Emergency Contact Name</label>
                                 <div class="col-sm-4">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                        <asp:TextBox ID="tbEmergencyContactName" CssClass="form-control" runat="server"></asp:TextBox>
+                                        <asp:TextBox ID="tbEmergencyContactPerson" CssClass="form-control" runat="server"></asp:TextBox>
                                     </div>
-                                    <asp:RegularExpressionValidator ID="RegularExpressionValidator4" runat="server" ControlToValidate="tbEmergencyContactName" ErrorMessage="Only alphabets are allowed" ForeColor="Red" ValidationExpression="^[a-zA-Z ]+$"></asp:RegularExpressionValidator>
+                                    <asp:RegularExpressionValidator ID="RegularExpressionValidator4" runat="server" ControlToValidate="tbEmergencyContactPerson" ErrorMessage="Only alphabets are allowed" ForeColor="Red" ValidationExpression="^[a-zA-Z ]+$"></asp:RegularExpressionValidator>
 
                                 </div>
 
@@ -229,9 +229,9 @@
                                 <div class="col-sm-4">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-phone"></i></span>
-                                        <asp:TextBox ID="tbEmergencyContactPerson" CssClass="form-control" runat="server"></asp:TextBox>
+                                        <asp:TextBox ID="tbEmergencyContactNo" CssClass="form-control" runat="server"></asp:TextBox>
                                     </div>
-                                    <asp:RegularExpressionValidator ID="RegularExpressionValidator3" runat="server" ControlToValidate="tbEmergencyContactPerson" ErrorMessage="Invalid Number Format" ForeColor="Red" ValidationExpression="[0-9]{10}|0"></asp:RegularExpressionValidator>
+                                    <asp:RegularExpressionValidator ID="RegularExpressionValidator3" runat="server" ControlToValidate="tbEmergencyContactNo" ErrorMessage="Invalid Number Format" ForeColor="Red" ValidationExpression="[0-9]{10}|0"></asp:RegularExpressionValidator>
                                 </div>
                             </div>
 

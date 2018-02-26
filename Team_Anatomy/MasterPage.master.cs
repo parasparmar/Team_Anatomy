@@ -16,7 +16,7 @@ using CD;
 public partial class MasterPage : System.Web.UI.MasterPage
 {
 
-    
+
     DataTable dt = new DataTable();
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -26,7 +26,7 @@ public partial class MasterPage : System.Web.UI.MasterPage
         }
     }
 
-   
+
 
     protected void intialize_me()
     {
@@ -42,6 +42,7 @@ public partial class MasterPage : System.Web.UI.MasterPage
                 string UserImageURI = "~/Sitel/user_images/" + dr["UserImage"];
                 mediumUserImage.ImageUrl = UserImageURI;
                 smallUserImage.ImageUrl = UserImageURI;
+                fillrptrImpersonator();
             }
 
         }
@@ -49,13 +50,18 @@ public partial class MasterPage : System.Web.UI.MasterPage
         {
             Response.Write(Ex.Message);
         }
-
-
-
     }
 
+    private void fillrptrImpersonator()
+    {
+        Helper my = new Helper();
+        string strSQL = "Select distinct  A.Skillset from [WFMPMS].[tblDsgn2KPIWtg] A ";
+        strSQL += " where A.SkillsetId <> 5 ";
+        strSQL += " union select distinct A.Skillset + '-Manager' as Skillset from[WFMPMS].[tblDsgn2KPIWtg] A";
+        strSQL += " where A.SkillsetId <> 5 ";
+        DataTable dt = my.GetData(strSQL);
+        rptrImpersonator.DataSource = dt;
+        rptrImpersonator.DataBind();
 
-
-
-
+    }
 }

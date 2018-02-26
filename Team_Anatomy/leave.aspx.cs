@@ -91,7 +91,7 @@ public partial class leave : System.Web.UI.Page
         DateTime end_Date = Convert.ToDateTime(received.Split(seperator, StringSplitOptions.None).Last<string>());
         strsql = "select CONVERT(VARCHAR,xDate,106) as Date,'' day,'' Leave,'' from [xGetdateBetween]('d','" + from_Date + "','" + end_Date + "') ";
         DataTable dt = my.GetData(strsql);
-
+        ViewState["Paging"] = dt;  
         gvLeaveDetails.DataSource = dt;
         gvLeaveDetails.DataBind();
 
@@ -276,24 +276,8 @@ public partial class leave : System.Web.UI.Page
         
             clearfields();      
     }
-    protected void gvLeaveLog_RowEditing(object sender, System.Web.UI.WebControls.GridViewEditEventArgs e)
-    {
-        //gvLeaveLog.EditIndex = e.NewEditIndex;
-        //fillgvLeaveLog();
-    }
-    //(object sender, System.Web.UI.WebControls.GridViewEditEventArgs e)   
 
 
-
-    protected void gvLeaveLog_RowUpdating(object sender, GridViewUpdateEventArgs e)
-    {
-        //gvLeaveLog.EditIndex = -1;
-        //fillgvLeaveLog();
-    }
-    protected void gvLeaveLog_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
-    {
-
-    }
     string fdate { get; set; }
     string tdate { get; set; }//imp
     protected void btn_Cancel_Click(object sender, EventArgs e)
@@ -364,16 +348,7 @@ public partial class leave : System.Web.UI.Page
         }
 
     }
-    protected void gvLeaveLog_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        //Accessing BoundField Column
 
-        //GridViewRow gr = gvLeaveLog.SelectedRow;
-        //Label lbl = (Label)gr.FindControl("leave_batch_id");
-        //string id = lbl.Text;
-    }
-
-  
    
 
     [WebMethod]
@@ -393,6 +368,69 @@ public partial class leave : System.Web.UI.Page
 
     }
 
+    protected void gvLeaveLog_PreRender(object sender, EventArgs e)
+    {
+        //GridView gv = (GridView)sender;
+        //if (gv.Rows.Count > 0)
+        //{
+        //    gv.UseAccessibleHeader = true;
+        //    gv.HeaderRow.TableSection = TableRowSection.TableHeader;
+        //    gv.FooterRow.TableSection = TableRowSection.TableFooter;
+        //    gv.HeaderStyle.BorderStyle = BorderStyle.None;
+        //    gv.BorderStyle = BorderStyle.None;
+        //    gv.BorderWidth = Unit.Pixel(1);
+        //}
+
+    }
+    protected void gvLeaveLog_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        gvLeaveLog.PageIndex = e.NewPageIndex; 
+        fillgvLeaveLog();
+
+    }
+    protected void gvLeaveLog_Sorting(object sender, GridViewSortEventArgs e)
+    {
+        DataTable dt = Session["TaskTable"] as DataTable;
+
+        if (dt != null)
+        {
+
+            //Sort the data.
+            dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
+            gvLeaveLog.DataSource = Session["TaskTable"];
+            gvLeaveLog.DataBind();
+        }
+
+    }
+    private string GetSortDirection(string column)
+    {
+
+        // By default, set the sort direction to ascending.
+        string sortDirection = "ASC";
+
+        // Retrieve the last column that was sorted.
+        string sortExpression = ViewState["SortExpression"] as string;
+
+        if (sortExpression != null)
+        {
+            // Check if the same column is being sorted.
+            // Otherwise, the default value can be returned.
+            if (sortExpression == column)
+            {
+                string lastDirection = ViewState["SortDirection"] as string;
+                if ((lastDirection != null) && (lastDirection == "ASC"))
+                {
+                    sortDirection = "DESC";
+                }
+            }
+        }
+
+        // Save new values in ViewState.
+        ViewState["SortDirection"] = sortDirection;
+        ViewState["SortExpression"] = column;
+
+        return sortDirection;
+    }
 }
 
         

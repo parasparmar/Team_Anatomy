@@ -86,6 +86,7 @@ public class Helper
             cmd.Connection = cn;
 
             SqlDataAdapter da = new SqlDataAdapter(cmd);
+            da.SelectCommand.CommandTimeout = 60;
             da.Fill(dt);
         }
         close_conn();
@@ -97,6 +98,7 @@ public class Helper
         DataTable dt = new DataTable();
         using (SqlDataAdapter da = new SqlDataAdapter(new SqlCommand(sql, cn)))
         {
+            da.SelectCommand.CommandTimeout = 60;
             DataSet ds = new DataSet();
             da.Fill(ds);
             dt = ds.Tables[0];

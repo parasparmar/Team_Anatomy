@@ -115,7 +115,7 @@
                         <div class="box-body">
                             <div class="box-body">
                                 <asp:GridView ID="gvApprLeaveLog" runat="server"
-                                    CssClass="table table-bordered table-hover "  AutoGenerateColumns="false"><%--DatatableOnPreRender="gv_PreRender"--%>
+                                    CssClass="table table-bordered table-hover Datatable"  AutoGenerateColumns="false"><%--OnPreRender="gv_PreRender"--%>
                                     <Columns>
                                         <asp:BoundField DataField="ecn" HeaderText="Emp Code"></asp:BoundField>
                                         <asp:BoundField DataField="name" HeaderText="Name"></asp:BoundField>

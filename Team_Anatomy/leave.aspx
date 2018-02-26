@@ -172,11 +172,10 @@
         </div>
         <div class="box-body">
             <div class="box-body">
-                <asp:GridView ID="gvLeaveLog" runat="server"
-                    CssClass="table table-bordered table-hover Datatable" OnRowEditing="gvLeaveLog_RowEditing"
-                    OnRowDataBound="gvLeaveLog_RowDataBound" OnRowUpdating="gvLeaveLog_RowUpdating"
-                    OnRowCancelingEdit="gvLeaveLog_RowCancelingEdit"
-                    AutoGenerateColumns="false" DataKeyNames="ID" OnSelectedIndexChanged="gvLeaveLog_SelectedIndexChanged">
+                <asp:GridView ID="gvLeaveLog" runat="server" 
+                    AllowPaging="false" OnPageIndexChanging="gvLeaveLog_PageIndexChanging" AllowSorting="true" OnSorting="gvLeaveLog_Sorting"
+                    CssClass="table table-bordered table-hover " OnRowDataBound="gvLeaveLog_RowDataBound"
+                    AutoGenerateColumns="false" DataKeyNames="ID" ><%--Datatable PageSize="5" OnPreRender="gvLeaveLog_PreRender"--%>
                     <Columns>
                         <asp:BoundField DataField="From_Date" HeaderText="From Date" HeaderStyle-CssClass="mid"></asp:BoundField>
                         <asp:BoundField DataField="To_Date" HeaderText="To Date" HeaderStyle-CssClass="mid"></asp:BoundField>

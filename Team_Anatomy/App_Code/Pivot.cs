@@ -185,7 +185,7 @@ public class Pivot
         }
         catch (Exception ex)
         {
-            return "#Error";
+            return "#Error : " + ex.Message.ToString();
         }
     }
 

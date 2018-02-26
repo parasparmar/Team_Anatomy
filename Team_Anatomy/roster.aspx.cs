@@ -420,8 +420,22 @@ public partial class roster : System.Web.UI.Page
                 complianceStatus = true && complianceStatus;
             }
         }
-
-
+        GridViewRowCollection grows = gvRoster.Rows;
+        foreach (var employee in employees)
+        {
+            foreach (GridViewRow R in grows)
+            {
+                int MyEmpID = Convert.ToInt32(R.Cells[0].Text);
+                if (employee.EmpCode == MyEmpID && employee.rules_WorkOffCompliance == false)
+                {
+                    R.Attributes.Add("class", "bg-orange");
+                }                
+                else
+                {
+                    R.Attributes.Remove("class");
+                }
+            }
+        }
 
         return complianceStatus;
     }

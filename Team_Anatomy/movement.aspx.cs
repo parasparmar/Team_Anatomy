@@ -63,7 +63,7 @@ public partial class movement : System.Web.UI.Page
         {
             pnlEnableMovements.Visible = true;
         }
-        
+
     }
 
     public enum TransferMode : int
@@ -168,8 +168,6 @@ public partial class movement : System.Web.UI.Page
                     ddlFunctionId.DataTextField = "Function";
                     ddlFunctionId.DataValueField = "TransID";
                     ddlFunctionId.DataBind();
-
-                    //fillTeamList(MyEmpID, ref gv_DepMgrTeamList);
 
                     break;
 
@@ -312,6 +310,20 @@ public partial class movement : System.Web.UI.Page
         }
         ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
     }
+
+    private void fillDepartmentTransferList(int EmpCode, ref GridView gvTeamList)
+    {
+        if (dtEmp.Rows.Count > 0)
+        {
+            gvTeamList.DataSource = my.GetData("Exec [WFMP].[Transfer_DepartmentList] " + EmpCode);
+            gvTeamList.DataBind();
+        }
+        else
+        {
+
+        }
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
+    }
     protected void btnMgrPush_Click(object sender, EventArgs e)
     {
         MovementHandler(MovementType.TransferOut);
@@ -329,7 +341,7 @@ public partial class movement : System.Web.UI.Page
     }
     protected void ddlToDept_SelectedIndexChanged(object sender, EventArgs e)
     {
-        
+
     }
     protected void gv_PreRender(object sender, EventArgs e)
     {
@@ -383,7 +395,8 @@ public partial class movement : System.Web.UI.Page
     protected void ddlDepartmentManager_SelectedIndexChanged(object sender, EventArgs e)
     {
         MyEmpID = Convert.ToInt32(ddlDepartmentManager.SelectedValue.ToString());
-        fillTeamList(MyEmpID, ref gv_DepMgrTeamList);
+        fillDepartmentTransferList(MyEmpID, ref gv_DepMgrTeamList);
+        btnDepSubmit_enabler();
         ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
     }
     protected void ddlFunctionId_SelectedIndexChanged(object sender, EventArgs e)
@@ -405,6 +418,7 @@ public partial class movement : System.Web.UI.Page
         ddlLOBID.SelectedIndex = 0;
         ddlSkillSet.SelectedIndex = 0;
         ddlSubSkillSet.SelectedIndex = 0;
+        btnDepSubmit_enabler();
         ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
     }
     protected void ddlDepartmentID_SelectedIndexChanged(object sender, EventArgs e)
@@ -421,6 +435,7 @@ public partial class movement : System.Web.UI.Page
         ddlLOBID.DataBind();
         ddlLOBID.Items.Insert(0, new ListItem("---", String.Empty));
         ddlLOBID.SelectedIndex = 0;
+        btnDepSubmit_enabler();
         ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
     }
     protected void ddlLOBID_SelectedIndexChanged(object sender, EventArgs e)
@@ -439,6 +454,7 @@ public partial class movement : System.Web.UI.Page
         ddlSkillSet.DataBind();
         ddlSkillSet.Items.Insert(0, new ListItem("---", String.Empty));
         ddlSkillSet.SelectedIndex = 0;
+        btnDepSubmit_enabler();
         ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
     }
     protected void ddlSkillSet_SelectedIndexChanged(object sender, EventArgs e)
@@ -458,10 +474,12 @@ public partial class movement : System.Web.UI.Page
         ddlSubSkillSet.DataBind();
         ddlSubSkillSet.Items.Insert(0, new ListItem("---", String.Empty));
         ddlSubSkillSet.SelectedIndex = 0;
+        btnDepSubmit_enabler();
         ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
     }
     protected void ddlSubSkillSet_SelectedIndexChanged(object sender, EventArgs e)
     {
+        btnDepSubmit_enabler();
         ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
     }
     protected void ddlFromMgr_SelectedIndexChanged(object sender, EventArgs e)
@@ -524,10 +542,27 @@ public partial class movement : System.Web.UI.Page
             }
 
         }
-        int EmpCode = Convert.ToInt32(ddlFromMgr.SelectedValue.ToString());
-        fillTeamList(EmpCode, ref gv_LeftHandSideTeamList);
+        int RMEmpCode = Convert.ToInt32(ddlFromMgr.SelectedValue.ToString());
+        fillTeamList(RMEmpCode, ref gv_LeftHandSideTeamList);
         Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message5", "toastr.success('The Transfer has been successfully initiated. For more details please visit the Movement Transfer Actions Page.','Transfer Initiated')", true);
         ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
+    }
+
+    protected void btnDepSubmit_enabler()
+    {
+        if (ddlDepartmentManager.SelectedValue.Length > 0
+             && ddlFunctionId.SelectedValue.Length > 0
+            && ddlDepartmentID.SelectedValue.Length > 0
+            && ddlLOBID.SelectedValue.Length > 0
+            && ddlSkillSet.SelectedValue.Length > 0
+            && ddlSubSkillSet.SelectedValue.Length > 0)
+        {
+            btnDepSubmit.Enabled = true;
+        }
+        else
+        {
+            btnDepSubmit.Enabled = false;
+        }
     }
 
     protected void btnDepSubmit_Click(object sender, EventArgs e)
@@ -537,11 +572,11 @@ public partial class movement : System.Web.UI.Page
         if (rdoDeptMovement.Checked && rdobtnMgrPull.Checked) { EmpTransferMode = TransferMode.DepartmentTransferIn; }
         if (rdoDeptMovement.Checked && rdobtnMgrPush.Checked) { EmpTransferMode = TransferMode.DepartmentTransferOut; }
         int TypeOfMovement = (int)TransferMode.DepartmentTransferOut;
-        M.Types = TypeOfMovement;
 
-        string ntID = dtEmp.Rows[0]["ntName"].ToString();
+
+        // string ntID = dtEmp.Rows[0]["ntName"].ToString();
         int Employee_Id = Convert.ToInt32(dtEmp.Rows[0]["Employee_ID"].ToString());
-        DateTime D = Convert.ToDateTime(tbEffectiveDate.Text.ToString());
+        DateTime EffectiveDate = Convert.ToDateTime(tbEffectiveDate.Text.ToString());
         int FromDptLinkMstId = Convert.ToInt32(dtEmp.Rows[0]["DeptLinkId"].ToString());
         int ToDptLinkMstId = 0;
 
@@ -549,6 +584,7 @@ public partial class movement : System.Web.UI.Page
         string mstQuery = "[WFMP].[GetDeptValues]";
         SqlCommand mstCmd = new SqlCommand();
         mstCmd.CommandText = mstQuery;
+
         mstCmd.Parameters.AddWithValue("@FunctionID", ddlFunctionId.SelectedValue.ToString());
         mstCmd.Parameters.AddWithValue("@DepartmentID", ddlDepartmentID.SelectedValue.ToString());
         mstCmd.Parameters.AddWithValue("@LOBID", ddlLOBID.SelectedValue.ToString());
@@ -564,13 +600,24 @@ public partial class movement : System.Web.UI.Page
             CheckBox checkbox = gvrow.FindControl("cbMyTeamListID") as CheckBox;
             if (checkbox.Checked)
             {
-                M.EmpId = Convert.ToInt32(gv_DepMgrTeamList.DataKeys[gvrow.RowIndex].Value.ToString());
+                M.FromDptLinkMstId = FromDptLinkMstId;
+                M.ToDptLinkMstId = ToDptLinkMstId;
+                M.FunctionID = Convert.ToInt32(ddlFunctionId.SelectedValue.ToString());
+                M.DepartmentID = Convert.ToInt32(ddlDepartmentID.SelectedValue.ToString());
+                M.LOBID = Convert.ToInt32(ddlLOBID.SelectedValue.ToString());
+                M.SkillSetID = Convert.ToInt32(ddlSkillSet.SelectedValue.ToString());
+                M.SubSkillSetID = Convert.ToInt32(ddlSubSkillSet.SelectedValue.ToString());
                 M.FromMgr = Convert.ToInt32(ddlDepartmentManager.SelectedValue.ToString());
-                M.State = 0;
+                M.ToMgr = M.FromMgr; //  Since this is not a mgr movement.
+                M.EmpId = Convert.ToInt32(gv_DepMgrTeamList.DataKeys[gvrow.RowIndex].Value.ToString());
+                M.Types = TypeOfMovement;
+                M.State = 2; //2 is approved
                 M.InitBy = Employee_Id;
-                M.EffectiveDate = D;
+                M.InitOn = DateTime.Now;
+                M.EffectiveDate = EffectiveDate;
                 M.UpdaterID = Employee_Id;
                 M.UpdatedOn = DateTime.Now;
+
                 // Collect Together all transferees...
                 TransferList.Add(M);
             }
@@ -578,10 +625,16 @@ public partial class movement : System.Web.UI.Page
         rowsAffected = 0;
         foreach (Transferee N in TransferList)
         {
-            rowsAffected += N.InitiateTransfer();
+            rowsAffected += N.InitiateDepartmentTransfer();
         }
-
-        fillTeamList(Employee_Id, ref gv_DepMgrTeamList);
+        if (TypeOfMovement == (int)TransferMode.DepartmentTransferOut)
+        {
+            fillDepartmentTransferList(Employee_Id, ref gv_DepMgrTeamList);
+        }
+        else
+        {
+            fillTeamList(Employee_Id, ref gv_DepMgrTeamList);
+        }
         ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
     }
     protected void gv_DepMgrTeamList_RowDataBound(object sender, GridViewRowEventArgs e)

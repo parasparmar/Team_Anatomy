@@ -135,7 +135,7 @@
                                             </div>
                                             <!-- ddlDepartmentManager-->
                                             <div class="col-md-3">
-                                                ddlFunctionId
+                                                Function
                                                 <div class="form-group">
                                                     <asp:DropDownList ID="ddlFunctionId" runat="server"
                                                         CssClass="form-control select2" Style="width: 100%;"
@@ -145,7 +145,7 @@
                                             </div>
                                             <!-- ddlFunctionId-->
                                             <div class="col-md-3">
-                                                ddlDepartmentID
+                                                Department
                                                 <div class="form-group">
                                                     <asp:DropDownList ID="ddlDepartmentID" runat="server"
                                                         CssClass="form-control select2" Style="width: 100%;"
@@ -155,7 +155,7 @@
                                             </div>
                                             <!-- ddlDepartmentID-->
                                             <div class="col-md-3">
-                                                ddlLOBID
+                                                LOB
                                                 <div class="form-group">
 
                                                     <asp:DropDownList ID="ddlLOBID" runat="server"
@@ -166,7 +166,7 @@
                                             </div>
                                             <!-- ddlLOBID-->
                                             <div class="col-md-3">
-                                                ddlSkillSet
+                                                Skill-Set
                                                 <div class="form-group">
                                                     <asp:DropDownList ID="ddlSkillSet" runat="server"
                                                         CssClass="form-control select2" Style="width: 100%;"
@@ -176,11 +176,12 @@
                                             </div>
                                             <!-- ddlSkillSet-->
                                             <div class="col-md-3">
-                                                ddlSubSkillSet
+                                                Sub Skill-Set
                                                 <div class="form-group">
                                                     <asp:DropDownList ID="ddlSubSkillSet" runat="server"
                                                         CssClass="form-control select2" Style="width: 100%;"
-                                                        OnSelectedIndexChanged="ddlSubSkillSet_SelectedIndexChanged">
+                                                        OnSelectedIndexChanged="ddlSubSkillSet_SelectedIndexChanged"
+                                                         AutoPostBack="true">
                                                     </asp:DropDownList>
                                                 </div>
                                             </div>
@@ -189,14 +190,14 @@
                                                 <label style="color: transparent; margin: 0">Submit</label>
                                                 <div class="form-group">
                                                     <div class="input-group">
-                                                        <asp:Button ID="btnDepSubmit" runat="server" CssClass="btn btn-info btn-flat  form-control" Text="Submit" OnClick="btnDepSubmit_Click" />
+                                                        <asp:Button ID="btnDepSubmit" runat="server" CssClass="btn btn-info btn-flat  form-control" Text="Submit" OnClick="btnDepSubmit_Click" Enabled="false" />
                                                         <span class="input-group-addon"><i class='fa fa-arrow-circle-right'></i></span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row border-between">
-                                            <div class="col-md-6">
+                                            <div class="col-md-12">
                                                 <div class="form-group">
                                                     <asp:GridView ID="gv_DepMgrTeamList" runat="server" CssClass="table table-condensed table-responsive" AutoGenerateColumns="false"
                                                         OnPreRender="gv_PreRender" ShowHeader="true" Style="border: none" DataKeyNames="Employee_ID" OnRowDataBound="gv_DepMgrTeamList_RowDataBound">
@@ -211,7 +212,13 @@
                                                             </asp:TemplateField>
                                                             <asp:BoundField DataField="Employee_ID" HeaderText="Employee Id" />
                                                             <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                            <asp:BoundField DataField="State" HeaderText="Status" />
+                                                            <asp:BoundField DataField="RepMgr" HeaderText="Current Reporting Manager" />
+                                                            <asp:BoundField DataField="Function" HeaderText="Function" />
+                                                            <asp:BoundField DataField="Department" HeaderText="Department" />
+                                                            <asp:BoundField DataField="LOB" HeaderText="Line of Business" />     
+                                                            <asp:BoundField DataField="Skillset" HeaderText="Skill Set" />
+                                                            <asp:BoundField DataField="Subskillset" HeaderText="Sub-Skill Set" />                                                            
+                                                            
                                                         </Columns>
                                                         <EmptyDataTemplate>
                                                             <h5>No Team Members found.</h5>
@@ -337,7 +344,7 @@
             <asp:AsyncPostBackTrigger ControlID="ddlDepartmentId" EventName="SelectedIndexChanged" />
             <asp:AsyncPostBackTrigger ControlID="ddlLOBID" EventName="SelectedIndexChanged" />
             <asp:AsyncPostBackTrigger ControlID="ddlSkillSet" EventName="SelectedIndexChanged" />
-
+            <asp:AsyncPostBackTrigger ControlID="ddlSubSkillSet" EventName="SelectedIndexChanged" />
             <asp:PostBackTrigger ControlID="btnSubmit" />
         </Triggers>
     </asp:UpdatePanel>
@@ -462,11 +469,11 @@
         function ToggleButton(isTeamListPopulated, isTeamListChecked, isEffectiveDateValid) {
             if (isTeamListPopulated == true && isTeamListChecked == true && isEffectiveDateValid == true) {
                 //alert("isTeamListPopulated : " + isTeamListPopulated + " isTeamListChecked : " + isTeamListChecked + " isEffectiveDateValid : " + isEffectiveDateValid);
-                alert("Enabled");
+                //alert("Enabled");
                 $("#btnSubmit").removeAttr('disabled');
             }
             else {
-                alert("Disabled");
+                //alert("Disabled");
                 //alert("isTeamListPopulated : " + isTeamListPopulated + " isTeamListChecked : " + isTeamListChecked + " isEffectiveDateValid : " + isEffectiveDateValid);
                 $("#btnSubmit").attr('disabled', 'disabled');
             }

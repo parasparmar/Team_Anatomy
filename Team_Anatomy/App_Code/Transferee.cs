@@ -7,7 +7,6 @@ using System.Data.SqlClient;
 /// </summary>
 public class Transferee
 {
-    public Transferee() { }
 
     public int MovementId { get; set; }
     public int FromDptLinkMstId { get; set; }
@@ -29,29 +28,57 @@ public class Transferee
     public DateTime UpdatedOn { get; set; }
     private int rowsAffected = 0;
     private Helper my = new Helper();
-    //Check if Employee Movement exists in the table, if it does not, Insert to DB directly with State = 1
-
-    private bool _hasUnActionedTransfers()
+    // Constructors.
+    public Transferee() { }
+    public Transferee(int MovementID)
     {
-        DataTable dt;
-        rowsAffected = 0;
-        string strSQL = "select * from CWFM_Umang.WFMP.tbltrans_Movement A";
-        strSQL += " where A.EmpId = " + EmpId + " and state=0";
-        dt = my.GetData(strSQL);
-        rowsAffected = dt.Rows.Count;
-        if (rowsAffected <= 0)
+
+        string StrSQL = "[WFMP].[Transfer_getTransfereeUsingMovementID]";
+        SqlCommand cmd = new SqlCommand(StrSQL);
+        cmd.Parameters.AddWithValue("@Id", MovementID);
+        DataTable dt = my.GetDataTableViaProcedure(ref cmd);
+        if (dt.Rows.Count == 1)
         {
-            return false;
-        }
-        else if (rowsAffected > 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
+
+            DataRow d = dt.Rows[0];
+            this.MovementId = Convert.ToInt32(d["Id"].ToString());
+            this.FromDptLinkMstId = d["FromDptLinkMstId"].ToString() == string.Empty ? 0 : Convert.ToInt32(d["FromDptLinkMstId"].ToString());
+            this.ToDptLinkMstId = d["ToDptLinkMstId"].ToString() == string.Empty ? 0 : Convert.ToInt32(d["ToDptLinkMstId"].ToString());
+            this.FromMgr = Convert.ToInt32(d["FromMgr"].ToString());
+            this.ToMgr = Convert.ToInt32(d["ToMgr"].ToString());
+            this.EmpId = Convert.ToInt32(d["EmpId"].ToString());
+            this.Types = Convert.ToInt32(d["Type"].ToString());
+            this.State = Convert.ToInt32(d["State"].ToString());
+            this.InitBy = Convert.ToInt32(d["InitBy"].ToString());
+            this.InitOn = Convert.ToDateTime(d["InitOn"].ToString());
+            this.EffectiveDate = d["EffectiveDate"].ToString() == string.Empty ? DateTime.Now : Convert.ToDateTime(d["EffectiveDate"].ToString());
+            this.UpdaterID = Convert.ToInt32(d["UpdaterID"].ToString());
+            this.UpdatedOn = d["UpdatedOn"].ToString() == string.Empty ? DateTime.Now : Convert.ToDateTime(d["UpdatedOn"].ToString());
         }
     }
+
+    //private bool _hasUnActionedTransfers()
+    //{
+    //    DataTable dt;
+    //    rowsAffected = 0;
+    //    string strSQL = "select * from CWFM_Umang.WFMP.tbltrans_Movement A";
+    //    strSQL += " where A.EmpId = " + EmpId + " and state=0";
+    //    dt = my.GetData(strSQL);
+    //    rowsAffected = dt.Rows.Count;
+    //    if (rowsAffected <= 0)
+    //    {
+    //        return false;
+    //    }
+    //    else if (rowsAffected > 0)
+    //    {
+    //        return true;
+    //    }
+    //    else
+    //    {
+    //        return false;
+    //    }
+    //}
+
     public int InitiateTransfer()
     {
         DataTable dt;
@@ -60,7 +87,7 @@ public class Transferee
         strSQL += " where A.EmpId = " + EmpId + " and state=0";
         dt = my.GetData(strSQL);
         rowsAffected = dt.Rows.Count;
-
+        // Do Unfinished Movements exist?
         if (rowsAffected == 0)
         {
             // For this EmpID, Unfinished movements (not approved or not declined ones) donot exist.
@@ -72,7 +99,7 @@ public class Transferee
                 MovementId = LocalMovementID;
                 FromMgr = ToMgr;
                 State = 2;
-                ActionTransfer(this);
+                ActionTransfer();
             }
         }
         else
@@ -85,6 +112,10 @@ public class Transferee
             if (Types < 3)
             {
                 ToDptLinkMstId = FromDptLinkMstId;
+            }
+            else
+            {
+                rowsAffected = ActionTransfer();
             }
 
             if (!string.IsNullOrEmpty(dt.Rows[0]["FromMgr"].ToString()) || string.IsNullOrEmpty(dt.Rows[0]["ToMgr"].ToString()))
@@ -106,10 +137,35 @@ public class Transferee
         }
         return rowsAffected;
     }
-
-    public int ActionTransfer(Transferee T)
+    public int InitiateDepartmentTransfer()
     {
+        DataTable dt;
+        rowsAffected = 0;
+        string strSQL = "select * from CWFM_Umang.WFMP.tbltrans_Movement A ";
+        strSQL += " where A.EmpId = " + EmpId + " and state <3 and EffectiveDate <=GETDATE()";
+        dt = my.GetData(strSQL);
+        rowsAffected = dt.Rows.Count;
+        if (rowsAffected > 0)
+        {
+            for (int i = 0; i < rowsAffected; i++)
+            {
+                MovementId = Convert.ToInt32(dt.Rows[i]["Id"].ToString());
+                State = 3;
+                ActionTransfer();
+            }
+        }
+        else
+        {
+            MovementId = InsertToDB();
+            State = 3;
+            ActionTransfer();
+        }
 
+        return 0;
+    }
+    public int ActionTransfer()
+    {
+        int rowsAffected = 0;
         string strSQL = "[WFMP].[Transfer_ApproveAndCommitToMaster]";
         using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
         {
@@ -122,39 +178,14 @@ public class Transferee
                 cmd.Parameters.AddWithValue("@UpdaterID", UpdaterID);
                 cmd.Parameters.AddWithValue("@EffectiveDate", EffectiveDate);
 
-                cmd.ExecuteNonQuery();
+                rowsAffected = cmd.ExecuteNonQuery();
             }
         }
-        return 1;
-    }
-
-    public int InitiateDepartmentTransfer()
-    {
-        // Check for unactioned previous department / manager movements.
-        DataTable dt;
-        rowsAffected = 0;
-        string strSQL = "select * from CWFM_Umang.WFMP.tbltrans_Movement A";
-        strSQL += " where A.EmpId = " + EmpId + " and state=0";
-        dt = my.GetData(strSQL);
-        rowsAffected = dt.Rows.Count;
-        if (rowsAffected == 0)
-        {
-            // For this EmpID, Unfinished movements (not approved or not declined ones) donot exist.
-            rowsAffected = InsertToDB();
-        }
-        else
-        {
-            // Unfinished movements exist for this empID. The Department movement cannot proceed.
-            rowsAffected = 0;
-        }
-        //rowsAffected = InsertToDB();
         return rowsAffected;
     }
-    public int ApproveTransfer()
-    {
 
-        return 0;
-    }
+
+
     private int InsertToDB()
     {
         int MovementId = 0;
@@ -225,32 +256,7 @@ public class Transferee
             }
         }
     }
-    public Transferee(int MovementID)
-    {
 
-        string StrSQL = "[WFMP].[Transfer_getTransfereeUsingMovementID]";
-        SqlCommand cmd = new SqlCommand(StrSQL);
-        cmd.Parameters.AddWithValue("@Id", MovementID);
-        DataTable dt = my.GetDataTableViaProcedure(ref cmd);
-        if (dt.Rows.Count == 1)
-        {
-
-            DataRow d = dt.Rows[0];
-            this.MovementId = Convert.ToInt32(d["Id"].ToString());
-            this.FromDptLinkMstId = d["FromDptLinkMstId"].ToString() == string.Empty ? 0 : Convert.ToInt32(d["FromDptLinkMstId"].ToString());
-            this.ToDptLinkMstId = d["ToDptLinkMstId"].ToString() == string.Empty ? 0 : Convert.ToInt32(d["ToDptLinkMstId"].ToString());
-            this.FromMgr = Convert.ToInt32(d["FromMgr"].ToString());
-            this.ToMgr = Convert.ToInt32(d["ToMgr"].ToString());
-            this.EmpId = Convert.ToInt32(d["EmpId"].ToString());
-            this.Types = Convert.ToInt32(d["Type"].ToString());
-            this.State = Convert.ToInt32(d["State"].ToString());
-            this.InitBy = Convert.ToInt32(d["InitBy"].ToString());
-            this.InitOn = Convert.ToDateTime(d["InitOn"].ToString());
-            this.EffectiveDate = d["EffectiveDate"].ToString() == string.Empty ? DateTime.Now : Convert.ToDateTime(d["EffectiveDate"].ToString());
-            this.UpdaterID = Convert.ToInt32(d["UpdaterID"].ToString());
-            this.UpdatedOn = d["UpdatedOn"].ToString() == string.Empty ? DateTime.Now : Convert.ToDateTime(d["UpdatedOn"].ToString());
-        }
-    }
 }
 public static class MovementType
 {

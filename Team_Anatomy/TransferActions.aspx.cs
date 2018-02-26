@@ -204,7 +204,7 @@ public partial class TransferActions : System.Web.UI.Page
         {
             A.State = (int)State.Declined;
         }
-        rowsAffected = A.ActionTransfer(A);
+        rowsAffected = A.ActionTransfer();
         fillGvPendingTransfers();
         fillGvCompletedTransfers();
         Page.Response.Redirect(Page.Request.Url.ToString(), true);

@@ -16,6 +16,9 @@
             width: 1px;
             top: 0;
         }
+        .content-wrapper {
+            min-height:897.76px !important;
+        }
 
         .border-between > [class*='col-']:first-child:before {
             display: none;
