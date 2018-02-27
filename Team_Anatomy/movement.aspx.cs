@@ -17,6 +17,8 @@ public partial class movement : System.Web.UI.Page
     private int MyEmpID { get; set; }
     private TransferMode EmpTransferMode { get; set; }
 
+    private EmailSender Email = new EmailSender();
+
     protected void Page_Load(object sender, EventArgs e)
     {
         EmpTransferMode = TransferMode.NotSpecified;
@@ -264,7 +266,7 @@ public partial class movement : System.Web.UI.Page
                     break;
             }
         }
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer();", true);
     }
     protected void HideColumn(GridView sender, string ColumnToHide)
     {
@@ -308,7 +310,7 @@ public partial class movement : System.Web.UI.Page
         {
 
         }
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer();", true);
     }
 
     private void fillDepartmentTransferList(int EmpCode, ref GridView gvTeamList)
@@ -322,7 +324,7 @@ public partial class movement : System.Web.UI.Page
         {
 
         }
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer();", true);
     }
     protected void btnMgrPush_Click(object sender, EventArgs e)
     {
@@ -337,7 +339,7 @@ public partial class movement : System.Web.UI.Page
     {
         int EmpCode = Convert.ToInt32(ddlToMgr.SelectedValue.ToString());
         fillTeamList(EmpCode, ref gv_RightHandSideTeamList);
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer();", true);
     }
     protected void ddlToDept_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -397,7 +399,7 @@ public partial class movement : System.Web.UI.Page
         MyEmpID = Convert.ToInt32(ddlDepartmentManager.SelectedValue.ToString());
         fillDepartmentTransferList(MyEmpID, ref gv_DepMgrTeamList);
         btnDepSubmit_enabler();
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer();", true);
     }
     protected void ddlFunctionId_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -419,7 +421,7 @@ public partial class movement : System.Web.UI.Page
         ddlSkillSet.SelectedIndex = 0;
         ddlSubSkillSet.SelectedIndex = 0;
         btnDepSubmit_enabler();
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer();", true);
     }
     protected void ddlDepartmentID_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -436,7 +438,7 @@ public partial class movement : System.Web.UI.Page
         ddlLOBID.Items.Insert(0, new ListItem("---", String.Empty));
         ddlLOBID.SelectedIndex = 0;
         btnDepSubmit_enabler();
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer();", true);
     }
     protected void ddlLOBID_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -455,7 +457,7 @@ public partial class movement : System.Web.UI.Page
         ddlSkillSet.Items.Insert(0, new ListItem("---", String.Empty));
         ddlSkillSet.SelectedIndex = 0;
         btnDepSubmit_enabler();
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer();", true);
     }
     protected void ddlSkillSet_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -475,18 +477,18 @@ public partial class movement : System.Web.UI.Page
         ddlSubSkillSet.Items.Insert(0, new ListItem("---", String.Empty));
         ddlSubSkillSet.SelectedIndex = 0;
         btnDepSubmit_enabler();
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer();", true);
     }
     protected void ddlSubSkillSet_SelectedIndexChanged(object sender, EventArgs e)
     {
         btnDepSubmit_enabler();
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer();", true);
     }
     protected void ddlFromMgr_SelectedIndexChanged(object sender, EventArgs e)
     {
         int EmpCode = Convert.ToInt32(ddlFromMgr.SelectedValue.ToString());
         fillTeamList(EmpCode, ref gv_LeftHandSideTeamList);
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer();", true);
     }
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
@@ -538,14 +540,22 @@ public partial class movement : System.Web.UI.Page
                 // Go...
 
                 rowsAffected = M.InitiateTransfer();
-
+                //if (rowsAffected > 0)
+                //{
+                    Email.InitiatorEmpId = M.FromMgr;
+                    Email.RecipientsEmpId = M.ToMgr+ ";931040;918031;923563";
+                    Email.Subject = "Movement Initiated";
+                    Email.Body = "<h3>Movement of " + M.EmpId+ " Initiated By ."+ M.FromMgr + "</h3>";
+                    Email.Send();
+                //}
             }
 
         }
         int RMEmpCode = Convert.ToInt32(ddlFromMgr.SelectedValue.ToString());
         fillTeamList(RMEmpCode, ref gv_LeftHandSideTeamList);
-        Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message5", "toastr.success('The Transfer has been successfully initiated. For more details please visit the Movement Transfer Actions Page.','Transfer Initiated')", true);
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
+        Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message5", "toastr.success('The Transfer has been successfully initiated. For more details please visit the Movement Transfer Actions Page.','Transfer Initiated');", true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer();", true);
+
     }
 
     protected void btnDepSubmit_enabler()
@@ -635,7 +645,7 @@ public partial class movement : System.Web.UI.Page
         {
             fillTeamList(Employee_Id, ref gv_DepMgrTeamList);
         }
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer()", true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Key1", "pluginsInitializer();", true);
     }
     protected void gv_DepMgrTeamList_RowDataBound(object sender, GridViewRowEventArgs e)
     {

@@ -234,7 +234,7 @@ public class Helper
         var the_result = cmd.ExecuteScalar();
         int result = 0;
         close_conn();
-        
+
         if (Int32.TryParse(the_result.ToString(), out result))
         {
             return result;
@@ -244,6 +244,15 @@ public class Helper
             return 0;
         };
 
+    }
+
+    public string getFirstResult(string strSQL)
+    {
+        open_db();
+        SqlCommand cmd = new SqlCommand(strSQL, cn);
+        var the_result = Convert.ToString(cmd.ExecuteScalar());
+        close_conn();
+        return the_result;
     }
     public void fill_dropdown(Control drp_name, string sp_name, string datatextfield, string datavaluefield, string defaultitem, string parameters, string tran_type)
     {
@@ -339,4 +348,112 @@ public class Helper
 
     }
 
+
+
+}
+
+public class EmailSender
+{
+    private string _initiatorEmail;
+    private string[] _recipientsEmailAddresses { get; set; }
+    public int InitiatorEmpId { get; set; }
+    public string RecipientsEmpId { get; set; }
+    public string BCCsEmpId { get; set; }
+    public string Subject { get; set; }
+    public string Body { get; set; }
+    private string MailFormat = "html";
+    private string From { get; set; }
+    private int EmailType { get; set; }
+    Helper my = new Helper();
+    public EmailSender()
+    {
+        if (_initiatorEmail != null && _initiatorEmail != string.Empty) { From = _initiatorEmail.ToString(); }
+
+    }
+
+    public string EmailFromEmpID(int EmpID)
+    {
+        string emailID = string.Empty;
+        string strSQL = "Select A.Email_Office from WFMP.tblmaster A where A.Employee_ID = " + EmpID;
+
+        emailID = my.getFirstResult(strSQL);
+        if ((emailID.Contains("@") && emailID.Contains(".")))
+        {
+            return emailID;
+        }
+        else
+        {
+            return string.Empty;
+        }
+
+
+    }
+
+    private string convertAndReplaceDelimitedEmpIDs2EmailIds(string semicolonseperatedempids)
+    {
+        string[] _recipients = semicolonseperatedempids.Split(';');
+        string emailIDsToBereturned = string.Empty;
+        if (semicolonseperatedempids != null && semicolonseperatedempids.Length > 0)
+        {
+            for (int i = 0; i < _recipients.Length; i++)
+            {
+                emailIDsToBereturned += ";" + EmailFromEmpID(Convert.ToInt32(_recipients[i]));
+
+            }
+        }
+        if (emailIDsToBereturned.IndexOf(";") == 0)
+        {
+            return emailIDsToBereturned.Remove(0, 1);
+        }
+        else
+        {
+            return emailIDsToBereturned;
+        }
+
+
+    }
+
+    public int Send()
+    {
+        int sentId = 0;
+        string errorMessage = string.Empty;
+        if (InitiatorEmpId != 0 && RecipientsEmpId != null && Subject != null & Body != null)
+        {
+            RecipientsEmpId = convertAndReplaceDelimitedEmpIDs2EmailIds(RecipientsEmpId);
+            string InitiatorEmailID = EmailFromEmpID(InitiatorEmpId);
+            try
+            {
+                using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
+                {
+                    cn.Open();
+                    using (SqlCommand cmd = new SqlCommand("Master.dbo.SendEMailDB",cn))
+                    {   
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@xEmailType", emailtype.Development);
+                        cmd.Parameters.AddWithValue("@xrecipients", RecipientsEmpId);
+                        cmd.Parameters.AddWithValue("@xcopy_recipients", BCCsEmpId);
+                        cmd.Parameters.AddWithValue("@xsubject", Subject);
+                        cmd.Parameters.AddWithValue("@xbody", Body);
+                        cmd.Parameters.AddWithValue("@xbody_format", MailFormat);
+                        cmd.Parameters.AddWithValue("@xfrom_address", InitiatorEmailID);
+                        sentId = cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+                sentId = 0;
+                return sentId;
+            }
+        }
+        return sentId;
+    }
+
+    public enum emailtype
+    {
+        Production = 1,
+        UAT = 2,
+        Development = 3
+    }
 }

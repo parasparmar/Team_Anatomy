@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Team Anatomy(1)", "http://localhost:20791", "{569A2442-222E-48FF-A18F-6DE4852DA8E8}"
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2020
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Team_Anatomy", "http://localhost:20791", "{569A2442-222E-48FF-A18F-6DE4852DA8E8}"
 	ProjectSection(WebsiteProperties) = preProject
 		UseIISExpress = "true"
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
@@ -33,5 +35,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {574C5086-DD22-4885-9218-71A4D8937EDF}
 	EndGlobalSection
 EndGlobal

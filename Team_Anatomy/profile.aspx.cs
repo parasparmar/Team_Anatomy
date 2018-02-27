@@ -223,21 +223,28 @@ public partial class profile : System.Web.UI.Page
         {
             if (tbSkill_Set_1.Items[i].Selected) j.Append("," + tbSkill_Set_1.Items[i].Text);
         }
-        string Skill1 = j.ToString().Substring(1);
+        string Skill1 = j.ToString();
+        if (Skill1.Length>0) { Skill1 = Skill1.Substring(1); }
+        
         j.Clear();
 
         for (int i = 0; i < tbSkill_Set_2.Items.Count - 1; i++)
         {
             if (tbSkill_Set_2.Items[i].Selected) j.Append("," + tbSkill_Set_2.Items[i].Text);
         }
-        string Skill2 = j.ToString().Substring(1);
+        
+        string Skill2 = j.ToString();
+        if (Skill2.Length > 0) { Skill2 = Skill2.Substring(1); }
+
         j.Clear();
 
         for (int i = 0; i < tbSkill_Set_3.Items.Count - 1; i++)
         {
             if (tbSkill_Set_3.Items[i].Selected) j.Append("," + tbSkill_Set_3.Items[i].Text);
         }
-        string Skill3 = j.ToString().Substring(1);
+        
+        string Skill3 = j.ToString();
+        if (Skill3.Length > 0) { Skill3 = Skill3.Substring(1); }
 
         string Updated_by = myid;
         DateTime Update_Date = DateTime.Now;
@@ -320,7 +327,7 @@ public partial class profile : System.Web.UI.Page
 
         //Fill tbQualification
         strSQL = "SELECT [Id], [Qualification] FROM [CWFM_Umang].[WFMP].[tblQualification]";
-        tbQualification.Items.Insert(0, new ListItem("Please select your highest (pursued/pursuing) education level"));
+        tbQualification.Items.Insert(0, new ListItem("Please select your highest (pursued/pursuing) education level","0"));
         my.append_dropdown(ref tbQualification, strSQL, 1, 0);
 
         //Fill tbMaritalStatus

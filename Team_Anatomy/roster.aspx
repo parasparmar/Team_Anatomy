@@ -209,19 +209,16 @@
                                                 <asp:DropDownList ID="dd1" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-
                                         <asp:TemplateField>
                                             <ItemTemplate>
                                                 <asp:DropDownList ID="dd2" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-
                                         <asp:TemplateField>
                                             <ItemTemplate>
                                                 <asp:DropDownList ID="dd3" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-
                                         <asp:TemplateField>
                                             <ItemTemplate>
                                                 <asp:DropDownList ID="dd4" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
@@ -245,7 +242,6 @@
                                                 <asp:DropDownList ID="dd7" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-
                                     </Columns>
                                 </asp:GridView>
                             </asp:Panel>
