@@ -199,12 +199,15 @@ public partial class TransferActions : System.Web.UI.Page
         if (e.CommandName == "Approve")
         {
             A.State = (int)State.Approved;
+
         }
         else if (e.CommandName == "Decline")
         {
             A.State = (int)State.Declined;
+
         }
         rowsAffected = A.ActionTransfer();
+
         fillGvPendingTransfers();
         fillGvCompletedTransfers();
         Page.Response.Redirect(Page.Request.Url.ToString(), true);

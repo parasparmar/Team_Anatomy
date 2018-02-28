@@ -358,17 +358,35 @@ public class EmailSender
     private string[] _recipientsEmailAddresses { get; set; }
     public int InitiatorEmpId { get; set; }
     public string RecipientsEmpId { get; set; }
+    public string CCsEmpId { get; set; }
     public string BCCsEmpId { get; set; }
     public string Subject { get; set; }
     public string Body { get; set; }
     private string MailFormat = "html";
     private string From { get; set; }
-    private int EmailType { get; set; }
+    public int EmailType { get; set; }
     Helper my = new Helper();
     public EmailSender()
     {
         if (_initiatorEmail != null && _initiatorEmail != string.Empty) { From = _initiatorEmail.ToString(); }
 
+    }
+
+    public string getFullNameFromEmpID(int EmpID)
+    {
+        string myName = string.Empty;
+        string strSQL = "Select A.First_Name+' '+A.Middle_Name+' '+A.Last_Name as Name from WFMP.tblMaster A where A.Employee_ID = " + EmpID;
+
+        myName = my.getFirstResult(strSQL);
+        if (myName.Length>0)
+        {
+            myName = myName.Replace("  ", " ");
+            return myName;
+        }
+        else
+        {
+            return string.Empty;
+        }
     }
 
     public string EmailFromEmpID(int EmpID)
@@ -421,21 +439,26 @@ public class EmailSender
         {
             RecipientsEmpId = convertAndReplaceDelimitedEmpIDs2EmailIds(RecipientsEmpId);
             string InitiatorEmailID = EmailFromEmpID(InitiatorEmpId);
+            if (CCsEmpId!=null && CCsEmpId.Length > 0) { CCsEmpId = convertAndReplaceDelimitedEmpIDs2EmailIds(CCsEmpId); }
+            if (BCCsEmpId!=null && BCCsEmpId.Length > 0) { BCCsEmpId = convertAndReplaceDelimitedEmpIDs2EmailIds(BCCsEmpId); }
             try
             {
                 using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
                 {
                     cn.Open();
-                    using (SqlCommand cmd = new SqlCommand("Master.dbo.SendEMailDB",cn))
-                    {   
+                    using (SqlCommand cmd = new SqlCommand("Master.dbo.SendEMailDB", cn))
+                    {
                         cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@xEmailType", emailtype.Development);
+                        
                         cmd.Parameters.AddWithValue("@xrecipients", RecipientsEmpId);
-                        cmd.Parameters.AddWithValue("@xcopy_recipients", BCCsEmpId);
+                        cmd.Parameters.AddWithValue("@xcopy_recipients", CCsEmpId);
+                        cmd.Parameters.AddWithValue("@xblind_copy_recipients", BCCsEmpId);
                         cmd.Parameters.AddWithValue("@xsubject", Subject);
                         cmd.Parameters.AddWithValue("@xbody", Body);
                         cmd.Parameters.AddWithValue("@xbody_format", MailFormat);
                         cmd.Parameters.AddWithValue("@xfrom_address", InitiatorEmailID);
+                        if (EmailType == 0) { EmailType = (int)emailtype.Development; }
+                        cmd.Parameters.AddWithValue("@xEmailType", EmailType);
                         sentId = cmd.ExecuteNonQuery();
                     }
                 }

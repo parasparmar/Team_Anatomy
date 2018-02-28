@@ -28,6 +28,7 @@ public class Transferee
     public DateTime UpdatedOn { get; set; }
     private int rowsAffected = 0;
     private Helper my = new Helper();
+    private EmailSender Email = new EmailSender();
     // Constructors.
     public Transferee() { }
     public Transferee(int MovementID)
@@ -100,6 +101,7 @@ public class Transferee
                 FromMgr = ToMgr;
                 State = 2;
                 ActionTransfer();
+                sendEmail();
             }
         }
         else
@@ -116,6 +118,7 @@ public class Transferee
             else
             {
                 rowsAffected = ActionTransfer();
+                sendEmail();
             }
 
             if (!string.IsNullOrEmpty(dt.Rows[0]["FromMgr"].ToString()) || string.IsNullOrEmpty(dt.Rows[0]["ToMgr"].ToString()))
@@ -125,6 +128,7 @@ public class Transferee
                 if (SameFromMgr && SameToMgr)
                 {
                     rowsAffected = UpdateToDB();
+                    sendEmail();
                 }
             }
             else if (string.IsNullOrEmpty(dt.Rows[0]["FromMgr"].ToString()))
@@ -133,6 +137,7 @@ public class Transferee
                 // As a process they need to be aligned to the initiating reporting manager directly without second level approval.
 
                 rowsAffected = UpdateToDB();
+                sendEmail();
             }
         }
         return rowsAffected;
@@ -160,7 +165,7 @@ public class Transferee
             State = 3;
             ActionTransfer();
         }
-
+        sendEmail();
         return 0;
     }
     public int ActionTransfer()
@@ -181,11 +186,10 @@ public class Transferee
                 rowsAffected = cmd.ExecuteNonQuery();
             }
         }
+        sendEmail();
         return rowsAffected;
+
     }
-
-
-
     private int InsertToDB()
     {
         int MovementId = 0;
@@ -257,6 +261,106 @@ public class Transferee
         }
     }
 
+    private void sendEmail()
+    {
+        Email.InitiatorEmpId = InitBy;
+        string InitiatorName = Email.getFullNameFromEmpID(InitBy);
+        string FromMgrName = Email.getFullNameFromEmpID(FromMgr);
+        string ToMgrName = Email.getFullNameFromEmpID(ToMgr);
+        string EmpName = Email.getFullNameFromEmpID(EmpId);
+        string UpdaterName = Email.getFullNameFromEmpID(UpdaterID);
+
+        switch (Types)
+        {
+            case 1:
+                // Manager Transfers Out
+                if (State == (int)state.Approved)
+                {
+                    Email.Subject = EmpName + "'s outward movement has been approved by " + UpdaterName;
+                    Email.Body = "<strong>Hi </strong>" + InitiatorName + ", ";
+                    Email.Body += "<p>The movement of " + EmpName + " initiated by you has been approved by " + UpdaterName + ".</p>";
+                    Email.Body += "<p>To verify this, please check your team dashboard.</p>";
+                    Email.InitiatorEmpId = ToMgr;
+                    Email.RecipientsEmpId = Convert.ToString(FromMgr);
+                    Email.CCsEmpId = ToMgr + ";931040;918031;923563";
+                    Email.Send();
+                }
+                else if (State == (int)state.Declined)
+                {
+                    Email.Subject = EmpName + "'s outward movement has not been accepted by " + UpdaterName;
+                    Email.Body = "<strong>Hi </strong>" + InitiatorName + ", ";
+                    Email.Body += "<p>The movement of " + EmpName + " initiated by you has not been accepted by " + UpdaterName + ".</p>";
+                    Email.Body += "<p>To verify this, please check your team dashboard.</p>";
+                    Email.InitiatorEmpId = ToMgr;
+                    Email.RecipientsEmpId = Convert.ToString(FromMgr);
+                    Email.CCsEmpId = ToMgr + ";931040;918031;923563";
+                    Email.Send();
+                }
+                else if (State == (int)state.Initiated)
+                {
+                    Email.Subject = EmpName + "'s outward movement has been initiated by " + InitiatorName;
+                    Email.Body = "<strong>Hi </strong>" + ToMgrName + ", ";
+                    Email.Body += "<p>The inward movement of " + EmpName + " has been initiated by </p>" + FromMgrName;
+                    Email.Body += "<p>Please click the approve/decline buttons at the  <a href='http://iaccess/TA/TransferActions.aspx'>Transfer Actions page</a>  to move the process forward.";
+                    Email.InitiatorEmpId = FromMgr;
+                    Email.RecipientsEmpId = Convert.ToString(ToMgr);
+                    Email.CCsEmpId = FromMgr + ";931040;918031;923563";
+                    Email.Send();
+                }
+
+                break;
+            case 2:
+                // Manager Transfer In
+                if (State == (int)state.Approved)
+                {
+                    Email.Subject = EmpName + "'s inward movement has been approved by " + UpdaterName;
+                    Email.Body = "<strong>Hi </strong>" + InitiatorName + ", ";
+                    Email.Body += "<p>The movement of " + EmpName + " initiated by you has been approved by " + UpdaterName + ".</p>";
+                    Email.Body += "<p>To verify this, please check your team dashboard.</p>";
+                    Email.InitiatorEmpId = FromMgr;
+                    Email.RecipientsEmpId = Convert.ToString(ToMgr);
+                    Email.Send();
+                }
+                else if (State == (int)state.Declined)
+                {
+                    Email.Subject = EmpName + "'s outward movement has not been accepted by " + UpdaterName;
+                    Email.Body = "<strong>Hi </strong>" + InitiatorName + ", ";
+                    Email.Body += "<p>The movement of " + EmpName + " initiated by you has not been accepted by " + UpdaterName + ".</p>";
+                    Email.Body += "<p>To verify this, please check your team dashboard.</p>";
+                    Email.InitiatorEmpId = FromMgr;
+                    Email.RecipientsEmpId = Convert.ToString(ToMgr);
+                    Email.Send();
+                }
+                else if (State == (int)state.Initiated)
+                {
+                    Email.Subject = EmpName + "'s inward movement has been initiated by " + InitiatorName;
+                    Email.Body = "<strong>Hi </strong>" + ToMgrName + ", ";
+                    Email.Body += "<p>The outward movement of " + EmpName + " has been initiated by </p>" + FromMgrName;
+                    Email.Body += "<p>Please click the approve/decline buttons at the  <a href='http://iaccess/TA/TransferActions.aspx'>Transfer Actions page</a>  to move the process forward.";
+                    Email.InitiatorEmpId = ToMgr;
+                    Email.RecipientsEmpId = Convert.ToString(FromMgr);
+                    Email.Send();
+                }
+
+
+                break;
+            case 3:
+                // Dept Transfer Out
+                break;
+            case 4:
+                // Dept Transfer In 
+                break;
+        }
+
+
+
+    }
+    protected enum state : int
+    {
+        Initiated = 0,
+        Declined = 1,
+        Approved = 2
+    }
 }
 public static class MovementType
 {

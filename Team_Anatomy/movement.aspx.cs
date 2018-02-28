@@ -539,15 +539,7 @@ public partial class movement : System.Web.UI.Page
                 //Transfers.Add(M);
                 // Go...
 
-                rowsAffected = M.InitiateTransfer();
-                //if (rowsAffected > 0)
-                //{
-                    Email.InitiatorEmpId = M.FromMgr;
-                    Email.RecipientsEmpId = M.ToMgr+ ";931040;918031;923563";
-                    Email.Subject = "Movement Initiated";
-                    Email.Body = "<h3>Movement of " + M.EmpId+ " Initiated By ."+ M.FromMgr + "</h3>";
-                    Email.Send();
-                //}
+                rowsAffected = M.InitiateTransfer();                
             }
 
         }

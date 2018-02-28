@@ -384,7 +384,12 @@
                                 <a href="myroster.aspx">
                                     <i class="fa fa-calendar-plus-o"></i><span>My Roster</span>
                                 </a>
-                            </li>                      
+                            </li>
+                            <li>
+                                <a href="swap.aspx">
+                                    <i class="fa fa-exchange"></i><span>Shift Swaps</span>
+                                </a>
+                            </li>
                             <%--<li class="treeview">
                                 <a href="#">
                                     <i class="fa fa-random"></i><span>Movements</span>
