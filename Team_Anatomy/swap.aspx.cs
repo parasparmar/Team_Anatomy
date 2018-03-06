@@ -17,7 +17,7 @@ public partial class swap : System.Web.UI.Page
     private int MyEmpID { get; set; }
     private int MyRepMgr { get; set; }
     private int currentWeek { get; set; }
-
+    private int WeekID { get; set; }
     protected void Page_Load(object sender, EventArgs e)
     {
         my = new Helper();
@@ -69,7 +69,9 @@ public partial class swap : System.Web.UI.Page
     {
         strSQL = "select distinct ryear as Year from CWFM_Umang.WFMP.tblRstWeeks";
         my.append_dropdown(ref ddlYear, strSQL, 0, 0);
-        ltlReportingMgrsTeam.Text = "Roster For";
+        ddlYear.SelectedIndex = ddlYear.Items.IndexOf(new ListItem(DateTime.Today.Year.ToString()));
+        ddlYear_SelectedIndexChanged(ddlYear, new EventArgs());
+        ltlReportingMgrsTeam.Text = "Roster For " + ddlYear.SelectedItem.Text;
     }
     protected void ddlYear_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -94,11 +96,7 @@ public partial class swap : System.Web.UI.Page
             ddlWeek.SelectedIndex = 0;
         }
 
-        if (ddlWeek.SelectedValue.Length > 0 && ddlYear.SelectedValue != "0")
-        {
-            int WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
-            fillgvRoster(this.MyEmpID, WeekID);
-        }
+
         ltlRosterHeading.Text = "Week : " + ddlWeek.SelectedItem.Text;
     }
     protected void ddlWeek_SelectedIndexChanged(object sender, EventArgs e)
@@ -108,16 +106,14 @@ public partial class swap : System.Web.UI.Page
         if (ddlWeek.SelectedValue.Length > 0 && ddlYear.SelectedValue != "0")
         {
 
-            int WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
+            WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
             fillgvRoster(this.MyEmpID, WeekID);
         }
 
     }
     private void fillgvRoster(int MyEmpID, int WeekID)
     {
-        gvRoster.DataSource = null;
-        gvRoster.Columns.Clear();
-        gvRoster.DataBind();
+
 
         DataTable dtDates = my.GetData("Select * from [WFMP].[tblRstWeeks] where WeekId = " + WeekID);
         DateTime FromDate = Convert.ToDateTime(dtDates.Rows[0]["FrDate"].ToString());
@@ -134,9 +130,6 @@ public partial class swap : System.Web.UI.Page
         Pivot pvt = new Pivot(dtEmp);
         dtEmp = pvt.PivotData("ShiftCode", AggregateFunction.First, rowFields, columnFields);
 
-
-
-
         int RowCount = dtEmp.Rows.Count;
         int ColCount = dtEmp.Columns.Count;
 
@@ -145,33 +138,53 @@ public partial class swap : System.Web.UI.Page
 
         string colName;
         DateTime colDate;
-        for (int j = 0; j < ColCount; j++)
+        //TimeSpan nthDate;
+
+        for (int j = 1; j < ColCount + 1; j++)
         {
-            colName = dtEmp.Columns[j].ColumnName;
+
+            colName = dtEmp.Columns[j - 1].ColumnName;
+
 
             if (DateTime.TryParse(colName, CultureInfo.InvariantCulture, DateTimeStyles.None, out colDate))
             {
-                BoundField d = new BoundField();
-                d.DataField = colDate.ToString();
-                d.HeaderText = colDate.ToString("ddd dd-MMM-yyyy");
-                gvRoster.Columns.Add(d);
-
+                string col_Date = colDate.ToString("ddd, dd-MMM-yyyy");
+                dtEmp.Columns[j - 1].ColumnName = col_Date;
+                gvRoster.Columns[j].HeaderText = col_Date;
             }
-            else
-            {
 
-                BoundField d = new BoundField();
-                d.DataField = colName;
-                d.HeaderText = colName;
-                gvRoster.Columns.Add(d);
-            }
         }
-
 
         gvRoster.DataSource = dtEmp;
         gvRoster.DataBind();
-    }
 
+        string lblName;
+        string ddlName;
+        for (int i = 0; i < RowCount; i++)
+        {
+            for (int j = 3; j < ColCount; j++)
+            {
+                //Set labels for Date Columns only
+                if (gvRoster.Rows[i].RowState == DataControlRowState.Edit)
+                {
+                    ddlName = "dd" + (j - 2);
+                    DropDownList w = (DropDownList)gvRoster.Rows[i].FindControl(ddlName);
+                    ListItem item = new ListItem();
+                    item.Text = dtEmp.Rows[i][j].ToString();
+                    w.Items.Add(item); 
+                }
+                else
+                {
+                    lblName = "lbl" + (j - 2);
+                    Label v = (Label)gvRoster.Rows[i].FindControl(lblName);
+                    v.Text = dtEmp.Rows[i][j].ToString();
+                    
+                }
+            }
+
+        }
+        //gvRoster.DataBind();
+    }
     protected void gv_PreRender(object sender, EventArgs e)
     {
         GridView gv = (GridView)sender;
@@ -183,5 +196,39 @@ public partial class swap : System.Web.UI.Page
             gv.BorderStyle = BorderStyle.None;
             gv.BorderWidth = Unit.Pixel(1);
         }
+    }
+
+
+
+    protected void gvRoster_RowEditing(object sender, GridViewEditEventArgs e)
+    {
+        gvRoster.EditIndex = e.NewEditIndex;
+        gvRoster.Rows[e.NewEditIndex].RowState = DataControlRowState.Edit;
+       // gvRoster.Rows[e.NewEditIndex].Cells[0].FindControl()
+
+        WeekID = Convert.ToInt32(ddlWeek.SelectedValue.ToString());
+        if (WeekID > 0)
+        {
+            fillgvRoster(MyEmpID, WeekID);
+        }
+    }
+
+
+
+
+    //protected void gvRoster_RowCommand(object sender, GridViewCommandEventArgs e)
+    //{
+    //    gvRoster.EditIndex = Convert.ToInt32(e.CommandArgument.ToString());
+
+    //}
+
+    protected void gvRoster_RowUpdating(object sender, GridViewUpdateEventArgs e)
+    {
+        //e.RowIndex
+    }
+
+    protected void gvRoster_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+    {
+        
     }
 }

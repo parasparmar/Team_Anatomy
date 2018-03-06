@@ -78,6 +78,7 @@
                                 </div>
                                 <!-- Roster Dates-->
                             </div>
+
                         </div>
                     </div>
                     <!--tabcontent-->
@@ -95,8 +96,82 @@
                         <div class="box-body">
                             <asp:Panel ID="pnlRoster" runat="server" Visible="true">
                                 <asp:GridView ID="gvRoster" runat="server" AutoGenerateColumns="false"
-                                    CssClass="table table-condensed table-responsive compact hover stripe DataTable"
-                                    OnPreRender="gv_PreRender">
+                                    CssClass="table table-condensed table-responsive compact hover stripe"
+                                    OnPreRender="gv_PreRender" DataKeyNames="ECN" OnRowEditing="gvRoster_RowEditing"
+                                    OnRowUpdating="gvRoster_RowUpdating" OnRowCancelingEdit="gvRoster_RowCancelingEdit">
+                                    <Columns>
+                                        <asp:TemplateField HeaderText ="Swap With" >
+                                            <ItemTemplate>
+                                                <asp:Button runat="server" CommandName="Edit" CssClass="btn btn-primary" Text="Select" />
+                                            </ItemTemplate>
+                                            <EditItemTemplate>
+                                                <asp:Button runat="server" CommandName="Update" CssClass="btn btn-info" Text="Update" />
+                                                <asp:Button runat="server" CommandName="Cancel" CssClass="btn btn-default" Text="Cancel" />
+                                            </EditItemTemplate>
+                                        </asp:TemplateField>
+                                        
+
+                                        <asp:BoundField DataField="ECN" HeaderText="EmpID" ReadOnly="true" />
+                                        <asp:BoundField DataField="NAME" HeaderText="Name"  ReadOnly="true" />
+                                        <asp:BoundField DataField="TEAM_LEADER" HeaderText="RepMgr"  ReadOnly="true" />
+                                        <asp:TemplateField>
+                                            <EditItemTemplate>
+                                                <asp:DropDownList ID="dd1" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
+                                            </EditItemTemplate>
+                                            
+                                            <ItemTemplate>
+                                                <asp:Label ID="lbl1" runat="server"></asp:Label>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField>
+                                            <EditItemTemplate>
+                                                <asp:DropDownList ID="dd2" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
+                                            </EditItemTemplate>
+                                            <ItemTemplate>
+                                                <asp:Label ID="lbl2" runat="server"></asp:Label>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField>
+                                            <EditItemTemplate>
+                                                <asp:DropDownList ID="dd3" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
+                                            </EditItemTemplate>
+                                            <ItemTemplate>
+                                                <asp:Label ID="lbl3" runat="server"></asp:Label>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField>
+                                            <EditItemTemplate>
+                                                <asp:DropDownList ID="dd4" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
+                                            </EditItemTemplate>
+                                            <ItemTemplate>
+                                                <asp:Label ID="lbl4" runat="server"></asp:Label>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField>
+                                            <EditItemTemplate>
+                                                <asp:DropDownList ID="dd5" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
+                                            </EditItemTemplate>
+                                            <ItemTemplate>
+                                                <asp:Label ID="lbl5" runat="server"></asp:Label>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField>
+                                            <EditItemTemplate>
+                                                <asp:DropDownList ID="dd6" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
+                                            </EditItemTemplate>
+                                            <ItemTemplate>
+                                                <asp:Label ID="lbl6" runat="server"></asp:Label>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField>
+                                            <EditItemTemplate>
+                                                <asp:DropDownList ID="dd7" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
+                                            </EditItemTemplate>
+                                            <ItemTemplate>
+                                                <asp:Label ID="lbl7" runat="server"></asp:Label>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                    </Columns>
                                 </asp:GridView>
                             </asp:Panel>
                         </div>
