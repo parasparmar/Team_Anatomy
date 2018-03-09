@@ -22,7 +22,7 @@ public partial class MasterPage : System.Web.UI.MasterPage
     {
         if (!Page.IsPostBack)
         {
-            intialize_me();
+           // intialize_me();
         }
     }
 

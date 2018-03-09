@@ -222,7 +222,7 @@ public partial class leave : System.Web.UI.Page
 
 
 
-            string xRoster;
+           
             foreach (GridViewRow row in gvLeaveDetails.Rows)
             {
                 String xLeaveType;
@@ -253,7 +253,7 @@ public partial class leave : System.Web.UI.Page
                 }
                 catch (Exception ex)
                 {
-
+                    Response.Write(ex.Message.ToString());
                 }
 
             }

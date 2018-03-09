@@ -23,6 +23,7 @@
             display: none;
         }
     </style>
+
 </asp:Content>
 
 <asp:Content ID="Content4" ContentPlaceHolderID="pageheader" runat="Server">
@@ -42,154 +43,256 @@
 </asp:Content>
 
 <asp:Content ID="Content5" ContentPlaceHolderID="The_Body" runat="Server">
-    <asp:UpdatePanel ID="UpdatePanel1" runat="server" EnableViewState="true" UpdateMode="Conditional">
-        <ContentTemplate>
-            <div class="row-fluid">
-                <div class="col-md-12">
-                    <!-- Custom Tabs -->
-                    <div class="box box-solid box-primary" style="height: auto;">
-                        <div class="box-header with-border">
-                            <h4 class="box-title">
-                                <asp:Literal ID="ltlReportingMgrsTeam" Text="Roster For Team" runat="server"></asp:Literal></h4>
-                            <div class="box-tools pull-right">
-                                <button class="btn btn-box-tool" type="button" data-widget="collapse">
-                                    <i class="fa fa-minus"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="box-body">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        Year
+    <%--<asp:UpdatePanel ID="UpdatePanel1" runat="server" EnableViewState="true" UpdateMode="Conditional">
+        <ContentTemplate>--%>
+    <div class="row-fluid">
+        <div class="col-md-12">
+            <!-- Custom Tabs -->
+            <div class="box box-solid box-primary" style="height: auto;">
+                <div class="box-header with-border">
+                    <h4 class="box-title">
+                        <asp:Literal ID="ltlReportingMgrsTeam" Text="Roster For Team" runat="server"></asp:Literal></h4>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" type="button" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                Year
                                         <asp:DropDownList ID="ddlYear" runat="server" CssClass="form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlYear_SelectedIndexChanged">
                                             <asp:ListItem Selected="True" Text="None" Value="0"></asp:ListItem>
                                         </asp:DropDownList>
-                                    </div>
-                                </div>
-                                <!-- Roster Year-->
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        Week
+                            </div>
+                        </div>
+                        <!-- Roster Year-->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                Week
                                         <asp:DropDownList ID="ddlWeek" runat="server" CssClass="form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlWeek_SelectedIndexChanged">
                                             <asp:ListItem Selected="True" Text="None" Value="0"></asp:ListItem>
                                         </asp:DropDownList>
-                                    </div>
-                                </div>
-                                <!-- Roster Dates-->
                             </div>
-
                         </div>
+                        <!-- Roster Dates-->
                     </div>
-                    <!--tabcontent-->
+
                 </div>
-                <!-- /.col -->
             </div>
-            <div class="row-fluid">
-                <div class="col-md-12">
-                    <!-- Custom Tabs -->
-                    <div class="box box-solid box-primary" style="height: auto;">
-                        <div class="box-header with-border">
-                            <h4 class="box-title">
-                                <asp:Literal ID="ltlRosterHeading" runat="server" Text="Week : "></asp:Literal></h4>
-                        </div>
-                        <div class="box-body">
-                            <asp:Panel ID="pnlRoster" runat="server" Visible="true">
-                                <asp:GridView ID="gvRoster" runat="server" AutoGenerateColumns="false"
-                                    CssClass="table table-condensed table-responsive compact hover stripe"
-                                    OnPreRender="gv_PreRender" DataKeyNames="ECN" OnRowEditing="gvRoster_RowEditing"
-                                    OnRowUpdating="gvRoster_RowUpdating" OnRowCancelingEdit="gvRoster_RowCancelingEdit">
-                                    <Columns>
-                                        <asp:TemplateField HeaderText ="Swap With" >
-                                            <ItemTemplate>
-                                                <asp:Button runat="server" CommandName="Edit" CssClass="btn btn-primary" Text="Select" />
-                                            </ItemTemplate>
-                                            <EditItemTemplate>
-                                                <asp:Button runat="server" CommandName="Update" CssClass="btn btn-info" Text="Update" />
-                                                <asp:Button runat="server" CommandName="Cancel" CssClass="btn btn-default" Text="Cancel" />
-                                            </EditItemTemplate>
-                                        </asp:TemplateField>
-                                        
-
-                                        <asp:BoundField DataField="ECN" HeaderText="EmpID" ReadOnly="true" />
-                                        <asp:BoundField DataField="NAME" HeaderText="Name"  ReadOnly="true" />
-                                        <asp:BoundField DataField="TEAM_LEADER" HeaderText="RepMgr"  ReadOnly="true" />
-                                        <asp:TemplateField>
-                                            <EditItemTemplate>
-                                                <asp:DropDownList ID="dd1" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
-                                            </EditItemTemplate>
-                                            
-                                            <ItemTemplate>
-                                                <asp:Label ID="lbl1" runat="server"></asp:Label>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField>
-                                            <EditItemTemplate>
-                                                <asp:DropDownList ID="dd2" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
-                                            </EditItemTemplate>
-                                            <ItemTemplate>
-                                                <asp:Label ID="lbl2" runat="server"></asp:Label>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField>
-                                            <EditItemTemplate>
-                                                <asp:DropDownList ID="dd3" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
-                                            </EditItemTemplate>
-                                            <ItemTemplate>
-                                                <asp:Label ID="lbl3" runat="server"></asp:Label>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField>
-                                            <EditItemTemplate>
-                                                <asp:DropDownList ID="dd4" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
-                                            </EditItemTemplate>
-                                            <ItemTemplate>
-                                                <asp:Label ID="lbl4" runat="server"></asp:Label>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField>
-                                            <EditItemTemplate>
-                                                <asp:DropDownList ID="dd5" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
-                                            </EditItemTemplate>
-                                            <ItemTemplate>
-                                                <asp:Label ID="lbl5" runat="server"></asp:Label>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField>
-                                            <EditItemTemplate>
-                                                <asp:DropDownList ID="dd6" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
-                                            </EditItemTemplate>
-                                            <ItemTemplate>
-                                                <asp:Label ID="lbl6" runat="server"></asp:Label>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField>
-                                            <EditItemTemplate>
-                                                <asp:DropDownList ID="dd7" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
-                                            </EditItemTemplate>
-                                            <ItemTemplate>
-                                                <asp:Label ID="lbl7" runat="server"></asp:Label>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                    </Columns>
-                                </asp:GridView>
-                            </asp:Panel>
-                        </div>
-                        <div class="box-footer">
-                        </div>
-                    </div>
-                    <!-- /.box-footer-->
+            <!--tabcontent-->
+        </div>
+        <!-- /.col -->
+    </div>
+    <div class="row-fluid">
+        <div class="col-md-12">
+            <!-- Custom Tabs -->
+            <div class="box box-solid box-primary" style="height: auto;">
+                <div class="box-header with-border">
+                    <h4 class="box-title">
+                        <asp:Literal ID="ltlRosterHeading" runat="server" Text="Week : "></asp:Literal></h4>
                 </div>
-                <!--tabcontent-->
+                <div class="box-body">
+                    <asp:Panel ID="pnlRoster" runat="server" Visible="true">
+                        <asp:GridView ID="gvRoster" runat="server" AutoGenerateColumns="false"
+                            CssClass="table table-condensed table-responsive compact hover stripe"
+                            OnPreRender="gv_PreRender" DataKeyNames="ECN" OnRowEditing="gvRoster_RowEditing"
+                            OnRowUpdating="gvRoster_RowUpdating" OnRowCancelingEdit="gvRoster_RowCancelingEdit">
+                            <Columns>
+                                <asp:TemplateField HeaderText="Swap With">
+                                    <ItemTemplate>
+                                        <asp:Button ID="btnInitiateSwap" runat="server" CommandName="Edit" CssClass="btn btn-primary" Text="Select" />
+                                    </ItemTemplate>
+                                    <%--<EditItemTemplate>
+                                        <asp:Button runat="server" CommandName="Update" CssClass="btn btn-info" Text="Update" />
+                                        <asp:Button runat="server" CommandName="Cancel" CssClass="btn btn-default" Text="Cancel" />
+                                    </EditItemTemplate>--%>
+                                </asp:TemplateField>
+
+                                <asp:BoundField DataField="ECN" HeaderText="EmpID" ReadOnly="true" />
+                                <asp:BoundField DataField="NAME" HeaderText="Name" ReadOnly="true" />
+                                <asp:BoundField DataField="TEAM_LEADER" HeaderText="RepMgr" ReadOnly="true" />
+                                <asp:TemplateField>
+                                    <EditItemTemplate>
+                                        <asp:DropDownList ID="dd0" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
+                                    </EditItemTemplate>
+                                    <ItemTemplate>
+                                        <asp:Label ID="lbl0" runat="server"></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField>
+                                    <EditItemTemplate>
+                                        <asp:DropDownList ID="dd1" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
+                                    </EditItemTemplate>
+                                    <ItemTemplate>
+                                        <asp:Label ID="lbl1" runat="server"></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField>
+                                    <EditItemTemplate>
+                                        <asp:DropDownList ID="dd2" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
+                                    </EditItemTemplate>
+                                    <ItemTemplate>
+                                        <asp:Label ID="lbl2" runat="server"></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField>
+                                    <EditItemTemplate>
+                                        <asp:DropDownList ID="dd3" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
+                                    </EditItemTemplate>
+                                    <ItemTemplate>
+                                        <asp:Label ID="lbl3" runat="server"></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField>
+                                    <EditItemTemplate>
+                                        <asp:DropDownList ID="dd4" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
+                                    </EditItemTemplate>
+                                    <ItemTemplate>
+                                        <asp:Label ID="lbl4" runat="server"></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField>
+                                    <EditItemTemplate>
+                                        <asp:DropDownList ID="dd5" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
+                                    </EditItemTemplate>
+                                    <ItemTemplate>
+                                        <asp:Label ID="lbl5" runat="server"></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField>
+                                    <EditItemTemplate>
+                                        <asp:DropDownList ID="dd6" runat="server" CssClass="input-group-sm form-control select2" Style="width: 100%"></asp:DropDownList>
+                                    </EditItemTemplate>
+                                    <ItemTemplate>
+                                        <asp:Label ID="lbl6" runat="server"></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                            </Columns>
+                        </asp:GridView>
+                    </asp:Panel>
+                    <br />
+                    <asp:Panel ID="pnlSwap" runat="server" Visible="false">
+                        <asp:Repeater ID="rptrSwapForm" runat="server" OnItemDataBound="rptrSwapForm_ItemDataBound">
+                            <HeaderTemplate>
+                                <table class="table table-condensed table-striped table-responsive compact hover stripe">
+                                    <thead>
+                                        <th>
+                                            <h4>Shift Date</h4>
+                                        </th>
+                                        <!--Header1-->
+                                        <th>
+                                            <h4><%=dtEmp.Rows[0]["Name1"].ToString() %></h4>
+                                        </th>
+                                        <!--Header2-->
+                                        <th>
+                                            <h4></h4>
+                                        </th>
+                                        <!--Header3-->
+                                        <th>
+                                            <strong>
+                                                <h4><%=dtEmp.Rows[0]["Name2"].ToString() %></h4>
+                                            </strong>
+                                        </th>
+                                        <!--Header4-->
+                                        <th>
+                                            <h4>Headcount</h4>
+                                        </th>
+                                        <!--Header5-->
+                                    </thead>
+                                    <tbody>
+                            </HeaderTemplate>
+                            <ItemTemplate>
+                                <tr>
+                                    <td>
+                                        <p></p>
+                                    </td>
+                                    <!--Column1-->
+                                    <td>
+                                        <em>Original Shift : </em>
+                                        <asp:Label ID="lblOriginalShift1" CssClass="label pull-right bg-green" runat="server" Text='<%#Eval("ShiftCode1") %>'></asp:Label>
+
+                                    </td>
+                                    <!--Column2-->
+                                    <td></td>
+                                    <!--Column3-->
+                                    <td>
+                                        <em>Original Shift : </em>
+                                        <asp:Label ID="lblOriginalShift2" CssClass="label pull-right bg-green" runat="server" Text='<%#Eval("ShiftCode2") %>'></asp:Label>
+
+                                    </td>
+                                    <!--Column4-->
+                                    <td>
+                                        <em>Pre-Swap Headcount : </em>
+                                        <asp:Label ID="lblPreSwapHeadCount" CssClass="link-muted" Text='<%# Convert.ToInt32(Eval("isWorkingShift1")) + Convert.ToInt32(Eval("isWorkingShift2")) %>' runat="server"></asp:Label>
+
+                                    </td>
+                                    <!--Column5-->
+                                </tr>
+                                <!--Row1-->
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            <asp:Label ID="lblDate" runat="server" Text='<%# Convert.ToDateTime(Eval("ShiftDate1")).ToString("ddd, dd-MMM-yyyy") %>'></asp:Label>
+                                        </strong>
+                                    </td>
+                                    <!--Column1-->
+                                    <td>
+                                        <asp:DropDownList ID="ddl1" runat="server" CssClass="form-control select2" Style="width: 100%"></asp:DropDownList>
+                                    </td>
+                                    <!--Column2-->
+                                    <td>
+                                        <div class="btn-group">
+                                            <btn id="btnSwapShift" class="btn btn-primary"><i class="fa fa-exchange"></i>&nbsp</btn>
+                                        </div>
+
+                                    </td>
+                                    <!--Column3-->
+                                    <td>
+                                        <asp:DropDownList ID="ddl2" runat="server" CssClass="form-control select2" Style="width: 100%"></asp:DropDownList>
+                                    </td>
+                                    <!--Column4-->
+                                    <td>
+                                        <input type="text" id="tbPostSwapHeadCount" style="width: 15%" readonly="readonly" class="form-control text-muted" placeholder="..." />
+                                    </td>
+                                    <!--Column5-->
+
+                                </tr>
+                                <!--Row2-->
+                            </ItemTemplate>
+                            <FooterTemplate>
+                                </tbody>
+                                </table>
+                            </FooterTemplate>
+                        </asp:Repeater>
+                        <div class="row">
+                            <div class="col-md-offset-6">
+                                <div class="btn-group">
+                                    <asp:Button ID="btnSubmit" CssClass="btn btn-primary btn-flat disabled" runat="server" OnClick="btnSubmit_Click" Text="Submit Shift Swap" />
+                                    <asp:Button ID="btnCancel" CssClass="btn btn-warning btn-flat" runat="server" OnClick="btnCancel_Click" Text="Cancel Swap Request" />
+                                </div>
+                            </div>
+                        </div>
+                    </asp:Panel>
+                </div>
+                <div class="box-footer">
+                </div>
             </div>
-            <!-- /.col -->
+            <!-- /.box-footer-->
+        </div>
+        <!--tabcontent-->
+    </div>
+    <!-- /.col -->
 
-            <!---LHS Panel---->
+    <!---LHS Panel---->
 
-        </ContentTemplate>
+    <%--</ContentTemplate>
         <Triggers>
+            
         </Triggers>
-    </asp:UpdatePanel>
+    </asp:UpdatePanel>--%>
 </asp:Content>
 <asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">
     <!-- Select2 -->
@@ -199,19 +302,165 @@
     <script>
         function pluginsInitializer() {
 
+            ////Initialize DataTable Elements
+            //$('.DataTable').DataTable({
+            //    "sPaginationType": "full_numbers",
+            //    "lengthMenu": [5, 10, 25, 50, 75, 100],
+            //    "aaSortingFixed": [[0, 'asc']],
+            //    "bSort": true,
+            //    dom: 'Bfrltip',
+            //    "columnDefs": [{ "orderable": false, "targets": 0 }],
+            //    buttons: [
+            //        { extend: 'copyHtml5', text: 'Copy Data' },
+            //        { extend: 'excelHtml5', text: 'Export to Excel' },
+            //        { extend: 'csvHtml5', text: 'Export to CSV' },
+            //        { extend: 'pdfHtml5', text: 'Export to PDF' },
+            //    ]
+            //});
+
             //Initialize Select2 Elements
             $('.select2').select2({});
-            //Date picker
-            $(".datepicker").datepicker({
-                autoclose: true,
-                format: 'dd-M-yyyy'
+
+
+            $('btn[id*="btnSwapShift"]').click(function () {
+
+                var myRow = $(this).parents('tr');
+
+                var ddl1 = myRow.find('#ddl1');
+                var ddl2 = myRow.find('#ddl2');
+                var a = ddl1.val();
+                var b = ddl2.val();
+                //alert('Paras Original Shift : ' + a);
+                //alert('Vishal Original Shift :' + b);
+                // Initiate swap...
+
+                ddl1.val(b);
+                ddl1.trigger('change');
+
+                ddl2.val(a);
+                ddl2.trigger('change');
+
+                //alert('Paras Swapped Shift : ' + ddl1.val());
+                //alert('Vishal Swapped Shift : ' + ddl2.val());
+
             });
+            $(".select2").change(function () {
+                var myRow = $(this).parents('tr');
+                var btnSwapShift = myRow.find("#btnSwapShift");
+
+
+                var lblOriginalShift1 = myRow.prev().find('#lblOriginalShift1');
+                //alert('originalShift1 : ' + lblOriginalShift1.html());
+
+                var lblOriginalShift2 = myRow.prev().find('#lblOriginalShift2');
+                // alert('originalShift2 : ' + lblOriginalShift2.html());
+
+                var ddl1 = myRow.find('#ddl1');
+                var ddl2 = myRow.find('#ddl2');
+
+                var originalShift1 = lblOriginalShift1.text();
+                var selectedShift1 = ddl1.find(':selected').first().val();
+                //alert('originalShift1 : ' + originalShift1 + ' & selectedShift1 : ' + selectedShift1);
+
+
+                var originalShift2 = lblOriginalShift2.text();
+                var selectedShift2 = ddl2.find(':selected').first().val();
+
+                // When the dropdownlist is changed, check if the original shift matches the selected shift.
+                // check if the original shift matches the selected shift. If it does then ensure that the button is of primary class. else warning.
+
+                var originalHC1 = 0;
+                var originalHC2 = 0;
+                var selectedShiftHC1 = 0;
+                var selectedShiftHC2 = 0;
+                if (isWorkingShift(originalShift1)) { originalHC1 = 1; } else { originalHC1 = 0; }
+                if (isWorkingShift(originalShift2)) { originalHC2 = 1; } else { originalHC2 = 0; }
+                if (isWorkingShift(selectedShift1)) { selectedShiftHC1 = 1; } else { selectedShiftHC1 = 0; }
+                if (isWorkingShift(selectedShift2)) { selectedShiftHC2 = 1; } else { selectedShiftHC2 = 0; }
+                var originalHC = parseInt(originalHC1) + parseInt(originalHC2);
+                var selectedShiftHC = parseInt(selectedShiftHC1) + parseInt(selectedShiftHC2);
+
+                var tbPostSwapHeadCount = myRow.find('#tbPostSwapHeadCount');
+                tbPostSwapHeadCount.val(selectedShiftHC);
+
+                btnSwapShift.toggleClass('btn-primary btn-warning');
+                if (originalHC == selectedShiftHC) {
+
+                    $('#btnSubmit').removeAttr('disabled');
+                    $(this).enabled = true;
+                    if (originalShift1 == selectedShift1) {
+                        lblOriginalShift1.removeClass('bg-red');
+                        lblOriginalShift1.removeClass('bg-yellow');
+                        lblOriginalShift1.addClass('bg-green');
+
+                    } else {
+                        lblOriginalShift1.removeClass('bg-red');
+                        lblOriginalShift1.removeClass('bg-green');
+                        lblOriginalShift1.addClass('bg-yellow');
+                    }
+
+                    if (originalShift2 == selectedShift2) {
+                        lblOriginalShift2.removeClass('bg-red');
+                        lblOriginalShift2.removeClass('bg-yellow');
+                        lblOriginalShift2.addClass('bg-green');
+                    } else {
+                        lblOriginalShift2.removeClass('bg-red');                        
+                        lblOriginalShift2.removeClass('bg-green');
+                        lblOriginalShift2.addClass('bg-yellow');
+                    }
+
+                } else {
+
+                    $('#btnSubmit').attr('disabled');
+                    $(this).enabled = false;
+                    if (originalShift1 == selectedShift1) {
+                        lblOriginalShift1.removeClass('bg-red');
+                        lblOriginalShift1.removeClass('bg-yellow');
+                        lblOriginalShift1.addClass('bg-green');
+
+                    } else {
+                        lblOriginalShift1.removeClass('bg-green');
+                        lblOriginalShift1.removeClass('bg-yellow');
+                        lblOriginalShift1.addClass('bg-red');
+                    }
+
+                    if (originalShift2 == selectedShift2) {
+                        lblOriginalShift2.removeClass('bg-red');
+                        lblOriginalShift2.removeClass('bg-yellow');
+                        lblOriginalShift2.addClass('bg-green');
+                    } else {
+                        lblOriginalShift2.removeClass('bg-green');
+                        lblOriginalShift2.removeClass('bg-yellow');
+                        lblOriginalShift2.addClass('bg-red');
+                    }
+
+                }
+
+                // Check if the DDL1 OR DDL2 shiftS contain WO, then HC=0, take the sum of ddl1&2_HC and populate the tbPostSwapHeadCount textbox.
+
+
+
+            });
+
+
+
+
+        }
+
+        function isWorkingShift(Shift) {
+            if (Shift.length > 0) {
+                if (Shift.indexOf(":") > 0) {
+                    return true;
+                } else if (Shift == "W0") {
+                    return false;
+                } else {
+                    return false;
+                }
+            }
         }
 
         $(function () {
             pluginsInitializer();
-
-
         });
 
         //On UpdatePanel Refresh
@@ -220,20 +469,7 @@
             prm.add_endRequest(function (sender, e) {
                 if (sender._postBackSettings.panelsToUpdate != null) {
                     pluginsInitializer();
-                    $('.DataTable').DataTable({
-                        "sPaginationType": "full_numbers",
-                        "lengthMenu": [5, 10, 25, 50, 75, 100],
-                        "aaSortingFixed": [[0, 'asc']],
-                        "bSort": true,
-                        dom: 'Bfrltip',
-                        "columnDefs": [{ "orderable": false, "targets": 0 }],
-                        buttons: [
-                            { extend: 'copyHtml5', text: 'Copy Data' },
-                            { extend: 'excelHtml5', text: 'Export to Excel' },
-                            { extend: 'csvHtml5', text: 'Export to CSV' },
-                            { extend: 'pdfHtml5', text: 'Export to PDF' },
-                        ]
-                    });
+
                 }
             });
         };
