@@ -319,5 +319,5 @@ class Employee
     public int RepMgrCode { get; set; }
     public int UpdatedBy { get; set; }
 
-    1
+    
 }
