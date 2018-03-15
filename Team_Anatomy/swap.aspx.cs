@@ -8,10 +8,12 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Data.Sql;
 using System.Globalization;
+using System.Text;
 
 public partial class swap : System.Web.UI.Page
 {
     public DataTable dtEmp;
+    public DataTable dtSwapRoster;
     Helper my;
     string strSQL;
     private int MyEmpID { get; set; }
@@ -126,32 +128,32 @@ public partial class swap : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@EmpID", this.MyEmpID);
         cmd.Parameters.AddWithValue("@FromDate", FromDate);
         cmd.Parameters.AddWithValue("@ToDate", ToDate);
-        dtEmp = my.GetDataTableViaProcedure(ref cmd);
+        dtSwapRoster = my.GetDataTableViaProcedure(ref cmd);
 
         string[] rowFields = { "ECN", "NAME", "TEAM_LEADER" };
         string[] columnFields = { "ShiftDate" };
-        Pivot pvt = new Pivot(dtEmp);
-        dtEmp = pvt.PivotData("ShiftCode", AggregateFunction.First, rowFields, columnFields);
+        Pivot pvt = new Pivot(dtSwapRoster);
+        dtSwapRoster = pvt.PivotData("ShiftCode", AggregateFunction.First, rowFields, columnFields);
         string colName;
         DateTime colDate;
-        int RowCount = dtEmp.Rows.Count;
-        int ColCount = dtEmp.Columns.Count;
+        int RowCount = dtSwapRoster.Rows.Count;
+        int ColCount = dtSwapRoster.Columns.Count;
 
         for (int j = 1; j < ColCount + 1; j++)
         {
-            colName = dtEmp.Columns[j - 1].ColumnName;
+            colName = dtSwapRoster.Columns[j - 1].ColumnName;
             if (DateTime.TryParse(colName, CultureInfo.InvariantCulture, DateTimeStyles.None, out colDate))
             {
                 string col_Date = colDate.ToString("ddd, dd-MMM-yyyy");
-                dtEmp.Columns[j - 1].ColumnName = col_Date;
+                dtSwapRoster.Columns[j - 1].ColumnName = col_Date;
                 gvRoster.Columns[j].HeaderText = col_Date;
             }
         }
 
 
-        gvRoster.DataSource = dtEmp;
+        gvRoster.DataSource = dtSwapRoster;
         gvRoster.DataBind();
-        gvRoster_PostFillActions(gvRoster, dtEmp);
+        gvRoster_PostFillActions(gvRoster, dtSwapRoster);
     }
 
     private void gvRoster_PostFillActions(GridView gv, DataTable dt)
@@ -162,7 +164,6 @@ public partial class swap : System.Web.UI.Page
         // Set the date Header rows
         // The gv has dates beginning from 4th column onwards and shows 7 dates. ie:- indices 4 through ColCount = 10
         string lblName;
-        string ddlName;
         for (int i = 0; i < RowCount; i++)
         {
             if (gv.Rows[i].Cells[1].Text == SwappedEmployeeID.ToString())
@@ -171,34 +172,13 @@ public partial class swap : System.Web.UI.Page
             }
             for (int j = 4; j < ColCount + 1; j++)
             {
-                //Set labels for Date Columns only
-                if ((gv.Rows[i].RowState & DataControlRowState.Edit) > 0)
-                {
-                    ddlName = "dd" + (j - 4);
-                    DropDownList w = (DropDownList)gv.Rows[i].FindControl(ddlName);
-                    ListItem item = new ListItem();
-                    item.Text = dt.Rows[i][j - 1].ToString();
-                    w.Items.Add(item);
-                }
-                else
-                {
-                    lblName = "lbl" + (j - 4);
-                    Label v = (Label)gv.Rows[i].FindControl(lblName);
-                    v.Text = dt.Rows[i][j - 1].ToString();
-                }
+
+                lblName = "lbl" + (j - 4);
+                Label v = (Label)gv.Rows[i].FindControl(lblName);
+                v.Text = dt.Rows[i][j - 1].ToString();
+
             }
         }
-
-        // To Do: This method auto initiates the swap mechanism and is for development only.
-        // To Do: Please remove from P,U & D
-        Button btnInitiateSwap = (Button)gvRoster.Rows[0].Cells[0].FindControl("btnInitiateSwap");
-        if (btnInitiateSwap != null)
-        {
-            btnInitiateSwap.Click += BtnInitiateSwap_Click;
-        }
-
-        //gv.DataSource = dt;
-        //gv.DataBind();
     }
 
     private void BtnInitiateSwap_Click(object sender, EventArgs e)
@@ -219,6 +199,8 @@ public partial class swap : System.Web.UI.Page
             gv.BorderWidth = Unit.Pixel(1);
         }
     }
+
+
 
 
 
@@ -251,8 +233,8 @@ public partial class swap : System.Web.UI.Page
 
     protected void fillRepeaterSwap(int MyEmpID, int SwappedEmployeeID)
     {
-        pnlRoster.Visible = false;
-        pnlSwap.Visible = true;
+        //pnlRoster.Visible = false;
+        //pnlSwap.Visible = true;
         WeekID = Convert.ToInt32(ddlWeek.SelectedValue.ToString());
         string strSQL = "Select * from WFMP.tblRstWeeks where WeekID = " + WeekID;
         DataTable dtDates = my.GetData(strSQL);
@@ -264,9 +246,23 @@ public partial class swap : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@EmpID2", SwappedEmployeeID);
         cmd.Parameters.AddWithValue("@FromDate", FromDate);
         cmd.Parameters.AddWithValue("@ToDate", ToDate);
-        dtEmp = my.GetDataTableViaProcedure(ref cmd);
-        rptrSwapForm.DataSource = dtEmp;
+        dtSwapRoster = my.GetDataTableViaProcedure(ref cmd);
+
+        rptrSwapForm.DataSource = dtSwapRoster;
         rptrSwapForm.DataBind();
+
+        Label ECN1 = (Label)rptrSwapForm.FindControlRecursive("lblEmp1");
+        ECN1.Text = dtSwapRoster.Rows[0]["ECN1"].ToString();
+
+        Label lblEmpName1 = (Label)rptrSwapForm.FindControlRecursive("lblEmpName1");
+        lblEmpName1.Text = dtSwapRoster.Rows[0]["NAME1"].ToString();
+
+        Label ECN2 = (Label)rptrSwapForm.FindControlRecursive("lblEmp2");
+        ECN2.Text = dtSwapRoster.Rows[0]["ECN2"].ToString();
+
+        Label lblEmpName2 = (Label)rptrSwapForm.FindControlRecursive("lblEmpName2");
+        lblEmpName2.Text = dtSwapRoster.Rows[0]["NAME2"].ToString();
+
     }
 
 
@@ -279,28 +275,92 @@ public partial class swap : System.Web.UI.Page
             DropDownList D1 = ((DropDownList)e.Item.FindControl("ddl1"));
             DropDownList D2 = ((DropDownList)e.Item.FindControl("ddl2"));
             ListItemCollection L = new ListItemCollection();
-            ListItem L1 = new ListItem(dtEmp.Rows[e.Item.ItemIndex]["ShiftCode1"].ToString(), dtEmp.Rows[e.Item.ItemIndex]["ShiftId1"].ToString());
-            ListItem L2 = new ListItem(dtEmp.Rows[e.Item.ItemIndex]["ShiftCode2"].ToString(), dtEmp.Rows[e.Item.ItemIndex]["ShiftId2"].ToString());
+
+            ListItem L1 = new ListItem(dtSwapRoster.Rows[e.Item.ItemIndex]["ShiftCode1"].ToString(), dtSwapRoster.Rows[e.Item.ItemIndex]["ShiftId1"].ToString());
+            ListItem L2 = new ListItem(dtSwapRoster.Rows[e.Item.ItemIndex]["ShiftCode2"].ToString(), dtSwapRoster.Rows[e.Item.ItemIndex]["ShiftId2"].ToString());
             L.Add(L1);
             L.Add(L2);
+
+
             D1.DataSource = L;
+            D1.DataTextField = "Text";
+            D1.DataValueField = "Value";
+
             D2.DataSource = L;
+            D2.DataTextField = "Text";
+            D2.DataValueField = "Value";
 
             D1.DataBind();
             D2.DataBind();
 
-            D1.SelectedValue = L1.Text;
-            D2.SelectedValue = L2.Text;
+            D1.SelectedValue = L1.Value;
+            D2.SelectedValue = L2.Value;
 
         }
     }
 
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
+        InitiateSaveProcess();
+    }
+
+    private void InitiateSaveProcess()
+    {
+        List<SwapShift> S = new List<SwapShift>();
+        Label EmpCode1 = (Label)rptrSwapForm.FindControlRecursive("lblEmp1");
+        int ECN1 = Convert.ToInt32(EmpCode1.Text.ToString());
+
+        Label EmpCode2 = (Label)rptrSwapForm.FindControlRecursive("lblEmp2");
+        int ECN2 = Convert.ToInt32(EmpCode2.Text.ToString());
+
         foreach (RepeaterItem i in rptrSwapForm.Items)
         {
+            SwapShift Me = new SwapShift();
+            Me.RepMgrCode = MyRepMgr;
+            Me.EmpCode1 = ECN1;
+            Me.EmpCode2 = ECN2;
+            // Fill date
+            Label lblDate = (Label)i.FindControl("lblDate");
+            DateTime rDate;
+            if (DateTime.TryParseExact(lblDate.Text, "ddd, dd-MMM-yyyy", new CultureInfo(""), DateTimeStyles.None, out rDate))
+            {
+                Me.Date = rDate;
+            }
+            // Fill EmpCode
 
+            // Fill Me with Newly Chosen Shifts
+            DropDownList ddl1 = (DropDownList)i.FindControlRecursive("ddl1");
+            if (ddl1 != null) { Me.NewShiftID1 = Convert.ToInt32(ddl1.SelectedValue); }
+
+            DropDownList ddl2 = (DropDownList)i.FindControlRecursive("ddl2");
+            if (ddl2 != null) { Me.NewShiftID2 = Convert.ToInt32(ddl2.SelectedValue); }
+
+            // Fill Me with Original Shifts
+            Label lblOriginalShift1 = (Label)i.FindControlRecursive("lblOriginalShift1");
+            string ShiftCode1 = lblOriginalShift1.Text.ToString();
+            Me.ShiftID1 = Convert.ToInt32(ddl1.Items.FindByText(ShiftCode1).Value);
+
+            Label lblOriginalShift2 = (Label)i.FindControlRecursive("lblOriginalShift2");
+            string ShiftCode2 = lblOriginalShift2.Text.ToString();
+            Me.ShiftID2 = Convert.ToInt32(ddl1.Items.FindByText(ShiftCode2).Value);
+
+            Me.isWorkingShift1 = Me.ShiftID1 < 49 ? 1 : 0;
+            Me.isWorkingShift2 = Me.ShiftID2 < 49 ? 1 : 0;
+            Me.isNewWorkingShift1 = Me.NewShiftID1 < 49 ? 1 : 0;
+            Me.isNewWorkingShift2 = Me.NewShiftID2 < 49 ? 1 : 0;
+
+            int originalHeadCount = Me.isWorkingShift1 + Me.isWorkingShift2;
+            int postSwapHeadCount = Me.isNewWorkingShift1 + Me.isNewWorkingShift2;
+
+            Me.InitiatedOn = DateTime.Now;
+            // Validate Exact Swaps : For a given EmpCode1<>EmpCode2 & Date, check NewShiftID1= ShiftID2 and NewShiftID2=ShiftID1
+            // This is the only valid case for which the Update should go through.            
+            if (originalHeadCount == postSwapHeadCount && Me.ShiftID1 != Me.ShiftID2 && Me.NewShiftID1 == Me.ShiftID2 && Me.NewShiftID2 == Me.ShiftID1)
+            {
+                S.Add(Me);
+            }
         }
+        SwapShift.Save(S);
     }
 
     protected void btnCancel_Click(object sender, EventArgs e)
@@ -309,15 +369,118 @@ public partial class swap : System.Web.UI.Page
     }
 }
 
-class Employee
+class SwapShift
 {
-    public int EmpCode { get; set; }
-    public int WeekID { get; set; }
-    public DateTime rDate { get; set; }
-    public int ShiftID { get; set; }
-    public string ShiftCode { get; set; }
-    public int RepMgrCode { get; set; }
-    public int UpdatedBy { get; set; }
 
-    
+    public DateTime Date { get; set; }
+    public int EmpCode1 { get; set; }
+    public int ShiftID1 { get; set; }
+    public int isWorkingShift1 { get; set; }
+    public int NewShiftID1 { get; set; }
+    public int isNewWorkingShift1 { get; set; }
+    public int EmpCode2 { get; set; }
+    public int ShiftID2 { get; set; }
+    public int isWorkingShift2 { get; set; }
+    public int NewShiftID2 { get; set; }
+    public int isNewWorkingShift2 { get; set; }
+    public DateTime InitiatedOn { get; set; }
+    public int ActionByEmpCode2 { get; set; }
+    public DateTime? ActionByEmpCode2On { get; set; }
+    public int RepMgrCode { get; set; }
+    public int ActionByRepMgr { get; set; }
+    public DateTime? ActionByRepMgrOn { get; set; }
+    public bool isSwapCompliant { get; set; }
+
+
+    public static int Save(SwapShift Me)
+    {
+        int rowsAffected = 0;
+        int originalHeadCount = Me.isWorkingShift1 + Me.isWorkingShift2;
+        int postSwapHeadCount = Me.isNewWorkingShift1 + Me.isNewWorkingShift2;
+        if (originalHeadCount == postSwapHeadCount && Me.NewShiftID1 == Me.ShiftID2 && Me.NewShiftID2 == Me.ShiftID1)
+        {
+            rowsAffected += Insert(Me);
+        }
+        return rowsAffected;
+    }
+
+    public static int Save(List<SwapShift> Entries)
+    {
+        int rowsAffected = 0;
+        foreach (SwapShift Me in Entries)
+        {
+            int originalHeadCount = Me.isWorkingShift1 + Me.isWorkingShift2;
+            int postSwapHeadCount = Me.isNewWorkingShift1 + Me.isNewWorkingShift2;
+            if (originalHeadCount == postSwapHeadCount && Me.ShiftID1 != Me.ShiftID2 && Me.NewShiftID1 == Me.ShiftID2 && Me.NewShiftID2 == Me.ShiftID1)
+            {
+                rowsAffected += Insert(Me);
+            }
+        }
+        return rowsAffected;
+    }
+
+
+    private static int Insert(SwapShift s)
+    {
+
+        int rowsAffected = 0;
+        Helper my = new Helper();
+        using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
+        {
+            cn.Open();
+            SqlCommand cmd = new SqlCommand("WFMP.SaveSwapToDB", cn);            
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@Date", s.Date);
+            cmd.Parameters.AddWithValue("@EmpCode1", s.EmpCode1);
+            cmd.Parameters.AddWithValue("@ShiftID1", s.ShiftID1);
+            cmd.Parameters.AddWithValue("@isWorkingShift1", s.isWorkingShift1);
+            cmd.Parameters.AddWithValue("@NewShiftID1", s.NewShiftID1);
+            cmd.Parameters.AddWithValue("@isNewWorkingShift1", s.isNewWorkingShift1);
+            cmd.Parameters.AddWithValue("@EmpCode2", s.EmpCode2);
+            cmd.Parameters.AddWithValue("@ShiftID2", s.ShiftID2);
+            cmd.Parameters.AddWithValue("@isWorkingShift2", s.isWorkingShift2);
+            cmd.Parameters.AddWithValue("@NewShiftID2", s.NewShiftID2);
+            cmd.Parameters.AddWithValue("@isNewWorkingShift2", s.isNewWorkingShift2);
+            cmd.Parameters.AddWithValue("@InitiatedOn", s.InitiatedOn);
+            cmd.Parameters.AddWithValue("@ActionByEmpCode2", s.ActionByEmpCode2);
+            cmd.Parameters.AddWithValue("@ActionByEmpCode2On", s.ActionByEmpCode2On);
+            cmd.Parameters.AddWithValue("@RepMgrCode", s.RepMgrCode);
+            cmd.Parameters.AddWithValue("@ActionByRepMgr", s.ActionByRepMgr);
+            cmd.Parameters.AddWithValue("@ActionByRepMgrOn", s.ActionByRepMgrOn);
+            cmd.Parameters.AddWithValue("@Operation", "INSERT_NEW_SWAP");
+            
+
+            rowsAffected = cmd.ExecuteNonQuery();
+        }
+        return rowsAffected;
+    }
+
+    private static int Update(SwapShift s)
+    {
+        Helper my = new Helper();
+        int rowsAffected = 0;
+        SqlCommand cmd = new SqlCommand("WFMP.SaveSwapToDB");
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@Date", s.Date);
+        cmd.Parameters.AddWithValue("@EmpCode1", s.EmpCode1);
+        cmd.Parameters.AddWithValue("@ShiftID1", s.ShiftID1);
+        cmd.Parameters.AddWithValue("@isWorkingShift1", s.isWorkingShift1);
+        cmd.Parameters.AddWithValue("@NewShiftID1", s.NewShiftID1);
+        cmd.Parameters.AddWithValue("@isNewWorkingShift1", s.isNewWorkingShift1);
+        cmd.Parameters.AddWithValue("@EmpCode2", s.EmpCode2);
+        cmd.Parameters.AddWithValue("@ShiftID2", s.ShiftID2);
+        cmd.Parameters.AddWithValue("@isWorkingShift2", s.isWorkingShift2);
+        cmd.Parameters.AddWithValue("@NewShiftID2", s.NewShiftID2);
+        cmd.Parameters.AddWithValue("@isNewWorkingShift2", s.isNewWorkingShift2);
+        cmd.Parameters.AddWithValue("@InitiatedOn", s.InitiatedOn);
+        cmd.Parameters.AddWithValue("@ActionByEmpCode2", s.ActionByEmpCode2);
+        cmd.Parameters.AddWithValue("@ActionByEmpCode2On", s.ActionByEmpCode2On);
+        cmd.Parameters.AddWithValue("@RepMgrCode", s.RepMgrCode);
+        cmd.Parameters.AddWithValue("@ActionByRepMgr", s.ActionByRepMgr);
+        cmd.Parameters.AddWithValue("@ActionByRepMgrOn", s.ActionByRepMgrOn);
+        cmd.Parameters.AddWithValue("@Operation", "UPDATE_SWAP");
+
+        rowsAffected = cmd.ExecuteNonQuery();
+        return rowsAffected;
+    }
 }

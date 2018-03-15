@@ -19,7 +19,7 @@ public class Helper
         xString = xEDCryptor.DeCrypt(xString);
         return xString;
     }
-    public void open_db()
+    public SqlConnection open_db()
     {
 
         cn = new SqlConnection(getConnectionString());
@@ -28,13 +28,16 @@ public class Helper
             if (cn.State == ConnectionState.Closed || cn.State == ConnectionState.Broken)
             {
                 cn.Open();
+                return cn;
             }
         }
         catch (Exception e)
         {
+
             Console.WriteLine("{0} Exception Caught", e);
             Log.thisException(e);
         }
+        return null;
     }
     public void close_conn()
     {
@@ -94,14 +97,26 @@ public class Helper
     }
     public DataTable GetData(string sql)
     {
-        open_db();
+        
         DataTable dt = new DataTable();
-        using (SqlDataAdapter da = new SqlDataAdapter(new SqlCommand(sql, cn)))
+        using (SqlCommand cmd = new SqlCommand(sql))
         {
-            da.SelectCommand.CommandTimeout = 60;
-            DataSet ds = new DataSet();
-            da.Fill(ds);
-            dt = ds.Tables[0];
+            cmd.Connection = open_db();
+            var r = cmd.ExecuteReader();
+            dt.Load(r);
+        }
+        close_conn();
+        return dt;
+    }
+
+    public DataTable GetData(ref SqlCommand cmd)
+    {
+        cmd.Connection = open_db();
+        DataTable dt = new DataTable();
+        using (cmd)
+        {
+            var r = cmd.ExecuteReader();
+            dt.Load(r);
         }
         close_conn();
         return dt;
@@ -378,7 +393,7 @@ public class EmailSender
         string strSQL = "Select A.First_Name+' '+A.Middle_Name+' '+A.Last_Name as Name from WFMP.tblMaster A where A.Employee_ID = " + EmpID;
 
         myName = my.getFirstResult(strSQL);
-        if (myName.Length>0)
+        if (myName.Length > 0)
         {
             myName = myName.Replace("  ", " ");
             return myName;
@@ -439,8 +454,8 @@ public class EmailSender
         {
             RecipientsEmpId = convertAndReplaceDelimitedEmpIDs2EmailIds(RecipientsEmpId);
             string InitiatorEmailID = EmailFromEmpID(InitiatorEmpId);
-            if (CCsEmpId!=null && CCsEmpId.Length > 0) { CCsEmpId = convertAndReplaceDelimitedEmpIDs2EmailIds(CCsEmpId); }
-            if (BCCsEmpId!=null && BCCsEmpId.Length > 0) { BCCsEmpId = convertAndReplaceDelimitedEmpIDs2EmailIds(BCCsEmpId); }
+            if (CCsEmpId != null && CCsEmpId.Length > 0) { CCsEmpId = convertAndReplaceDelimitedEmpIDs2EmailIds(CCsEmpId); }
+            if (BCCsEmpId != null && BCCsEmpId.Length > 0) { BCCsEmpId = convertAndReplaceDelimitedEmpIDs2EmailIds(BCCsEmpId); }
             try
             {
                 using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
@@ -449,7 +464,7 @@ public class EmailSender
                     using (SqlCommand cmd = new SqlCommand("Master.dbo.SendEMailDB", cn))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
-                        
+
                         cmd.Parameters.AddWithValue("@xrecipients", RecipientsEmpId);
                         cmd.Parameters.AddWithValue("@xcopy_recipients", CCsEmpId);
                         cmd.Parameters.AddWithValue("@xblind_copy_recipients", BCCsEmpId);

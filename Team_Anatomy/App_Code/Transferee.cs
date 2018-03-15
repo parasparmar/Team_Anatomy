@@ -188,7 +188,6 @@ public class Transferee
         }
         sendEmail();
         return rowsAffected;
-
     }
     private int InsertToDB()
     {

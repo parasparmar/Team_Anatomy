@@ -111,10 +111,13 @@ public partial class LeaveApproval : System.Web.UI.Page
         lblEmployeeID.Text = employeeid;
         string employeeName = row.Cells[1].Text.ToString();
         lblEmployeeName.Text = employeeName;
-        String Sql = "select CONVERT(VARCHAR,A.[LeaveDate],106) as LeaveDate, B.[LeaveText]";//, A.[roster]
+        String Sql = "select CONVERT(VARCHAR,A.[LeaveDate],106) as LeaveDate, B.[LeaveText], E.StartTime as Roster ";
         Sql += "from [WFMP].[tbl_datewise_leave] A ";
         Sql += "inner join [WFMP].[tblLeaveType] B ";
-        Sql += "on A.[leave_type] = B.[LeaveID]";
+        Sql += "on A.[leave_type] = B.[LeaveID] ";
+        Sql += "inner join [WFMP].[tbl_leave_request] C on A.leave_batch_id=C.id ";
+        Sql += "left join [WFMP].[RosterMst] D on C.ecn=D.EmpCode and A.LeaveDate= D.rDate ";
+        Sql += "left join [WFMP].[tblShiftCode] E on E.ShiftID = D.ShiftID ";
         Sql += "WHERE [leave_batch_id] = '" + leaveid + "'";
         SqlCommand cmd = new SqlCommand(Sql);
 
