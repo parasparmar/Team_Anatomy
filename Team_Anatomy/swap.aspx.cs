@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Data.Sql;
 using System.Globalization;
 using System.Text;
+using System.Web.UI.HtmlControls;
 
 public partial class swap : System.Web.UI.Page
 {
@@ -108,7 +109,6 @@ public partial class swap : System.Web.UI.Page
     }
     protected void ddlWeek_SelectedIndexChanged(object sender, EventArgs e)
     {
-
         ltlRosterHeading.Text = "Week : " + ddlWeek.SelectedItem.Text;
         if (ddlWeek.SelectedValue.Length > 0 && ddlYear.SelectedValue != "0")
         {
@@ -116,7 +116,6 @@ public partial class swap : System.Web.UI.Page
             WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
             fillgvRoster(this.MyEmpID, WeekID);
         }
-
     }
     private void fillgvRoster(int MyEmpID, int WeekID)
     {
@@ -156,7 +155,6 @@ public partial class swap : System.Web.UI.Page
         gvRoster.DataBind();
         gvRoster_PostFillActions(gvRoster, dtSwapRoster);
     }
-
     private void gvRoster_PostFillActions(GridView gv, DataTable dt)
     {
         int RowCount = dt.Rows.Count;
@@ -167,9 +165,16 @@ public partial class swap : System.Web.UI.Page
         string lblName;
         for (int i = 0; i < RowCount; i++)
         {
-            if (gv.Rows[i].Cells[1].Text == SwappedEmployeeID.ToString())
+            //if (gv.Rows[i].Cells[1].Text == SwappedEmployeeID.ToString())
+            //{
+            //    gv.Rows[i].CssClass = "";
+            //}
+            if (gv.Rows[i].Cells[1].Text == MyEmpID.ToString())
             {
-                gv.Rows[i].CssClass = "bg-light-blue disabled color-palette";
+                Button btnInitiateSwap = gv.Rows[i].Cells[0].FindControl("btnInitiateSwap") as Button;
+                btnInitiateSwap.Enabled = false;
+                btnInitiateSwap.CssClass = "btn btn-info disabled";
+                btnInitiateSwap.Text = "Roster";
             }
             for (int j = 4; j < ColCount + 1; j++)
             {
@@ -182,13 +187,12 @@ public partial class swap : System.Web.UI.Page
         }
 
     }
-
     private void BtnInitiateSwap_Click(object sender, EventArgs e)
     {
         GridViewEditEventArgs c = new GridViewEditEventArgs(0);
         gvRoster_RowEditing(gvRoster, c);
-    }
 
+    }
     protected void gv_PreRender(object sender, EventArgs e)
     {
         GridView gv = (GridView)sender;
@@ -201,11 +205,6 @@ public partial class swap : System.Web.UI.Page
             gv.BorderWidth = Unit.Pixel(1);
         }
     }
-
-
-
-
-
     protected void gvRoster_RowEditing(object sender, GridViewEditEventArgs e)
     {
         // Normally the selected employee needs to undergo a shift edit,
@@ -213,13 +212,21 @@ public partial class swap : System.Web.UI.Page
         // With the caveat that the shift options should be gathered from the swappedEmployee's shift for that day.
         SwappedEmployeeID = Convert.ToInt32(gvRoster.Rows[e.NewEditIndex].Cells[1].Text);
         fillRepeaterSwap(MyEmpID, SwappedEmployeeID);
-    }
+        foreach (GridViewRow r in gvRoster.Rows)
+        {
+            Button b = r.Cells[0].FindControl("btnInitiateSwap") as Button;
+            if (b.CssClass == "btn btn-primary")
+            {
+                b.CssClass += " disabled";
+                b.Text = "Locked";
+            }
 
+        }
+    }
     protected void gvRoster_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
 
     }
-
     protected void gvRoster_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
     {
         foreach (GridViewRow r in gvRoster.Rows)
@@ -232,7 +239,6 @@ public partial class swap : System.Web.UI.Page
             fillgvRoster(MyEmpID, WeekID);
         }
     }
-
     protected void fillRepeaterSwap(int MyEmpID, int SwappedEmployeeID)
     {
         //pnlRoster.Visible = false;
@@ -250,6 +256,7 @@ public partial class swap : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@ToDate", ToDate);
         dtSwapRoster = my.GetDataTableViaProcedure(ref cmd);
 
+
         rptrSwapForm.DataSource = dtSwapRoster;
         rptrSwapForm.DataBind();
 
@@ -266,46 +273,71 @@ public partial class swap : System.Web.UI.Page
         lblEmpName2.Text = dtSwapRoster.Rows[0]["NAME2"].ToString();
 
     }
-
-
     protected void rptrSwapForm_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
 
 
         if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
         {
+            HiddenField hfPleaseLock = e.Item.FindControlRecursive("hfPleaseLock") as HiddenField;
+            int PleaseLock = Convert.ToInt32(hfPleaseLock.Value);
+
+
             DropDownList D1 = ((DropDownList)e.Item.FindControl("ddl1"));
             DropDownList D2 = ((DropDownList)e.Item.FindControl("ddl2"));
             ListItemCollection L = new ListItemCollection();
 
             ListItem L1 = new ListItem(dtSwapRoster.Rows[e.Item.ItemIndex]["ShiftCode1"].ToString(), dtSwapRoster.Rows[e.Item.ItemIndex]["ShiftId1"].ToString());
             ListItem L2 = new ListItem(dtSwapRoster.Rows[e.Item.ItemIndex]["ShiftCode2"].ToString(), dtSwapRoster.Rows[e.Item.ItemIndex]["ShiftId2"].ToString());
-            L.Add(L1);
-            L.Add(L2);
 
+            if (PleaseLock == 1)
+            {
+                L.Clear();
+                L.Add(L1);                
+                D1.DataSource = L;
+                D1.DataTextField = "Text";
+                D1.DataValueField = "Value";
+                D1.DataBind();
 
-            D1.DataSource = L;
-            D1.DataTextField = "Text";
-            D1.DataValueField = "Value";
+                L.Clear();
+                L.Add(L2);
+                D2.DataSource = L;
+                D2.DataTextField = "Text";
+                D2.DataValueField = "Value";                
+                D2.DataBind();
 
-            D2.DataSource = L;
-            D2.DataTextField = "Text";
-            D2.DataValueField = "Value";
+                D1.SelectedValue = L1.Value;
+                D2.SelectedValue = L2.Value;
 
-            D1.DataBind();
-            D2.DataBind();
+                D1.Enabled = false;
+                D2.Enabled = false;
+            }
+            else
+            {
+                L.Add(L1);
+                L.Add(L2);
 
-            D1.SelectedValue = L1.Value;
-            D2.SelectedValue = L2.Value;
+                D1.DataSource = L;
+                D1.DataTextField = "Text";
+                D1.DataValueField = "Value";
 
+                D2.DataSource = L;
+                D2.DataTextField = "Text";
+                D2.DataValueField = "Value";
+
+                D1.DataBind();
+                D2.DataBind();
+
+                D1.SelectedValue = L1.Value;
+                D2.SelectedValue = L2.Value;
+
+            }
         }
     }
-
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
         InitiateSaveProcess();
     }
-
     private void InitiateSaveProcess()
     {
         List<SwapShift> S = new List<SwapShift>();
@@ -364,14 +396,10 @@ public partial class swap : System.Web.UI.Page
         }
         SwapShift.Save(S);
     }
-
-
-
     protected void ddlRole_SelectedIndexChanged(object sender, EventArgs e)
     {
 
     }
-
     private void fillgvSwapStatus()
     {
         string strSQL = "WFMP.Swap_getSwapStatus";
@@ -411,18 +439,13 @@ public partial class swap : System.Web.UI.Page
             int ApproverAction = t.Field<int>("ApproverAction");
             int RepMgrAction = t.Field<int>("RepMgrAction");
 
-
-
-
-
-
             // if I am EmpCode1 
             if (EmpCode1 == MyEmpID)
             {
                 pnlPendingActions.Visible = false;
                 pnlSwapInformation.Visible = true;
 
-                if (ApproverAction == 1 && RepMgrAction==1)
+                if (ApproverAction == 1 && RepMgrAction == 1)
                 {
                     pnlPendingActions.Visible = false;
                     pnlSwapInformation.Visible = true;
@@ -494,8 +517,6 @@ public partial class swap : System.Web.UI.Page
         //ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "hideModal();", true);
         //ScriptManager.RegisterStartupScript(this, this.GetType(), "show", "toastA();", true);
     }
-
-
     protected void btnApprove_Click(object sender, EventArgs e)
     {
 
@@ -505,7 +526,6 @@ public partial class swap : System.Web.UI.Page
         S.ApproveSwap(MyEmpID);
 
     }
-
     protected void btnDecline_Click(object sender, EventArgs e)
     {
         Button btnApprove = sender as Button;
@@ -513,12 +533,18 @@ public partial class swap : System.Web.UI.Page
         SwapShift S = new SwapShift(ID);
         S.DeclineSwap(MyEmpID);
     }
-
     protected void btnCancel_Click(object sender, EventArgs e)
     {
-
+        foreach (GridViewRow r in gvRoster.Rows)
+        {
+            Button b = r.Cells[0].FindControl("btnInitiateSwap") as Button;
+            if (b.CssClass == "btn btn-primary disabled")
+            {
+                b.CssClass = "btn btn-primary";
+                b.Text = "Select";
+            }
+        }
     }
-
     protected void gvSwapStatus_RowDataBound(object sender, GridViewRowEventArgs e)
     {
 

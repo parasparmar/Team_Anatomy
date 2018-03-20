@@ -89,7 +89,10 @@ public partial class profile : System.Web.UI.Page
             tbEmergencyContactPerson.Text = dr["EmergencyContactPerson"].ToString();
             tbEmail_id.Text = dr["Email_Personal"].ToString();
             /////---------------Transport Section 
-            tbTransport_User.Text = dr["Transport"].ToString();
+            //tbTransport_User.Text = dr["Transport"].ToString();            
+            if (dr["Transport"] != null && dr["Transport"].ToString().Length > 0) {
+                tbTransport_User.SelectedValue = dr["Transport"].ToString();
+            }
             tbAddress_Line_1.Text = dr["Address1"].ToString();
             tbAddress_Line_2.Text = dr["Address2"].ToString();
             tbAddress_Landmark.Text = dr["Landmark"].ToString();
@@ -224,15 +227,15 @@ public partial class profile : System.Web.UI.Page
             if (tbSkill_Set_1.Items[i].Selected) j.Append("," + tbSkill_Set_1.Items[i].Text);
         }
         string Skill1 = j.ToString();
-        if (Skill1.Length>0) { Skill1 = Skill1.Substring(1); }
-        
+        if (Skill1.Length > 0) { Skill1 = Skill1.Substring(1); }
+
         j.Clear();
 
         for (int i = 0; i < tbSkill_Set_2.Items.Count - 1; i++)
         {
             if (tbSkill_Set_2.Items[i].Selected) j.Append("," + tbSkill_Set_2.Items[i].Text);
         }
-        
+
         string Skill2 = j.ToString();
         if (Skill2.Length > 0) { Skill2 = Skill2.Substring(1); }
 
@@ -242,7 +245,7 @@ public partial class profile : System.Web.UI.Page
         {
             if (tbSkill_Set_3.Items[i].Selected) j.Append("," + tbSkill_Set_3.Items[i].Text);
         }
-        
+
         string Skill3 = j.ToString();
         if (Skill3.Length > 0) { Skill3 = Skill3.Substring(1); }
 
@@ -327,7 +330,7 @@ public partial class profile : System.Web.UI.Page
 
         //Fill tbQualification
         strSQL = "SELECT [Id], [Qualification] FROM [CWFM_Umang].[WFMP].[tblQualification]";
-        tbQualification.Items.Insert(0, new ListItem("Please select your highest (pursued/pursuing) education level","0"));
+        tbQualification.Items.Insert(0, new ListItem("Please select your highest (pursued/pursuing) education level", "0"));
         my.append_dropdown(ref tbQualification, strSQL, 1, 0);
 
         //Fill tbMaritalStatus

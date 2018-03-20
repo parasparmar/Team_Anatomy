@@ -79,6 +79,16 @@
                                     </div>
                                 </div>
                                 <!-- Roster Dates-->
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        My Role
+                                <asp:DropDownList ID="ddlRole" runat="server" CssClass="form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlRole_SelectedIndexChanged">
+                                    <asp:ListItem Selected="True" Text="Employee" Value="Employee"></asp:ListItem>
+                                    <asp:ListItem Text="Reporting Manager" Value="Reporting_Manager"></asp:ListItem>
+                                </asp:DropDownList>
+                                    </div>
+                                </div>
+                                <!-- Role Selection-->
                             </div>
 
                         </div>
@@ -105,7 +115,7 @@
                                         <li><a href="#tab_3" data-toggle="tab">3. Check Status</a></li>
                                     </ul>
                                     <div class="tab-content">
-                                        <div class="tab-pane active" id="tab_1">
+                                        <div class="tab-pane active" id="tab_1" runat="server">
                                             <asp:Panel ID="pnlRoster" runat="server" Visible="true">
                                                 <asp:GridView ID="gvRoster" runat="server" AutoGenerateColumns="false"
                                                     CssClass="table table-condensed table-responsive compact hover stripe"
@@ -167,7 +177,7 @@
                                             </asp:Panel>
                                         </div>
                                         <!-- /.tab-pane -->
-                                        <div class="tab-pane" id="tab_2">
+                                        <div class="tab-pane" id="tab_2" runat="server">
                                             <asp:Panel ID="pnlSwap" runat="server" Visible="true">
                                                 <asp:Repeater ID="rptrSwapForm" runat="server" OnItemDataBound="rptrSwapForm_ItemDataBound">
                                                     <HeaderTemplate>
@@ -236,6 +246,7 @@
                                                                 <strong>
                                                                     <asp:Label ID="lblDate" runat="server" Text='<%# Convert.ToDateTime(Eval("ShiftDate1")).ToString("ddd, dd-MMM-yyyy") %>'></asp:Label>
                                                                 </strong>
+                                                                <asp:HiddenField ID="hfPleaseLock" Value='<%# Eval("PleaseLock") %>' runat="server" />
                                                             </td>
                                                             <!--Column1-->
                                                             <td>
@@ -263,33 +274,25 @@
                                                     </ItemTemplate>
                                                     <FooterTemplate>
                                                         </tbody>
-                                </table>
-                                    <div class="row-fluid">
-                                        <div class="col-md-offset-8">
-                                            <div class="btn-group">
-                                                <asp:Button ID="btnSubmit" CssClass="btn btn-primary btn-flat" runat="server" OnClick="btnSubmit_Click" Text="Submit Shift Swap" />
-                                                <asp:Button ID="btnCancel" CssClass="btn btn-warning btn-flat" runat="server" OnClick="btnCancel_Click" Text="Cancel Swap Request" />
-                                            </div>
-                                        </div>
-                                    </div>
+                                                    </table>
+                                                        <div class="row-fluid">
+                                                            <div class="col-md-offset-8">
+                                                                <div class="btn-group">
+                                                                    <asp:Button ID="btnSubmit" CssClass="btn btn-primary btn-flat" runat="server" OnClick="btnSubmit_Click" Text="Submit Shift Swap" />
+                                                                    <asp:Button ID="btnCancel" CssClass="btn btn-warning btn-flat" runat="server" OnClick="btnCancel_Click" Text="Cancel Swap Request" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </FooterTemplate>
                                                 </asp:Repeater>
 
                                             </asp:Panel>
                                         </div>
                                         <!-- /.tab-pane -->
-                                        <div class="tab-pane" id="tab_3">
+                                        <div class="tab-pane" id="tab_3" runat="server">
                                             <div class="box-body">
                                                 <div class="row-fluid">
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            My Role
-                                <asp:DropDownList ID="ddlRole" runat="server" CssClass="form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlRole_SelectedIndexChanged">
-                                    <asp:ListItem Selected="True" Text="Employee" Value="Employee"></asp:ListItem>
-                                    <asp:ListItem Text="Reporting Manager" Value="Reporting_Manager"></asp:ListItem>
-                                </asp:DropDownList>
-                                                        </div>
-                                                    </div>
+
                                                     <!-- My Role-->
                                                     <div class="col-md-12">
                                                         <asp:GridView ID="gvSwapStatus" CssClass="table table-condensed table-bordered table-responsive"
@@ -361,6 +364,12 @@
 
                 var ddl1 = myRow.find('#ddl1');
                 var ddl2 = myRow.find('#ddl2');
+
+                var hf1 = myRow.find('#hfPleaseLock');
+                if (hf1.val == 1) {
+                    alert("LockRow");
+                }
+
                 var a = ddl1.val();
                 var b = ddl2.val();
                 //alert('Paras Original Shift : ' + a);

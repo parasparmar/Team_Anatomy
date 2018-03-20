@@ -258,9 +258,9 @@
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-automobile"></i></span>
                                         <asp:DropDownList ItemType="text" CssClass="form-control select" ID="tbTransport_User" runat="server">
-                                            <asp:ListItem Text="Yes"></asp:ListItem>
-                                            <asp:ListItem Text="No"></asp:ListItem>
-                                            <asp:ListItem Text="Not Specified"></asp:ListItem>
+                                            <asp:ListItem Text="Yes" Value="1"></asp:ListItem>
+                                            <asp:ListItem Text="No" Value="0"></asp:ListItem>
+                                            <asp:ListItem Text="Not Specified" Value="0"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>
