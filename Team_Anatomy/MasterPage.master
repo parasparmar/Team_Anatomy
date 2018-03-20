@@ -228,9 +228,9 @@
                 <!-- Logo -->
                 <a href="Index.aspx" class="logo">
                     <!-- mini logo for sidebar mini 50x50 pixels -->
-                    <span class="logo-mini"><b>IA</b></span>
+                    <span class="logo-mini">i<b>A</b></span>
                     <!-- logo for regular state and mobile devices -->
-                    <span class="logo-lg">IA<b>ccess</b></span>
+                    <span class="logo-lg">i<b>A</b>ccess</span>
                 </a>
                 <!-- Header Navbar: style can be found in header.less -->
                 <nav class="navbar navbar-static-top">

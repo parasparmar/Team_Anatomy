@@ -22,6 +22,8 @@ public partial class LeaveApproval : System.Web.UI.Page
     string strSQL;
     int MyEmpID;
 
+    EmailSender Email = new EmailSender();
+
     protected void Page_Load(object sender, EventArgs e)
     {
         my = new Helper();
@@ -220,9 +222,32 @@ public partial class LeaveApproval : System.Web.UI.Page
             //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave is approved.', 'Success')", true);
             fillddlRepManager();
 
-            //System.Threading.Thread.Sleep(3000);
-            //Page.Response.Redirect(Page.Request.Url.ToString(), true);
-        //}
+        //System.Threading.Thread.Sleep(3000);
+        //Page.Response.Redirect(Page.Request.Url.ToString(), true);
+
+        string strSQL2 = "CWFM_UMANG.[WFMP].[getEmployeeMgrs]";
+
+        SqlCommand cmdd = new SqlCommand(strSQL2);
+        cmdd.Parameters.AddWithValue("@EmpCd", Convert.ToInt32(empid.ToString()));
+        DataTable dtt = my.GetDataTableViaProcedure(ref cmdd);
+
+        int RepMgr = Convert.ToInt32(dtt.Rows[0]["RepMgrCode"].ToString());
+        int RevMgr = Convert.ToInt32(dtt.Rows[0]["RevMgrCode"].ToString());
+
+        Email.InitiatorEmpId = MyEmpID;
+        if (MyEmpID == RepMgr)
+        { Email.RecipientsEmpId = RevMgr.ToString() + ";" + empid.ToString(); }
+        else if (MyEmpID == RevMgr)
+        { Email.RecipientsEmpId = RepMgr.ToString() + ";" + empid.ToString(); }
+        //Email.RecipientsEmpId = "931040";
+        //Email.BCCsEmpId = MyEmpID.ToString();
+        Email.CCsEmpId = MyEmpID.ToString();
+        Email.Subject = "Leave Request Approved";
+        Email.Body = "<strong>Hi, </strong>";
+        Email.Body += "<P>"+dt.Rows[0]["First_Name"].ToString()+ " " + dt.Rows[0]["Last_Name"].ToString() + " has approved your leave <P>";
+        Email.Body += "<p>For more information, please visit the dashboard at  <a href='http://iaccess/TA/leave.aspx'>Leave page</a> .<p>";
+        Email.Send();
+    //}
 
     }
     protected void btn_dec_Click(object sender, EventArgs e)
@@ -291,6 +316,28 @@ public partial class LeaveApproval : System.Web.UI.Page
             
             //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Request Declined.', 'Success')", true);
             fillddlRepManager();
-       
+
+        string strSQL1 = "CWFM_UMANG.[WFMP].[getEmployeeMgrs]";
+
+        SqlCommand cmdd = new SqlCommand(strSQL1);
+        cmdd.Parameters.AddWithValue("@EmpCd", Convert.ToInt32(empid.ToString()));
+        DataTable dtt = my.GetDataTableViaProcedure(ref cmdd);
+
+        int RepMgr = Convert.ToInt32(dtt.Rows[0]["RepMgrCode"].ToString());
+        int RevMgr = Convert.ToInt32(dtt.Rows[0]["RevMgrCode"].ToString());
+
+        Email.InitiatorEmpId = MyEmpID;
+        if (MyEmpID == RepMgr)
+        { Email.RecipientsEmpId = empid.ToString(); }
+        else if (MyEmpID == RevMgr)
+        { Email.RecipientsEmpId = RepMgr.ToString() + ";" + empid.ToString(); }
+        //Email.RecipientsEmpId = "931040";
+        //Email.BCCsEmpId = MyEmpID.ToString();
+        Email.CCsEmpId = MyEmpID.ToString();
+        Email.Subject = "Leave Request Declined";
+        Email.Body = "<strong>Hi </strong>" + empid + " ";
+        Email.Body += "<P>"+dt.Rows[0]["First_Name"].ToString()+" " + dt.Rows[0]["Last_Name"].ToString() + " has declined your leave stating '" + comments + "'<P>";
+        Email.Body += "<p>For more information, please visit the dashboard at  <a href='http://iaccess/TA/leave.aspx'>Leave page</a> .";
+        Email.Send();
     }
 }

@@ -22,6 +22,8 @@ public partial class leave : System.Web.UI.Page
     string strsql;
     int MyEmpID;
 
+    EmailSender Email = new EmailSender();
+
     protected void Page_Load(object sender, EventArgs e)
     {
         my = new Helper();
@@ -114,7 +116,7 @@ public partial class leave : System.Web.UI.Page
             lbl.Text = ondate.DayOfWeek.ToString();
 
             DropDownList ddl = (DropDownList)gvr.FindControlRecursive("ddlSelectLeave");
-            strsql = "select LeaveId, LeaveText from WFMP.tblLeaveType";
+            strsql = "select LeaveId, LeaveText from WFMP.tblLeaveType where Active=1";
             DataTable dt = my.GetData(strsql);
 
             ddl.DataSource = dt;
@@ -139,6 +141,9 @@ public partial class leave : System.Web.UI.Page
         DataTable dt = my.GetDataTableViaProcedure(ref cmd);
         gvLeaveLog.DataSource = dt;
         gvLeaveLog.DataBind();
+        ViewState["dirState"] = dt;
+        ViewState["sortdr"] = "Asc";
+
     }
 
     private void clearfields()
@@ -222,7 +227,7 @@ public partial class leave : System.Web.UI.Page
 
 
 
-           
+            string xRoster;
             foreach (GridViewRow row in gvLeaveDetails.Rows)
             {
                 String xLeaveType;
@@ -257,6 +262,25 @@ public partial class leave : System.Web.UI.Page
                 }
 
             }
+
+            string newFromDate;
+            string newToDate;
+
+            newFromDate=String.Format("{0:dddd, MMMM d, yyyy}", from_Date);
+            newToDate = String.Format("{0:dddd, MMMM d, yyyy}", end_Date);
+
+            Email.InitiatorEmpId = MyEmpID;
+            Email.RecipientsEmpId = dt.Rows[0]["RepMgrCode"].ToString() ;
+            //Email.RecipientsEmpId = "931040 ; 918031";
+            //Email.BCCsEmpId = MyEmpID.ToString();
+            Email.CCsEmpId = MyEmpID.ToString();
+            Email.Subject = "Leave Request";
+            Email.Body = "<strong>Hi, </strong>";
+            Email.Body += "<P>" + dt.Rows[0]["First_Name"].ToString()+ " " + dt.Rows[0]["Last_Name"].ToString() + " has requested leave from " + newFromDate + " to " + newToDate; //+ " for given reason"+" ' "+ txt_leave_reason.Text.ToString()+ " '.<P>";
+            Email.Body += "<br> Reason: '" + txt_leave_reason.Text.ToString()+"'<br>";
+            //Email.Body += "<p>Please action on the dashboard on <a href='http://iaccess/TA//LeaveApproval.aspx'>LeaveAproval page</a> .<p>";
+            Email.Send();
+
             Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave applied successfully.')", true);
 
             fillgvLeaveLog();
@@ -368,68 +392,112 @@ public partial class leave : System.Web.UI.Page
 
     }
 
-    protected void gvLeaveLog_PreRender(object sender, EventArgs e)
+    //protected void gvLeaveLog_PreRender(object sender, EventArgs e)
+    //{
+    //    //GridView gv = (GridView)sender;
+    //    //if (gv.Rows.Count > 0)
+    //    //{
+    //    //    gv.UseAccessibleHeader = true;
+    //    //    gv.HeaderRow.TableSection = TableRowSection.TableHeader;
+    //    //    gv.FooterRow.TableSection = TableRowSection.TableFooter;
+    //    //    gv.HeaderStyle.BorderStyle = BorderStyle.None;
+    //    //    gv.BorderStyle = BorderStyle.None;
+    //    //    gv.BorderWidth = Unit.Pixel(1);
+    //    //}
+
+    //}
+    //protected void gvLeaveLog_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    //{
+    //    gvLeaveLog.PageIndex = e.NewPageIndex; 
+    //    fillgvLeaveLog();
+
+    //}
+    //protected void gvLeaveLog_Sorting(object sender, GridViewSortEventArgs e)
+    //{
+    //    DataTable dt = Session["TaskTable"] as DataTable;
+
+    //    if (dt != null)
+    //    {
+
+    //        //Sort the data.
+    //        dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
+    //        gvLeaveLog.DataSource = Session["TaskTable"];
+    //        gvLeaveLog.DataBind();
+    //    }
+
+    //}
+    //private string GetSortDirection(string column)
+    //{
+
+    //    // By default, set the sort direction to ascending.
+    //    string sortDirection = "ASC";
+
+    //    // Retrieve the last column that was sorted.
+    //    string sortExpression = ViewState["SortExpression"] as string;
+
+    //    if (sortExpression != null)
+    //    {
+    //        // Check if the same column is being sorted.
+    //        // Otherwise, the default value can be returned.
+    //        if (sortExpression == column)
+    //        {
+    //            string lastDirection = ViewState["SortDirection"] as string;
+    //            if ((lastDirection != null) && (lastDirection == "ASC"))
+    //            {
+    //                sortDirection = "DESC";
+    //            }
+    //        }
+    //    }
+
+    //    // Save new values in ViewState.
+    //    ViewState["SortDirection"] = sortDirection;
+    //    ViewState["SortExpression"] = column;
+
+    //    return sortDirection;
+    //}
+
+    protected void gv_PreRender(object sender, EventArgs e)
     {
-        //GridView gv = (GridView)sender;
-        //if (gv.Rows.Count > 0)
-        //{
-        //    gv.UseAccessibleHeader = true;
-        //    gv.HeaderRow.TableSection = TableRowSection.TableHeader;
-        //    gv.FooterRow.TableSection = TableRowSection.TableFooter;
-        //    gv.HeaderStyle.BorderStyle = BorderStyle.None;
-        //    gv.BorderStyle = BorderStyle.None;
-        //    gv.BorderWidth = Unit.Pixel(1);
-        //}
+        GridView gv = (GridView)sender;
+        if (gv.Rows.Count > 0)
+        {
+            gv.UseAccessibleHeader = true;
+            gv.HeaderRow.TableSection = TableRowSection.TableHeader;
+            gv.HeaderStyle.BorderStyle = BorderStyle.None;
+            gv.BorderStyle = BorderStyle.None;
+            gv.BorderWidth = Unit.Pixel(1);
+            gv.FooterRow.TableSection = TableRowSection.TableFooter;
+        }
 
     }
-    protected void gvLeaveLog_PageIndexChanging(object sender, GridViewPageEventArgs e)
-    {
-        gvLeaveLog.PageIndex = e.NewPageIndex; 
-        fillgvLeaveLog();
 
-    }
     protected void gvLeaveLog_Sorting(object sender, GridViewSortEventArgs e)
     {
-        DataTable dt = Session["TaskTable"] as DataTable;
-
-        if (dt != null)
-        {
-
-            //Sort the data.
-            dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
-            gvLeaveLog.DataSource = Session["TaskTable"];
+        DataTable dtrslt = (DataTable)ViewState["dirState"];
+                    if (dtrslt.Rows.Count > 0)
+                        {
+                            if (Convert.ToString(ViewState["sortdr"]) == "Asc")
+                                {
+                ViewState["sortdr"] = "Desc";
+                                }
+                            else   
+                {
+                dtrslt.DefaultView.Sort = e.SortExpression + " Asc";
+                ViewState["sortdr"] = "Asc";
+                            }
+            gvLeaveLog.DataSource = dtrslt;
             gvLeaveLog.DataBind();
-        }
+                        }
 
     }
-    private string GetSortDirection(string column)
+
+    protected void gvLeaveLog_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
+        gvLeaveLog.PageIndex = e.NewPageIndex;
+        //gvLeaveLog.DataSource = ViewState["Paging"];
+        gvLeaveLog.DataBind();
+        fillgvLeaveLog();
 
-        // By default, set the sort direction to ascending.
-        string sortDirection = "ASC";
-
-        // Retrieve the last column that was sorted.
-        string sortExpression = ViewState["SortExpression"] as string;
-
-        if (sortExpression != null)
-        {
-            // Check if the same column is being sorted.
-            // Otherwise, the default value can be returned.
-            if (sortExpression == column)
-            {
-                string lastDirection = ViewState["SortDirection"] as string;
-                if ((lastDirection != null) && (lastDirection == "ASC"))
-                {
-                    sortDirection = "DESC";
-                }
-            }
-        }
-
-        // Save new values in ViewState.
-        ViewState["SortDirection"] = sortDirection;
-        ViewState["SortExpression"] = column;
-
-        return sortDirection;
     }
 }
 

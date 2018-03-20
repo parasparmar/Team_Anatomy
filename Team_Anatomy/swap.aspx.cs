@@ -66,6 +66,7 @@ public partial class swap : System.Web.UI.Page
                 currentWeek = my.getSingleton("SELECT [WeekId] FROM [CWFM_Umang].[WFMP].[tblRstWeeks] where GETDATE() between FrDate and ToDate");
             }
         }
+        fillgvSwapStatus();
     }
 
     protected void fillddlYear()
@@ -124,7 +125,7 @@ public partial class swap : System.Web.UI.Page
         DateTime FromDate = Convert.ToDateTime(dtDates.Rows[0]["FrDate"].ToString());
         DateTime ToDate = Convert.ToDateTime(dtDates.Rows[0]["ToDate"].ToString());
 
-        SqlCommand cmd = new SqlCommand("[WFMP].[Roster_GetSwapWithinTeamSpecificRoster]");
+        SqlCommand cmd = new SqlCommand("[WFMP].[Swap_GetSwapWithinSpecificTeam]");
         cmd.Parameters.AddWithValue("@EmpID", this.MyEmpID);
         cmd.Parameters.AddWithValue("@FromDate", FromDate);
         cmd.Parameters.AddWithValue("@ToDate", ToDate);
@@ -179,6 +180,7 @@ public partial class swap : System.Web.UI.Page
 
             }
         }
+
     }
 
     private void BtnInitiateSwap_Click(object sender, EventArgs e)
@@ -241,7 +243,7 @@ public partial class swap : System.Web.UI.Page
         DateTime FromDate = Convert.ToDateTime(dtDates.Rows[0]["FrDate"].ToString());
         DateTime ToDate = Convert.ToDateTime(dtDates.Rows[0]["ToDate"].ToString());
 
-        SqlCommand cmd = new SqlCommand("[WFMP].[Roster_GetSwapBetweenEmployeesSpecificRoster]");
+        SqlCommand cmd = new SqlCommand("[WFMP].[Swap_GetSwapBetweenSpecificEmployees]");
         cmd.Parameters.AddWithValue("@EmpID1", MyEmpID);
         cmd.Parameters.AddWithValue("@EmpID2", SwappedEmployeeID);
         cmd.Parameters.AddWithValue("@FromDate", FromDate);
@@ -363,7 +365,161 @@ public partial class swap : System.Web.UI.Page
         SwapShift.Save(S);
     }
 
+
+
+    protected void ddlRole_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+    }
+
+    private void fillgvSwapStatus()
+    {
+        string strSQL = "WFMP.Swap_getSwapStatus";
+        SqlCommand cmd = new SqlCommand(strSQL);
+        cmd.Parameters.AddWithValue("@EmpCode", MyEmpID);
+
+        if (ddlRole.SelectedValue.ToString() == "Reporting_Manager")
+        {
+            cmd.Parameters.AddWithValue("@Role", "Reporting_Manager");
+        }
+        else
+        {
+            cmd.Parameters.AddWithValue("@Role", "Employee");
+        }
+
+
+        DataTable dt = my.GetDataTableViaProcedure(ref cmd);
+        gvSwapStatus.DataSource = dt;
+        gvSwapStatus.DataBind();
+        foreach (GridViewRow r in gvSwapStatus.Rows)
+        {
+            int Id = Convert.ToInt32(r.Cells[0].Text);
+            var swaps = from s in dt.AsEnumerable()
+                        where s.Field<int>("Id") == Id
+                        select s;
+            var t = swaps.FirstOrDefault();
+            int EmpCode1 = t.Field<int>("EmpCode1");
+            int EmpCode2 = t.Field<int>("EmpCode2");
+            int RepMgrCode = t.Field<int>("RepMgrCode");
+
+
+            Panel pnlPendingActions = (Panel)r.FindControl("pnlPendingActions");
+            Panel pnlSwapInformation = (Panel)r.FindControl("pnlSwapInformation");
+            Label lblSwapInformation = (Label)r.FindControl("lblSwapInformation");
+
+            //Pending at or Completely approved.
+            int ApproverAction = t.Field<int>("ApproverAction");
+            int RepMgrAction = t.Field<int>("RepMgrAction");
+
+
+
+
+
+
+            // if I am EmpCode1 
+            if (EmpCode1 == MyEmpID)
+            {
+                pnlPendingActions.Visible = false;
+                pnlSwapInformation.Visible = true;
+
+                if (ApproverAction == 1 && RepMgrAction==1)
+                {
+                    pnlPendingActions.Visible = false;
+                    pnlSwapInformation.Visible = true;
+                    lblSwapInformation.Text = "Approved";
+                }
+                else if (ApproverAction == 2 || RepMgrAction == 2)
+                {
+                    pnlPendingActions.Visible = false;
+                    pnlSwapInformation.Visible = true;
+                    lblSwapInformation.Text = "Declined";
+                }
+                else if (ApproverAction == 0 || RepMgrAction == 0)
+                {
+                    pnlPendingActions.Visible = false;
+                    pnlSwapInformation.Visible = true;
+                    lblSwapInformation.Text = "Pending";
+                }
+
+            }
+            // if I am EmpCode2, have I approved/declined already
+            else if (EmpCode2 == MyEmpID)
+            {
+                if (ApproverAction == 1)
+                {
+                    pnlPendingActions.Visible = false;
+                    pnlSwapInformation.Visible = true;
+                    lblSwapInformation.Text = "Approved by you : " + t.Field<DateTime>("ApproverActionDate").ToString("dd-MMM-yyyy HH:mm:ss");
+                }
+                else if (ApproverAction == 2)
+                {
+                    pnlPendingActions.Visible = false;
+                    pnlSwapInformation.Visible = true;
+                    lblSwapInformation.Text = "Declined by you : " + t.Field<DateTime>("ApproverActionDate").ToString("dd-MMM-yyyy HH:mm:ss");
+                }
+                else
+                {
+                    pnlPendingActions.Visible = true;
+                    pnlSwapInformation.Visible = false;
+                }
+
+            }
+            // if I am RepMgrCode, have I approved/declined already
+            else if (RepMgrCode == MyEmpID)
+            {
+                if (RepMgrAction == 1)
+                {
+                    pnlPendingActions.Visible = false;
+                    pnlSwapInformation.Visible = true;
+                    lblSwapInformation.Text = "Approved by you : " + t.Field<DateTime>("RepMgrActionDate").ToString("dd-MMM-yyyy HH:mm:ss");
+                }
+                else if (RepMgrAction == 2)
+                {
+                    pnlPendingActions.Visible = false;
+                    pnlSwapInformation.Visible = true;
+                    lblSwapInformation.Text = "Declined by you : " + t.Field<DateTime>("RepMgrActionDate").ToString("dd-MMM-yyyy HH:mm:ss");
+                }
+                else
+                {
+                    pnlPendingActions.Visible = true;
+                    pnlSwapInformation.Visible = false;
+                }
+            }
+        }
+
+    }
+    protected void btn_appr_Click(object sender, EventArgs e)
+    {
+
+        //ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "hideModal();", true);
+        //ScriptManager.RegisterStartupScript(this, this.GetType(), "show", "toastA();", true);
+    }
+
+
+    protected void btnApprove_Click(object sender, EventArgs e)
+    {
+
+        Button btnApprove = sender as Button;
+        int ID = Convert.ToInt32(btnApprove.CommandArgument.ToString());
+        SwapShift S = new SwapShift(ID);
+        S.ApproveSwap(MyEmpID);
+
+    }
+
+    protected void btnDecline_Click(object sender, EventArgs e)
+    {
+        Button btnApprove = sender as Button;
+        int ID = Convert.ToInt32(btnApprove.CommandArgument.ToString());
+        SwapShift S = new SwapShift(ID);
+        S.DeclineSwap(MyEmpID);
+    }
+
     protected void btnCancel_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    protected void gvSwapStatus_RowDataBound(object sender, GridViewRowEventArgs e)
     {
 
     }
@@ -371,7 +527,7 @@ public partial class swap : System.Web.UI.Page
 
 class SwapShift
 {
-
+    public int ID { get; private set; }
     public DateTime Date { get; set; }
     public int EmpCode1 { get; set; }
     public int ShiftID1 { get; set; }
@@ -389,8 +545,89 @@ class SwapShift
     public int RepMgrCode { get; set; }
     public int ActionByRepMgr { get; set; }
     public DateTime? ActionByRepMgrOn { get; set; }
-    public bool isSwapCompliant { get; set; }
+    public int Active { get; set; }
 
+
+
+    public SwapShift() { }
+    public SwapShift(int ID)
+    {
+        string strSQL = "select * from WFMP.tblSwap A where id=@Id";
+        SqlCommand cmd = new SqlCommand(strSQL);
+        cmd.Parameters.AddWithValue("@Id", ID);
+        Helper my = new Helper();
+        DataTable dt = my.GetData(ref cmd);
+        if (dt != null && dt.Rows.Count > 0)
+        {
+            this.Date = Convert.ToDateTime(dt.Rows[0]["Date"].ToString());
+            this.EmpCode1 = Convert.ToInt32(dt.Rows[0]["EmpCode1"].ToString());
+            this.ShiftID1 = Convert.ToInt32(dt.Rows[0]["ShiftID1"].ToString());
+            this.isWorkingShift1 = Convert.ToInt32(dt.Rows[0]["isWorkingShift1"].ToString());
+            this.NewShiftID1 = Convert.ToInt32(dt.Rows[0]["NewShiftID1"].ToString());
+            this.isNewWorkingShift1 = Convert.ToInt32(dt.Rows[0]["isNewWorkingShift1"].ToString());
+            this.EmpCode2 = Convert.ToInt32(dt.Rows[0]["EmpCode2"].ToString());
+            this.ShiftID2 = Convert.ToInt32(dt.Rows[0]["ShiftID2"].ToString());
+            this.isWorkingShift2 = Convert.ToInt32(dt.Rows[0]["isWorkingShift2"].ToString());
+            this.NewShiftID2 = Convert.ToInt32(dt.Rows[0]["NewShiftID2"].ToString());
+            this.InitiatedOn = Convert.ToDateTime(dt.Rows[0]["InitiatedOn"].ToString());
+            this.ActionByEmpCode2 = Convert.ToInt32(dt.Rows[0]["ActionByEmpCode2"].ToString());
+            if (dt.Rows[0]["ActionByEmpCode2On"].ToString().Length > 0) { this.ActionByEmpCode2On = Convert.ToDateTime(dt.Rows[0]["ActionByEmpCode2On"].ToString()); }
+            this.RepMgrCode = Convert.ToInt32(dt.Rows[0]["RepMgrCode"].ToString());
+            if (dt.Rows[0]["ActionByRepMgrOn"].ToString().Length > 0) { this.ActionByRepMgrOn = Convert.ToDateTime(dt.Rows[0]["ActionByRepMgrOn"].ToString()); }
+            this.Active = Convert.ToInt32(dt.Rows[0]["Active"].ToString());
+        }
+
+    }
+
+    public bool ApproveSwap(int SenderEmpCode)
+    {
+        if (SenderEmpCode == this.EmpCode1) { return false; }
+        else if (SenderEmpCode == this.EmpCode2)
+        {
+            this.ActionByEmpCode2 = 1;
+            this.ActionByEmpCode2On = DateTime.Now;
+            Update(this);
+            return true;
+        }
+        else if (SenderEmpCode == this.RepMgrCode)
+        {
+            this.ActionByRepMgr = 1;
+            this.ActionByRepMgrOn = DateTime.Now;
+            Update(this);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool DeclineSwap(int SenderEmpCode)
+    {
+        if (SenderEmpCode == this.EmpCode1)
+        {
+            return false;
+        }
+        else if (SenderEmpCode == this.EmpCode2)
+        {
+            this.ActionByEmpCode2 = 2;
+            this.ActionByEmpCode2On = DateTime.Now;
+            Update(this);
+            return true;
+        }
+        else if (SenderEmpCode == this.RepMgrCode)
+        {
+            this.ActionByRepMgr = 2;
+            this.ActionByRepMgrOn = DateTime.Now;
+            Update(this);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
 
     public static int Save(SwapShift Me)
     {
@@ -428,7 +665,7 @@ class SwapShift
         using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
         {
             cn.Open();
-            SqlCommand cmd = new SqlCommand("WFMP.SaveSwapToDB", cn);            
+            SqlCommand cmd = new SqlCommand("WFMP.Swap_Save2DB", cn);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Date", s.Date);
             cmd.Parameters.AddWithValue("@EmpCode1", s.EmpCode1);
@@ -448,7 +685,6 @@ class SwapShift
             cmd.Parameters.AddWithValue("@ActionByRepMgr", s.ActionByRepMgr);
             cmd.Parameters.AddWithValue("@ActionByRepMgrOn", s.ActionByRepMgrOn);
             cmd.Parameters.AddWithValue("@Operation", "INSERT_NEW_SWAP");
-            
 
             rowsAffected = cmd.ExecuteNonQuery();
         }
@@ -459,7 +695,7 @@ class SwapShift
     {
         Helper my = new Helper();
         int rowsAffected = 0;
-        SqlCommand cmd = new SqlCommand("WFMP.SaveSwapToDB");
+        SqlCommand cmd = new SqlCommand("WFMP.Swap_Save2DB");
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@Date", s.Date);
         cmd.Parameters.AddWithValue("@EmpCode1", s.EmpCode1);
@@ -480,7 +716,7 @@ class SwapShift
         cmd.Parameters.AddWithValue("@ActionByRepMgrOn", s.ActionByRepMgrOn);
         cmd.Parameters.AddWithValue("@Operation", "UPDATE_SWAP");
 
-        rowsAffected = cmd.ExecuteNonQuery();
+        rowsAffected = my.ExecuteDMLCommand(ref cmd, cmd.CommandText, "S");
         return rowsAffected;
     }
 }
