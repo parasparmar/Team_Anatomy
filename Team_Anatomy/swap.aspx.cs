@@ -16,12 +16,13 @@ public partial class swap : System.Web.UI.Page
     public DataTable dtEmp;
     public DataTable dtSwapRoster;
     Helper my;
-    string strSQL;
+    private string strSQL;
     private int MyEmpID { get; set; }
     private int SwappedEmployeeID { get; set; }
     private int MyRepMgr { get; set; }
     private int currentWeek { get; set; }
     private int WeekID { get; set; }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         my = new Helper();
@@ -51,6 +52,7 @@ public partial class swap : System.Web.UI.Page
             Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
             title.Text = "Shift Swaps";
             fillddlYear();
+            fillgvSwapStatus();
         }
         else
         {
@@ -67,16 +69,16 @@ public partial class swap : System.Web.UI.Page
                 currentWeek = my.getSingleton("SELECT [WeekId] FROM [CWFM_Umang].[WFMP].[tblRstWeeks] where GETDATE() between FrDate and ToDate");
             }
         }
-        fillgvSwapStatus();
-    }
 
+    }
     protected void fillddlYear()
     {
         strSQL = "select distinct ryear as Year from CWFM_Umang.WFMP.tblRstWeeks";
         my.append_dropdown(ref ddlYear, strSQL, 0, 0);
         ddlYear.SelectedIndex = ddlYear.Items.IndexOf(new ListItem(DateTime.Today.Year.ToString()));
-        ddlYear_SelectedIndexChanged(ddlYear, new EventArgs());
         ltlReportingMgrsTeam.Text = "Roster For " + ddlYear.SelectedItem.Text;
+        ddlYear_SelectedIndexChanged(ddlYear, new EventArgs());
+        
     }
     protected void ddlYear_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -222,6 +224,14 @@ public partial class swap : System.Web.UI.Page
             }
 
         }
+        litab_1.Attributes.Remove("class");        
+        tab_1.Attributes.Remove("class");
+        tab_1.Attributes.Add("class", "tab-pane");
+
+
+        litab_2.Attributes.Add("class", "active");
+        tab_2.Attributes.Remove("class");
+        tab_2.Attributes.Add("class", "tab-pane active");
     }
     protected void gvRoster_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
@@ -293,7 +303,7 @@ public partial class swap : System.Web.UI.Page
             if (PleaseLock == 1)
             {
                 L.Clear();
-                L.Add(L1);                
+                L.Add(L1);
                 D1.DataSource = L;
                 D1.DataTextField = "Text";
                 D1.DataValueField = "Value";
@@ -303,7 +313,7 @@ public partial class swap : System.Web.UI.Page
                 L.Add(L2);
                 D2.DataSource = L;
                 D2.DataTextField = "Text";
-                D2.DataValueField = "Value";                
+                D2.DataValueField = "Value";
                 D2.DataBind();
 
                 D1.SelectedValue = L1.Value;
@@ -364,41 +374,44 @@ public partial class swap : System.Web.UI.Page
 
             // Fill Me with Newly Chosen Shifts
             DropDownList ddl1 = (DropDownList)i.FindControlRecursive("ddl1");
-            if (ddl1 != null) { Me.NewShiftID1 = Convert.ToInt32(ddl1.SelectedValue); }
+            if (ddl1 != null && ddl1.SelectedValue != null) { Me.NewShiftID1 = Convert.ToInt32(ddl1.SelectedValue); }
 
             DropDownList ddl2 = (DropDownList)i.FindControlRecursive("ddl2");
-            if (ddl2 != null) { Me.NewShiftID2 = Convert.ToInt32(ddl2.SelectedValue); }
-
-            // Fill Me with Original Shifts
-            Label lblOriginalShift1 = (Label)i.FindControlRecursive("lblOriginalShift1");
-            string ShiftCode1 = lblOriginalShift1.Text.ToString();
-            Me.ShiftID1 = Convert.ToInt32(ddl1.Items.FindByText(ShiftCode1).Value);
-
-            Label lblOriginalShift2 = (Label)i.FindControlRecursive("lblOriginalShift2");
-            string ShiftCode2 = lblOriginalShift2.Text.ToString();
-            Me.ShiftID2 = Convert.ToInt32(ddl1.Items.FindByText(ShiftCode2).Value);
-
-            Me.isWorkingShift1 = Me.ShiftID1 < 49 ? 1 : 0;
-            Me.isWorkingShift2 = Me.ShiftID2 < 49 ? 1 : 0;
-            Me.isNewWorkingShift1 = Me.NewShiftID1 < 49 ? 1 : 0;
-            Me.isNewWorkingShift2 = Me.NewShiftID2 < 49 ? 1 : 0;
-
-            int originalHeadCount = Me.isWorkingShift1 + Me.isWorkingShift2;
-            int postSwapHeadCount = Me.isNewWorkingShift1 + Me.isNewWorkingShift2;
-
-            Me.InitiatedOn = DateTime.Now;
-            // Validate Exact Swaps : For a given EmpCode1<>EmpCode2 & Date, check NewShiftID1= ShiftID2 and NewShiftID2=ShiftID1
-            // This is the only valid case for which the Update should go through.            
-            if (originalHeadCount == postSwapHeadCount && Me.ShiftID1 != Me.ShiftID2 && Me.NewShiftID1 == Me.ShiftID2 && Me.NewShiftID2 == Me.ShiftID1)
+            if (ddl2 != null && ddl2.SelectedValue != null) { Me.NewShiftID2 = Convert.ToInt32(ddl2.SelectedValue); }
+            // Fail First, Fail Fast.
+            if (Me.NewShiftID1 != 0 && Me.NewShiftID2 != 0)
             {
-                S.Add(Me);
+                // Fill Me with Original Shifts
+                Label lblOriginalShift1 = (Label)i.FindControlRecursive("lblOriginalShift1");
+                string ShiftCode1 = lblOriginalShift1.Text.ToString();
+                Me.ShiftID1 = Convert.ToInt32(ddl1.Items.FindByText(ShiftCode1).Value);
+
+                Label lblOriginalShift2 = (Label)i.FindControlRecursive("lblOriginalShift2");
+                string ShiftCode2 = lblOriginalShift2.Text.ToString();
+                Me.ShiftID2 = Convert.ToInt32(ddl1.Items.FindByText(ShiftCode2).Value);
+
+                Me.isWorkingShift1 = Me.ShiftID1 < 49 ? 1 : 0;
+                Me.isWorkingShift2 = Me.ShiftID2 < 49 ? 1 : 0;
+                Me.isNewWorkingShift1 = Me.NewShiftID1 < 49 ? 1 : 0;
+                Me.isNewWorkingShift2 = Me.NewShiftID2 < 49 ? 1 : 0;
+
+                int originalHeadCount = Me.isWorkingShift1 + Me.isWorkingShift2;
+                int postSwapHeadCount = Me.isNewWorkingShift1 + Me.isNewWorkingShift2;
+
+                Me.InitiatedOn = DateTime.Now;
+                // Validate Exact Swaps : For a given EmpCode1<>EmpCode2 & Date, check NewShiftID1= ShiftID2 and NewShiftID2=ShiftID1
+                // This is the only valid case for which the Update should go through.            
+                if (originalHeadCount == postSwapHeadCount && Me.ShiftID1 != Me.ShiftID2 && Me.NewShiftID1 == Me.ShiftID2 && Me.NewShiftID2 == Me.ShiftID1)
+                {
+                    S.Add(Me);
+                }
             }
         }
-        SwapShift.Save(S);
+        if (S.Count > 0) { SwapShift.Save(S); }
     }
     protected void ddlRole_SelectedIndexChanged(object sender, EventArgs e)
     {
-
+        fillgvSwapStatus();
     }
     private void fillgvSwapStatus()
     {
@@ -524,7 +537,7 @@ public partial class swap : System.Web.UI.Page
         int ID = Convert.ToInt32(btnApprove.CommandArgument.ToString());
         SwapShift S = new SwapShift(ID);
         S.ApproveSwap(MyEmpID);
-
+        fillgvSwapStatus();
     }
     protected void btnDecline_Click(object sender, EventArgs e)
     {
@@ -544,6 +557,17 @@ public partial class swap : System.Web.UI.Page
                 b.Text = "Select";
             }
         }
+        fillgvSwapStatus();
+        rptrSwapForm.DataSource = null;
+        rptrSwapForm.DataBind();
+
+        litab_1.Attributes.Add("class", "active");
+        tab_1.Attributes.Remove("class");
+        tab_1.Attributes.Add("class", "tab-pane active");
+        
+        litab_2.Attributes.Remove("class");
+        tab_2.Attributes.Remove("class");
+        tab_2.Attributes.Add("class", "tab-pane");
     }
     protected void gvSwapStatus_RowDataBound(object sender, GridViewRowEventArgs e)
     {

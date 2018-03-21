@@ -40,7 +40,7 @@ public partial class index : System.Web.UI.Page
         if (myID != "IDNotFound")
         {
             //myID = "rshar030"; //Raman.Sharma@sitel.com AT&T DTV for Answer_Rate
-            myID = "ktriv003"; //Prashant Goradia pgora001
+            //myID = "ktriv003"; //Prashant Goradia pgora001
             //myID = "vshir001"; //Prashant Goradia pgora001
             //myID = "gsing017"; //Prashant Goradia pgora001
             SqlCommand cmd = new SqlCommand("WFMP.getEmployeeData");
