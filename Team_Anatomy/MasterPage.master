@@ -827,9 +827,9 @@
         }
 
         .content-wrapper {
-            //min-height:100%;
-            //height: auto;
-            //overflow: hidden;
+            /*min-height:100%;*/
+            /*height: auto;*/
+            overflow: hidden; /*hidden*/
         }
 
         .DataTables_filter > label,
