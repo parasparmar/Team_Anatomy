@@ -74,6 +74,23 @@ public static class PageExtensionMethods
         else { return "IDNotFound"; }        
     }
 
+    public static int getMyEmployeeID()
+    {
+        string myid = HttpContext.Current.User.Identity.Name;
+        string[] stringSeparators = new string[] { "\\" };
+        string[] result = myid.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+        if (result.Length > 1)
+        {
+            string ntName = result[1];
+            Helper my = new Helper();
+            int empcode = my.getSingleton("select Employee_Id as EmpCode from WFMP.tblMaster where ntname = '" + result[1] + "'");
+            return Convert.ToInt32(empcode);
+        }
+        else { return 0; }
+    }
+
+
+
     /// <summary>
     /// Gets the ordinal index of a TableCell in a rendered GridViewRow, using a text fieldHandle (e.g. the corresponding column's DataFieldName/SortExpression/HeaderText)
     /// </summary>

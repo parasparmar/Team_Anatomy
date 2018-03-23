@@ -250,7 +250,7 @@
                                                 <!--Column2-->
                                                 <td>
                                                     <div class="btn-group">
-                                                        <btn id="btnSwapShift" class="btn btn-primary"><i class="fa fa-exchange"></i>&nbsp</btn>
+                                                        <button runat="server" id="btnSwapShift" class="btn btn-primary"><i class="fa fa-exchange"></i>&nbsp</button>
                                                     </div>
 
                                                 </td>

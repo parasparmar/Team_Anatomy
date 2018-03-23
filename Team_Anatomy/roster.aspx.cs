@@ -28,7 +28,7 @@ public partial class roster : System.Web.UI.Page
             try
             {
                 dtEmp = (DataTable)Session["dtEmp"];
-                if (dtEmp.Rows.Count <= 0)
+                if (dtEmp==null)
                 {
                     Response.Redirect("index.aspx", false);
                 }
@@ -292,11 +292,14 @@ public partial class roster : System.Web.UI.Page
         //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message5", toastr_script, true);
         int RepMgrCode = Convert.ToInt32(ddlRepManager.SelectedValue);
         int WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
-        int UpdatedBy = MyEmpID;
+        
         DateTime updatedOn = DateTime.Now;
 
-        string strSQL = "SELECT * FROM [CWFM_Umang].[WFMP].[RosterMst] where [RepMgrCode] = @RepMgrCode ";
+        string strSQL = "SELECT A.* FROM [CWFM_Umang].[WFMP].[RosterMst] A";
+        strSQL += " Inner join [CWFM_Umang_Prod].[WFMP].[tblMaster] B on A.EmpCode = B.Employee_ID ";
+        strSQL += " where B.[RepMgrCode] = @RepMgrCode ";
         strSQL += " and [WeekID] = @WeekID";
+        int UpdatedBy = PageExtensionMethods.getMyEmployeeID();
 
         using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
         {
@@ -342,19 +345,22 @@ public partial class roster : System.Web.UI.Page
                                 // The rDate has time information and hence the 'between' operator is critical.
                                 // Between is not available in the datatable.select method hence the usage of >= and <.
                                 DataRow[] drc = X.Tables[0].Select("EmpCode = " + R.EmpCode + " and rDate >= #" + R.rDate + "# and rDate <#" + R.rDate.AddDays(1) + "#");
-
+                                
                                 if (drc.Length > 0)
                                 {
+                                    // Entry already exists.
                                     DataRow dr = drc[0];
-                                    if (dr["ShiftID"].ToString() != R.ShiftID.ToString())
-                                    {
+                                    // 24-03-2018 03-30 AM The checking for non-matching shifts below discards consideration of 
+                                    // changes to other non-shift details and hence has been deactivated.
+                                    //if (dr["ShiftID"].ToString() != R.ShiftID.ToString())
+                                    //{
                                         dr["WeekID"] = R.WeekID;
                                         dr["rDate"] = R.rDate;
                                         dr["ShiftID"] = R.ShiftID;
                                         dr["RepMgrCode"] = R.RepMgrCode;
                                         dr["UpdatedBy"] = R.UpdatedBy;
                                         dr["updatedOn"] = R.updatedOn;
-                                    }
+                                    //}
                                     // Delete duplicate shifts if any.
                                     for (int i = 1; i < drc.Length; i++)
                                     {
@@ -363,6 +369,7 @@ public partial class roster : System.Web.UI.Page
                                 }
                                 else if (drc.Length == 0)
                                 {
+                                    // Entry is new.
                                     DataRow dr = X.Tables[0].NewRow();
                                     dr["EmpCode"] = R.EmpCode;
                                     dr["WeekID"] = R.WeekID;
@@ -629,13 +636,10 @@ public partial class roster : System.Web.UI.Page
     class RosterRecord
     {
         public int EmpCode { get; set; }
-
         public int RepMgrCode { get; set; }
         public int UpdatedBy { get; set; }
         public DateTime updatedOn { get; set; }
         public int WeekID { get; set; }
-
-
         public DateTime rDate { get; set; }
         public int ShiftID { get; set; }
         public int WOCount { get; set; }
