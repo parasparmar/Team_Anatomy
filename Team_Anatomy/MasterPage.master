@@ -14,8 +14,8 @@
     <link rel="stylesheet" href="AdminLTE/bower_components/bootstrap/dist/css/bootstrap.min.css">
 
     <!----------Toastr----------------->
-    
-   <Link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
     <!-- bootstrap datepicker -->
     <link href="AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
     <link rel="stylesheet" href="AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
@@ -32,7 +32,7 @@
     <!-- AdminLTE Skins. Choose a skin from the css/ folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="AdminLTE/dist/css/skins/_all-skins.min.css">
     <!-- DataTables -->
-  
+
 
     <link href="CDN/code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" />
     <link href="CDN/cdn.datatables.net/1.10.15/css/dataTables.jqueryui.min.css" rel="stylesheet" />
@@ -244,34 +244,16 @@
 
                     <div class="navbar-custom-menu">
                         <asp:ContentPlaceHolder ID="headmenu" runat="server">
+
                             <ul class="nav navbar-nav">
                                 <!-- Tasks: style can be found in dropdown.less -->
-                                <li class="dropdown tasks-menu">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        <i class="fa fa-user-secret"></i>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li class="header">Please choose a Role</li>
-                                        <li>
-                                            <ul class="menu">
-                                                <asp:Repeater ID="rptrImpersonator" runat="server">
-                                                    <ItemTemplate>
-                                                        <li>
-                                                            <!-- Task item -->
-                                                            <a href="index.aspx?q=<%#Eval("Skillset")%>">
-                                                                <h3>
-                                                                    <asp:Literal ID="lblRole" runat="server" Text='<%#Eval("Skillset") %>' />
-                                                                    <%--<small class="pull-right"><%#Eval("Skillset") %></small>--%>
-                                                                </h3>
-                                                            </a>
-                                                        </li>
-                                                        <!-- end task item -->
-                                                    </ItemTemplate>
-                                                </asp:Repeater>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
+                                
+                                    <asp:Panel ID="pnlImpersonator" runat="server" CssClass="col-md-3 col-xs-8 col-lg-2" style="width:250px">
+                                        <asp:DropDownList ID="ddlImpersonator" runat="server" Visible="false" CssClass="form-control" style="width:100%" OnSelectedIndexChanged="ddlImpersonator_SelectedIndexChanged">
+                                        </asp:DropDownList>
+                                    </asp:Panel>
+                                
+
                                 <!-- User Account: style can be found in dropdown.less -->
                                 <li class="dropdown user user-menu">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -390,57 +372,6 @@
                                     <i class="fa fa-exchange"></i><span>Shift Swaps</span>
                                 </a>
                             </li>
-                            <%--<li class="treeview">
-                                <a href="#">
-                                    <i class="fa fa-random"></i><span>Movements</span>
-                                    <span class="pull-right-container" style="margin-top: 0px;">
-                                        <i class="fa fa-angle-left pull-right"></i>
-                                    </span>
-                                </a>
-                                <ul class="treeview-menu">
-                                    <li><a href="movement.aspx"><i class="fa fa-random"></i><span>Movement</span></a></li>
-                                    <li><a href="TransferActions.aspx"><i class="fa fa-flag-o"></i><span>Transfer Actions</span></a></li>
-                                </ul>
-                            </li>
-
-                            <li class="treeview">
-                                <a href="#">
-                                    <i class="fa fa-plane"></i><span>Leaves</span>
-                                    <span class="pull-right-container" style="margin-top: 0px;">
-                                        <i class="fa fa-angle-left pull-right"></i>
-                                    </span>
-                                </a>
-                                <ul class="treeview-menu">
-                                    <li><a href="leave.aspx"><i class="fa fa-plane"></i>Request Leave</a></li>
-                                    <li><a href="LeaveApproval.aspx"><i class="fa fa-toggle-on"></i>Leave Approvals</a></li>
-                                </ul>
-                            </li>
-                            <li class="treeview">
-                                <a href="#">
-                                    <i class="fa fa-calendar"></i><span>Rosters</span>
-                                    <span class="pull-right-container" style="margin-top: 0px;">
-                                        <i class="fa fa-angle-left pull-right"></i>
-                                    </span>
-                                </a>
-                                <ul class="treeview-menu">
-                                    <li><a href="roster.aspx"><i class="fa  fa-calendar"></i><span>Team Rosters</span></a></li>
-                                    <li><a href="siteroster.aspx"><i class="fa fa-building"></i><span>Site Rosters</span></a></li>
-                                    <li><a href="myroster.aspx"><i class="fa  fa-calendar-plus-o"></i><span>My Roster</span></a></li>
-                                </ul>
-                            </li>
-                            <li class="treeview">
-                                <a href="#">
-                                    <i class="fa fa-dashboard"></i><span>My Information</span>
-                                    <span class="pull-right-container" style="margin-top: 0px;">
-                                        <i class="fa fa-angle-left pull-right"></i>
-                                    </span>
-                                </a>
-                                <ul class="treeview-menu">
-                                    <li class="active"><a href="profile.aspx"><i class="fa fa-circle-o"></i>My Profile</a></li>
-                                    <li><a href="team.aspx"><i class="fa fa-circle-o"></i>My Team</a></li>
-                                </ul>
-                            </li>--%>
-
                         </ul>
                     </section>
                     <!-- /.sidebar -->

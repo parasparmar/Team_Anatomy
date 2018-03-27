@@ -301,11 +301,15 @@
                                         <asp:BoundField DataField="SwappedShift" HeaderText="Swapped Shift" />
                                         <asp:TemplateField HeaderText="Details">
                                             <ItemTemplate>
-                                                <asp:Panel ID="pnlPendingActions" Visible="false" runat="server">
-                                                    <div class="btn-group">
-                                                        <asp:Button ID="btnApprove" runat="server" CommandArgument='<%# Eval("Id") %>' CssClass="btn btn-success btn-sm" Text="Approve" OnClick="btnApprove_Click" />
-                                                        <asp:Button ID="btnDecline" runat="server" CommandArgument='<%# Eval("Id") %>' CssClass="btn btn-danger btn-sm" Text="Decline" OnClick="btnDecline_Click" />
-                                                    </div>
+                                                <asp:Panel ID="pnlPendingActions" CssClass="btn-group" Visible="false" runat="server">
+                                                   
+                                                        <asp:Button ID="btnApprove" runat="server" CommandArgument='<%# Eval("Id") %>' CssClass="btn btn-success btn-sm"
+                                                            Text='<i class="fa fa-check"></i>' BorderWidth="1" 
+                                                            OnClick="btnApprove_Click" />
+                                                        <asp:Button ID="btnDecline" runat="server" CommandArgument='<%# Eval("Id") %>' CssClass="btn btn-danger btn-sm" 
+                                                            Text='<i class="fa fa-close"></i>' BorderWidth="1" 
+                                                            OnClick="btnDecline_Click" />
+                                                    
                                                 </asp:Panel>
                                                 <asp:Panel ID="pnlSwapInformation" Visible="false" runat="server">
                                                     <asp:Label ID="lblSwapInformation" runat="server" ToolTip='<%# Eval("Id") %>' Text="Status : "></asp:Label>

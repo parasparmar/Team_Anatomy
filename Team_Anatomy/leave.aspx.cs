@@ -84,7 +84,6 @@ public partial class leave : System.Web.UI.Page
 
 
     }
-
     private void fillgvLeaveDetails()
     {
         string received = reservation.Text;
@@ -100,9 +99,6 @@ public partial class leave : System.Web.UI.Page
         //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Key2", "pluginsInitializer()", true);
 
     }
-
-
-
     protected void gvLeaveDetails_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         GridView gv = (GridView)sender;
@@ -125,7 +121,6 @@ public partial class leave : System.Web.UI.Page
             ddl.DataBind();
         }
     }
-
     private void fillgvLeaveLog()
     {
 
@@ -145,7 +140,6 @@ public partial class leave : System.Web.UI.Page
         ViewState["sortdr"] = "Asc";
 
     }
-
     private void clearfields()
     {
         ddl_leave_dropdown.ClearSelection();
@@ -153,7 +147,6 @@ public partial class leave : System.Web.UI.Page
         gvLeaveDetails.DataSource = null;
         gvLeaveDetails.DataBind();
     }
-
     protected void gvLeaveLog_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         GridView gv = (GridView)sender;
@@ -300,8 +293,6 @@ public partial class leave : System.Web.UI.Page
         
             clearfields();      
     }
-
-
     string fdate { get; set; }
     string tdate { get; set; }//imp
     protected void btn_Cancel_Click(object sender, EventArgs e)
@@ -316,7 +307,6 @@ public partial class leave : System.Web.UI.Page
         fdate = row.Cells[0].Text.ToString();
         tdate = row.Cells[1].Text.ToString();
     }
-
     protected void btn_save_cancel_reason_Click(object sender, EventArgs e)
     {
 
@@ -371,10 +361,7 @@ public partial class leave : System.Web.UI.Page
             //ScriptManager.RegisterStartupScript(this, this.GetType(), "Message", "<script>$(document).ready(function(){ $('.call').css({ 'display': 'block' });});</script>", false);
         }
 
-    }
-
-   
-
+    }    
     [WebMethod]
     public static string getDates()
     {
@@ -391,71 +378,6 @@ public partial class leave : System.Web.UI.Page
 
 
     }
-
-    //protected void gvLeaveLog_PreRender(object sender, EventArgs e)
-    //{
-    //    //GridView gv = (GridView)sender;
-    //    //if (gv.Rows.Count > 0)
-    //    //{
-    //    //    gv.UseAccessibleHeader = true;
-    //    //    gv.HeaderRow.TableSection = TableRowSection.TableHeader;
-    //    //    gv.FooterRow.TableSection = TableRowSection.TableFooter;
-    //    //    gv.HeaderStyle.BorderStyle = BorderStyle.None;
-    //    //    gv.BorderStyle = BorderStyle.None;
-    //    //    gv.BorderWidth = Unit.Pixel(1);
-    //    //}
-
-    //}
-    //protected void gvLeaveLog_PageIndexChanging(object sender, GridViewPageEventArgs e)
-    //{
-    //    gvLeaveLog.PageIndex = e.NewPageIndex; 
-    //    fillgvLeaveLog();
-
-    //}
-    //protected void gvLeaveLog_Sorting(object sender, GridViewSortEventArgs e)
-    //{
-    //    DataTable dt = Session["TaskTable"] as DataTable;
-
-    //    if (dt != null)
-    //    {
-
-    //        //Sort the data.
-    //        dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
-    //        gvLeaveLog.DataSource = Session["TaskTable"];
-    //        gvLeaveLog.DataBind();
-    //    }
-
-    //}
-    //private string GetSortDirection(string column)
-    //{
-
-    //    // By default, set the sort direction to ascending.
-    //    string sortDirection = "ASC";
-
-    //    // Retrieve the last column that was sorted.
-    //    string sortExpression = ViewState["SortExpression"] as string;
-
-    //    if (sortExpression != null)
-    //    {
-    //        // Check if the same column is being sorted.
-    //        // Otherwise, the default value can be returned.
-    //        if (sortExpression == column)
-    //        {
-    //            string lastDirection = ViewState["SortDirection"] as string;
-    //            if ((lastDirection != null) && (lastDirection == "ASC"))
-    //            {
-    //                sortDirection = "DESC";
-    //            }
-    //        }
-    //    }
-
-    //    // Save new values in ViewState.
-    //    ViewState["SortDirection"] = sortDirection;
-    //    ViewState["SortExpression"] = column;
-
-    //    return sortDirection;
-    //}
-
     protected void gv_PreRender(object sender, EventArgs e)
     {
         GridView gv = (GridView)sender;
@@ -470,7 +392,6 @@ public partial class leave : System.Web.UI.Page
         }
 
     }
-
     protected void gvLeaveLog_Sorting(object sender, GridViewSortEventArgs e)
     {
         DataTable dtrslt = (DataTable)ViewState["dirState"];
@@ -490,7 +411,6 @@ public partial class leave : System.Web.UI.Page
                         }
 
     }
-
     protected void gvLeaveLog_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         gvLeaveLog.PageIndex = e.NewPageIndex;

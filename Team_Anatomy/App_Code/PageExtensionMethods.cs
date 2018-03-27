@@ -89,7 +89,11 @@ public static class PageExtensionMethods
         else { return 0; }
     }
 
-
+    public static string[] AllowedIds()
+    {
+        string[] allowedNTIDs = { "pparm001", "ktriv003" };
+        return allowedNTIDs;
+    }
 
     /// <summary>
     /// Gets the ordinal index of a TableCell in a rendered GridViewRow, using a text fieldHandle (e.g. the corresponding column's DataFieldName/SortExpression/HeaderText)

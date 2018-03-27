@@ -21,7 +21,6 @@ public class Helper
     }
     public SqlConnection open_db()
     {
-
         cn = new SqlConnection(getConnectionString());
         try
         {
@@ -33,9 +32,7 @@ public class Helper
         }
         catch (Exception e)
         {
-
-            Console.WriteLine("{0} Exception Caught", e);
-            Log.thisException(e);
+            Console.WriteLine(e.Message.ToString());
         }
         return null;
     }
@@ -67,7 +64,7 @@ public class Helper
         }
         catch (Exception e)
         {
-            Log.thisException(e);
+            Console.WriteLine(e.Message.ToString());
 
         }
         finally
@@ -86,18 +83,15 @@ public class Helper
         using (cmd)
         {
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Connection = cn;
-
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
-            da.SelectCommand.CommandTimeout = 60;
-            da.Fill(dt);
+            cmd.Connection = open_db();
+            var r = cmd.ExecuteReader();
+            dt.Load(r);
         }
         close_conn();
         return dt;
     }
     public DataTable GetData(string sql)
     {
-        
         DataTable dt = new DataTable();
         using (SqlCommand cmd = new SqlCommand(sql))
         {
@@ -108,7 +102,6 @@ public class Helper
         close_conn();
         return dt;
     }
-
     public DataTable GetData(ref SqlCommand cmd)
     {
         cmd.Connection = open_db();
@@ -180,7 +173,7 @@ public class Helper
         }
         catch (Exception e)
         {
-            Log.thisException(e);
+            Console.WriteLine(e.Message.ToString());
         }
         finally
         {
@@ -224,7 +217,7 @@ public class Helper
         }
         catch (Exception e)
         {
-            Log.thisException(e);
+            Console.WriteLine(e.Message.ToString());
         }
         finally
         {
@@ -260,7 +253,6 @@ public class Helper
         };
 
     }
-
     public string getFirstResult(string strSQL)
     {
         open_db();
@@ -324,7 +316,7 @@ public class Helper
         }
         catch (Exception e)
         {
-            Log.thisException(e);
+            Console.WriteLine(e.Message.ToString());
         }
         finally
         {
@@ -362,9 +354,22 @@ public class Helper
 
 
     }
+    public Boolean checkForSQLInjection(string userInput)
+    {
+        bool isSQLInjection = false;
+        string[] sqlCheckList = {
+            "--",";--",";","/*","*/","@@","@","char","nchar","varchar","nvarchar","alter","begin","cast","create","cursor",
+            "declare","delete","drop","end","exec","execute","fetch","insert","kill","select","sys","sysobjects",
+            "syscolumns","table","update"
+        };
 
-
-
+        string CheckString = userInput.Replace("'", "''");
+        for (int i = 0; i <= sqlCheckList.Length - 1; i++)
+        {
+            if ((CheckString.IndexOf(sqlCheckList[i], StringComparison.OrdinalIgnoreCase) >= 0)) { isSQLInjection = true; }
+        }
+        return isSQLInjection;
+    }
 }
 
 public class EmailSender

@@ -10,7 +10,7 @@ using System.Data.Sql;
 
 public partial class index : System.Web.UI.Page
 {
-
+    Helper my = new Helper();
     private string myID { get; set; }
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -35,14 +35,11 @@ public partial class index : System.Web.UI.Page
 
     private void RedirectBasedOnNTNameLookup(string myID)
     {
-        Helper my = new Helper();
+        
         DataTable dt = new DataTable();
         if (myID != "IDNotFound")
         {
-            //myID = "rshar030"; //Raman.Sharma@sitel.com AT&T DTV for Answer_Rate
-            //myID = "ktriv003"; //Prashant Goradia pgora001
-            //myID = "vshir001"; //Prashant Goradia pgora001
-            myID = "gsing017"; //Prashant Goradia pgora001
+                   
             SqlCommand cmd = new SqlCommand("WFMP.getEmployeeData");
             cmd.Parameters.AddWithValue("@NT_ID", myID);
             
@@ -77,7 +74,7 @@ public partial class index : System.Web.UI.Page
 
     private DataTable getSkillsetImpersonator()
     {
-        Helper my = new Helper();
+        
         string strSQL = "Select distinct  A.Skillset from [WFMPMS].[tblDsgn2KPIWtg] A ";
         strSQL += " where A.SkillsetId <> 5 ";
         strSQL += " union select distinct A.Skillset + '-Manager' as Skillset from[WFMPMS].[tblDsgn2KPIWtg] A";

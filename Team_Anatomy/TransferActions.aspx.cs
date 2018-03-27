@@ -15,7 +15,6 @@ public partial class TransferActions : System.Web.UI.Page
     Helper my;
     protected string strSQL { get; set; }
     protected int MyEmpID { get; set; }
-
     protected DataTable dtAllMyTransferees;
     protected enum State : int
     {
@@ -23,7 +22,6 @@ public partial class TransferActions : System.Web.UI.Page
         Declined = 1,
         Approved = 2
     }
-
     protected void Page_Load(object sender, EventArgs e)
     {
         my = new Helper();
@@ -57,7 +55,6 @@ public partial class TransferActions : System.Web.UI.Page
             fillGvCompletedTransfers();
         }
     }
-
     private void fillDtAllMyTransferees()
     {
         SqlCommand cmd = new SqlCommand("[WFMP].[Transfer_ActionsList]");
