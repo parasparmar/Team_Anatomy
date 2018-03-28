@@ -1,10 +1,10 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="LeaveApproval.aspx.cs" Inherits="LeaveApproval" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="headPlaceHolder" runat="Server">
-    <%--toastr--%>
+        <%--toastr--%>
     <%--<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />--%>
 
-    <%--<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" rel="stylesheet"/>--%>
+     <%--<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" rel="stylesheet"/>--%> 
 
     <style>
         /*.example-modal .modal {
@@ -18,11 +18,11 @@
             z-index: 1;
         }*/
         .red {
-            color: red;
+            color:red;
         }
 
         .content-wrapper {
-            min-height: 897.76px !important;
+            min-height:897.76px !important;
         }
 
         .badge {
@@ -42,8 +42,8 @@
         }*/
 
         .left {
-            /*float:left;*/
-            width: 100%;
+        /*float:left;*/
+        width: 100%;
         }
 
         .right {
@@ -110,37 +110,45 @@
                                 <!-- pnlAmIRvwMgr-->
                             </div>
 
-                            <%--  <div class="box box-primary">--%>
-                            <div class="box-header with-border">
-                                <h3 class="box-title">Employee Leave Log</h3>
-                            </div>
+                          <%--  <div class="box box-primary">--%>
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Employee Leave Log</h3>
+                        </div>
+                        <div class="box-body">
                             <div class="box-body">
-                                <div class="box-body">
-                                    <asp:GridView ID="gvApprLeaveLog" runat="server"
-                                        CssClass="table table-bordered table-hover " AutoGenerateColumns="false">
-                                        <%--ApprleavelogDataTable OnPreRender="gv_PreRender" Datatable--%>
-                                        <Columns>
-                                            <asp:BoundField DataField="ecn" HeaderText="Emp Code"></asp:BoundField>
-                                            <asp:BoundField DataField="name" HeaderText="Name"></asp:BoundField>
-                                            <asp:BoundField DataField="from_date" HeaderText="From Date"></asp:BoundField>
-                                            <asp:BoundField DataField="to_date" HeaderText="To Date"></asp:BoundField>
-                                            <asp:BoundField DataField="leave_reason" HeaderText="Leave Reason"></asp:BoundField>
-                                            <asp:BoundField DataField="applied_on" HeaderText="Applied On"></asp:BoundField>
-                                            <asp:BoundField DataField="status" HeaderText="Status" HtmlEncode="false"></asp:BoundField>
+                                <asp:GridView ID="gvApprLeaveLog" runat="server" 
+                                    CssClass="table table-bordered table-hover "  AutoGenerateColumns="false"><%--ApprleavelogDataTable OnPreRender="gv_PreRender" Datatable--%>
+                                    <Columns>
+                                        <asp:BoundField DataField="ecn" HeaderText="Emp Code"></asp:BoundField>
+                                        <asp:BoundField DataField="name" HeaderText="Name"></asp:BoundField>
+                                        <asp:BoundField DataField="from_date" HeaderText="From Date"></asp:BoundField>
+                                        <asp:BoundField DataField="to_date" HeaderText="To Date"></asp:BoundField>
+                                        <asp:BoundField DataField="leave_reason" HeaderText="Leave Reason"></asp:BoundField>
+                                        <asp:BoundField DataField="applied_on" HeaderText="Applied On"></asp:BoundField>
+                                        <asp:BoundField DataField="status" HeaderText="Status" HtmlEncode="false"></asp:BoundField>
 
-                                            <asp:TemplateField HeaderText="Details">
-                                                <ItemTemplate>
-                                                    <asp:Button ID="btn_detail" runat="server" CssClass="btn btn-sm btn-info" Text="open" OnClick="btn_detail_Click" />
-                                                </ItemTemplate>
-                                            </asp:TemplateField>
-                                            <asp:BoundField DataField="ID" HeaderText="ID"></asp:BoundField>
 
-                                        </Columns>
-                                    </asp:GridView>
-                                </div>
+                                        <%--<asp:CommandField CancelText="cancel" DeleteText="" EditText="edit" InsertText="" NewText="" SelectText="select" ShowCancelButton="True" ShowEditButton="True" UpdateText="update" ButtonType="Button" HeaderText="Cancel">
+                                    <ControlStyle CssClass="btn btn-sm btn-danger"></ControlStyle>
+                                </asp:CommandField>--%>
+                                        <asp:TemplateField HeaderText="Details">
+                                            <ItemTemplate>
+                                                <asp:Button ID="btn_detail" runat="server" CssClass="btn btn-sm btn-info" Text="open" OnClick="btn_detail_Click" /><%--data-toggle="modal" data-target="#modal-default"  OnClick="btn_appr_Click"--%>
+                                                <%--<asp:ScriptManager runat="server"></asp:ScriptManager>--%>
+                                            </ItemTemplate>
+                                            <%--<EditItemTemplate>
+                                <asp:Button ID="btn_Update" runat="server" Text="Update" CommandName="Update" />
+                                <asp:Button ID="btn_Cancel" runat="server" Text="Cancel" CommandName="Cancel" />
+                            </EditItemTemplate>--%>
+                                        </asp:TemplateField>
+                                        <asp:BoundField DataField="ID" HeaderText="ID"></asp:BoundField>
+
+                                    </Columns>
+                                </asp:GridView>
                             </div>
+                        </div>
 
-
+                    <%--</div>--%>
 
                         </div>
                     </div>
@@ -153,7 +161,7 @@
             <div class="row-fluid">
                 <div class="col-md-12">
                     <!-- Custom Tabs -->
-                    <%--  put here the leave log--%>
+                  <%--  put here the leave log--%>
                     <!-- /.box-footer-->
                 </div>
                 <!--tabcontent-->
@@ -162,18 +170,16 @@
             </div>
             <div class="modal" id="modal-details">
                 <div class="modal-dialog">
-                    <div class="modal-content" style="border: 1px solid #3c8dbc">
-                        <div class="modal-header" style="background-color: #3c8dbc">
+                    <div class="modal-content" style="border:1px solid #3c8dbc">
+                        <div class="modal-header" style="background-color:#3c8dbc">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" style="color: white">Leave Details for
-                                <asp:Label ID="lblEmployeeName" runat="server"></asp:Label>
-                                &nbsp<asp:Label ID="lblEmployeeID" runat="server"></asp:Label></h4>
+                            <h4 class="modal-title" style="color:white">Leave Details for <asp:Label ID="lblEmployeeName" runat="server"></asp:Label> &nbsp<asp:Label ID="lblEmployeeID" runat="server"></asp:Label></h4>   
                         </div>
                         <div class="modal-body">
                             <asp:GridView ID="gvdatewiseAppr" runat="server"
                                 CssClass="table table-bordered table-hover "
-                                AutoGenerateColumns="false">
+                                AutoGenerateColumns="false" >
                                 <Columns>
                                     <asp:BoundField DataField="LEAVEDATE" HeaderText="Date"></asp:BoundField>
                                     <asp:BoundField DataField="LEAVETEXT" HeaderText="Leave Type"></asp:BoundField>
@@ -183,17 +189,15 @@
                             <%--<br>--%>
                             <asp:TextBox ID="txt_reason" TextMode="multiline" Columns="74" Rows="2" runat="server" CssClass="form-control" placeholder="Enter comments...."></asp:TextBox>
                             <asp:Label ID="alert" Visible="false" runat="server" CssClass="red" Text="Leave decline reason required"></asp:Label>
-                            <asp:Label ID="lblLeaveID" runat="server" Visible="false"></asp:Label>
-
+                            <asp:Label ID="lblLeaveID" runat="server" Visible="false"></asp:Label>            
+                                           
                         </div>
                         <div class="modal-footer">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <asp:Button ID="btn_appr" runat="server" CssClass="btn btn-sm btn-success left" Text="Approve" OnClick="btn_appr_Click" />
-                                </div>
+                            <asp:Button ID="btn_appr" runat="server" CssClass="btn btn-sm btn-success left" Text="Approve" OnClick="btn_appr_Click" /></div>
                                 <div class="col-md-6">
-                                    <asp:Button ID="btn_dec" runat="server" CssClass="btn btn-sm btn-danger right" Text="Decline" OnClick="btn_dec_Click" />
-                                </div>
+                            <asp:Button ID="btn_dec" runat="server" CssClass="btn btn-sm btn-danger right" Text="Decline" OnClick="btn_dec_Click"/></div>
                             </div>
                             <%--<asp:Button ID="btn_save_cancel_reason" runat="server" Text="Save" CssClass="btn btn-primary" />--%><%-- OnClick="btn_save_cancel_reason_Click"--%>
                         </div>
@@ -203,16 +207,19 @@
                 <!-- /.modal-dialog -->
             </div>
             <!---LHS Panel---->
-        </ContentTemplate>        
+        </ContentTemplate>
+        <%--  <Triggers>
+            <asp:PostBackTrigger ControlID="btnSubmit" />
+        </Triggers>--%>
     </asp:UpdatePanel>
 
 </asp:Content>
 
 <asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">
-    <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js" type="text/javascript"></script>--%>
-    <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>--%>
+         <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js" type="text/javascript"></script>--%>
+     <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>--%> 
 
-    <%-- <script type="text/javascript">
+   <%-- <script type="text/javascript">
         //$(document).ready(function () {
         //    var leave_id; var btn; var status;
         //    //$(".btn-info").click(function (e) {

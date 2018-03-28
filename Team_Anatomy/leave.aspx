@@ -36,7 +36,7 @@
         }
 
         .bg-red {
-            border-radius: 100%;
+           /* border-radius: 100%;*/
             background: -ms-linear-gradient(left, rgba(255,52,41,1) 0%, rgba(255,82,77,1) 0%, rgba(255,82,77,1) 0%, rgba(255,9,5,1) 0%, rgba(255,14,10,1) 0%, rgba(235,0,23,1) 100%);
         }
 
@@ -127,7 +127,7 @@
                         <asp:TextBox ID="txt_leave_reason" CssClass="form-control" runat="server" placeholder="Enter Reason....." ></asp:TextBox>
                         <%--<textarea id="txt_leave_reason" placeholder="Enter Reason....." class="form-control" runat="server"></textarea>--%>
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" Display="Dynamic" ErrorMessage="Leave Reason required" ForeColor="Red" ControlToValidate="txt_leave_reason" ValidationGroup="Proceed"></asp:RequiredFieldValidator>
-                        <asp:RegularExpressionValidator ID="RegularExpressionValidator4" runat="server" Display="Dynamic" ControlToValidate="txt_leave_reason" ErrorMessage="enter valid reason" ForeColor="Red" ValidationExpression="^[a-zA-Z ]+$" ValidationGroup="Proceed"></asp:RegularExpressionValidator>
+                        <%--<asp:RegularExpressionValidator ID="RegularExpressionValidator4" runat="server" Display="Dynamic" ControlToValidate="txt_leave_reason" ErrorMessage="enter valid reason" ForeColor="Red" ValidationExpression="^[a-zA-Z ]+$" ValidationGroup="Proceed"></asp:RegularExpressionValidator>--%>
                     </div>
                 </div>
             </div>
@@ -151,18 +151,17 @@
                         <asp:BoundField DataField="day" HeaderText="day" HeaderStyle-CssClass="mid"></asp:BoundField>
                         <asp:TemplateField HeaderText="Select Leave" HeaderStyle-CssClass="mid">
                             <ItemTemplate>
-                                <asp:DropDownList ID="ddlSelectLeave" runat="server"></asp:DropDownList>
+                                <asp:DropDownList ID="ddlSelectLeave" CssClass="form-control" style="width:100%" runat="server"></asp:DropDownList>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <%--<asp:BoundField DataField="roster" HeaderText="roster"></asp:BoundField>--%>
+                        <asp:BoundField DataField="ShiftCode" HeaderText="Roster"></asp:BoundField>
                     </Columns>
                 </asp:GridView>
 
             </div>
         </div>
         <div class="box-footer">
-            <asp:Button ID="btn_submit" CssClass="btn btn-primary pull-right" runat="server" Text="Submit" OnClick="btn_submit_Click" CausesValidation="False"/>
-            <%--<button class="btn btn-primary" type="submit">Submit</button>--%>
+            <asp:Button ID="btn_submit" CssClass="btn btn-primary pull-right" runat="server" Text="Submit" OnClick="btn_submit_Click" CausesValidation="False"/>            
         </div>
     </div>
 
@@ -173,18 +172,18 @@
         <div class="box-body">
             <div class="box-body">
                 <asp:GridView ID="gvLeaveLog" runat="server" 
-                    AllowPaging="false" OnPageIndexChanging="gvLeaveLog_PageIndexChanging" AllowSorting="true" OnSorting="gvLeaveLog_Sorting"
-                    CssClass="table table-bordered table-hover " OnRowDataBound="gvLeaveLog_RowDataBound"
-                    AutoGenerateColumns="false" DataKeyNames="ID" ><%--Datatable PageSize="5" OnPreRender="gvLeaveLog_PreRender"--%>
+                    
+                    CssClass="table table-bordered table-hover " OnRowDataBound="gvLeaveLog_RowDataBound" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvLeaveLog_PageIndexChanging"  AllowSorting="true" OnSorting="gvLeaveLog_Sorting"
+                    AutoGenerateColumns="false"  ><%--DataKeyNames="ID" Datatable  PageSize="5" OnPreRender="gv_PreRender"leavelogDataTable--%><%--AllowPaging="false" OnPageIndexChanging="gvLeaveLog_PageIndexChanging" AllowSorting="true" OnSorting="gvLeaveLog_Sorting"--%>
                     <Columns>
-                        <asp:BoundField DataField="From_Date" HeaderText="From Date" HeaderStyle-CssClass="mid"></asp:BoundField>
-                        <asp:BoundField DataField="To_Date" HeaderText="To Date" HeaderStyle-CssClass="mid"></asp:BoundField>
-                        <asp:BoundField DataField="leave_reason" HeaderText="Leave Reason" HeaderStyle-CssClass="mid"></asp:BoundField>
-                        <asp:BoundField DataField="Applied_on" HeaderText="Applied On" HeaderStyle-CssClass="mid"></asp:BoundField>
-                        <asp:BoundField DataField="Status" HeaderText="Status" HtmlEncode="false" HeaderStyle-CssClass="mid"></asp:BoundField>
-                        <asp:TemplateField HeaderText="Cancel" HeaderStyle-CssClass="mid">
+                        <asp:BoundField DataField="From_Date" HeaderText="From Date" HeaderStyle-CssClass="mid" SortExpression="From_Date"></asp:BoundField>
+                        <asp:BoundField DataField="To_Date" HeaderText="To Date" HeaderStyle-CssClass="mid" SortExpression="To_Date"></asp:BoundField>
+                        <asp:BoundField DataField="leave_reason" HeaderText="Leave Reason" HeaderStyle-CssClass="mid" SortExpression="leave_reason"></asp:BoundField>
+                        <asp:BoundField DataField="Applied_on" HeaderText="Applied On" HeaderStyle-CssClass="mid" SortExpression="Applied_on"></asp:BoundField>
+                        <asp:BoundField DataField="Status" HeaderText="Status" HtmlEncode="false" HeaderStyle-CssClass="mid" SortExpression="Status"></asp:BoundField>
+                        <asp:TemplateField HeaderText="Cancel" HeaderStyle-CssClass="mid" SortExpression="Cancel">
                             <ItemTemplate>
-                                <asp:Button ID="btn_Cancel" runat="server" CssClass="btn btn-sm btn-danger" Text="cancel" OnClick="btn_Cancel_Click" />
+                                <asp:Button ID="btn_Cancel" runat="server" CssClass="btn btn-sm btn-danger" Text="cancel" OnClick="btn_Cancel_Click" AutoPostback="true"/><%----%>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:BoundField DataField="ID" HeaderText="ID" HeaderStyle-CssClass="mid"></asp:BoundField>
@@ -251,6 +250,12 @@
      <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>--%>
 
     <script type="text/javascript">
+
+        //function xShowModal() {
+        //    $(".modal").modal("show");
+        //}
+
+
         $(document).ready(function () {
             var date;
             var startdate = Thedate();
@@ -390,9 +395,7 @@
         }
 
 
-        //function xShowModal() {
-        //    $(".modal").modal("show");
-        //}
+        
 
 
         $(function () {
@@ -436,6 +439,31 @@
           function error() {
               alert("applied date range is already in leave log . Kindly reapply");
           }
+
+          $(function () {
+              $('.leavelogDataTable').DataTable({
+                  "sPaginationType": "full_numbers",
+                  "lengthMenu": [5, 10, 25, 50, 75, 100],
+                  "aaSortingFixed": [[0, 'asc']],
+                  "bSort": true,
+                  dom: 'Bfrltip',
+                  "columnDefs": [{ "orderable": false, "targets": 0 }],
+                  buttons: [
+                      { extend: 'copyHtml5', text: 'Copy Data' },
+                      { extend: 'excelHtml5', text: 'Export to Excel' },
+                      { extend: 'csvHtml5', text: 'Export to CSV' },
+                      { extend: 'pdfHtml5', text: 'Export to PDF' },
+                  ],
+                  "columnDefs": [{
+                      "targets": [6, 7, 8, 9], //Comma separated values
+                      "visible": false,
+                      "searchable": false
+                  }
+                  ],
+
+              });
+          });
+
     </script>
 
         <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/1.3.1/js/toastr.js" type="text/javascript"></script>--%><%--//2.0.1--%>

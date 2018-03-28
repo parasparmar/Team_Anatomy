@@ -43,6 +43,17 @@ public partial class LeaveApproval : System.Web.UI.Page
         catch (Exception Ex)
         {
             Response.Write(Ex.Message);
+            string redirect2URL = "index.aspx";
+            if (ViewState["PreviousPageUrl"] != null)
+            {
+                redirect2URL = ViewState["PreviousPageUrl"].ToString();
+            }
+            else {
+
+                ViewState["PreviousPageUrl"] = Page.Request.Url.ToString();
+            }
+
+            Response.Redirect(redirect2URL, false);
         }
 
         Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
@@ -234,20 +245,47 @@ public partial class LeaveApproval : System.Web.UI.Page
         int RepMgr = Convert.ToInt32(dtt.Rows[0]["RepMgrCode"].ToString());
         int RevMgr = Convert.ToInt32(dtt.Rows[0]["RevMgrCode"].ToString());
 
+
+        string strSQL3 = "CWFM_UMANG.[WFMP].[getLeavedatesandLeavereason]";
+
+        SqlCommand cmddd = new SqlCommand(strSQL3);
+        cmddd.Parameters.AddWithValue("@id", Convert.ToInt32(id.ToString()));
+        DataTable dttt = my.GetDataTableViaProcedure(ref cmddd);
+
+        DateTime fd = Convert.ToDateTime(dttt.Rows[0]["from_date"].ToString());
+        DateTime td = Convert.ToDateTime(dttt.Rows[0]["to_date"].ToString());
+        DateTime ao = Convert.ToDateTime(dttt.Rows[0]["applied_on"].ToString());
+
+        string from_date = fd.ToString("dddd, dd MMMM yyyy hh:mm tt");
+        string to_date = td.ToString("dddd, dd MMMM yyyy hh:mm tt");
+        string reason = dttt.Rows[0]["leave_reason"].ToString();
+        string appliedOn = ao.ToString("dddd, dd MMMM yyyy hh:mm tt");
+        string applied_By = dttt.Rows[0]["name"].ToString();
+
+        //string tableHeader = "<table style='border-collapse: collapse; width: 100 %;border: 1px solid #000000;'>< tr style='background-color: #f2f2f2'>< th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white; '> Start Date </ th >< th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white; '> End Date </ th >< th > Leave Reason </ th >< th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white; '> Applied On </ th >< th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white; '> Link for Action </ th ></ tr >< tr style='background-color: #f2f2f2'> ";
+        //string tableFooter = "</tr></ table > ";
+        //string tableBody = "<td style='text-align: left;padding: 8px;border: 1px solid #000000;'>"+ from_date+ "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + to_date+ "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + reason + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + appliedOn+ "</td><td><a href='TA/leave.aspx'></td>";
+
         Email.InitiatorEmpId = MyEmpID;
         if (MyEmpID == RepMgr)
-        { Email.RecipientsEmpId = RevMgr.ToString() + ";" + empid.ToString(); }
+        { Email.RecipientsEmpId = RevMgr.ToString() ;
+            Email.CCsEmpId = MyEmpID.ToString() + ";" + empid.ToString();
+        }
         else if (MyEmpID == RevMgr)
-        { Email.RecipientsEmpId = RepMgr.ToString() + ";" + empid.ToString(); }
+        { Email.RecipientsEmpId =  empid.ToString();
+            Email.CCsEmpId = MyEmpID.ToString() + ";"+ RepMgr.ToString();
+        }
         //Email.RecipientsEmpId = "931040";
         //Email.BCCsEmpId = MyEmpID.ToString();
-        Email.CCsEmpId = MyEmpID.ToString();
+        
         Email.Subject = "Leave Request Approved";
-        Email.Body = "<strong>Hi, </strong>";
-        Email.Body += "<P>"+dt.Rows[0]["First_Name"].ToString()+ " " + dt.Rows[0]["Last_Name"].ToString() + " has approved your leave <P>";
-        Email.Body += "<p>For more information, please visit the dashboard at  <a href='http://iaccess/TA/leave.aspx'>Leave page</a> .<p>";
+        Email.Body = "<style>.xMailBody {font-family: calibri;}</style><div class='xMailBody'><strong>Hi, </strong>";
+        Email.Body += "<P>A leave application for "+ applied_By+ " has been approved by " + dt.Rows[0]["First_Name"].ToString()+ " " + dt.Rows[0]["Last_Name"].ToString() + " and it requires your action. </P>";
+        Email.Body += "<p>Leave Application details:</p> <br>";
+        Email.Body += "<table style='border-collapse: collapse;width: 90%;border: 1px solid #000000;font-family: calibri;'><tr style='background-color: #f2f2f2'><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>Start Date</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>End Date</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>Leave Reason</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>Applied On</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>Link for Action</th></tr><tr style='background-color: #f2f2f2'><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + from_date+ "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>"+to_date+"</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>"+ reason +"</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>"+ appliedOn + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'><a href='http://iaccess/TA/LeaveApproval.aspx'>Leave Approval page</a></td></tr></table> </div>";
+       // Email.Body += "<br> <p>Regards, <br> IAccess Support Team <br> PS: This is an automated triggered email. Please do not reply.</p>";
         Email.Send();
-    //}
+        //}
 
     }
     protected void btn_dec_Click(object sender, EventArgs e)
@@ -326,6 +364,22 @@ public partial class LeaveApproval : System.Web.UI.Page
         int RepMgr = Convert.ToInt32(dtt.Rows[0]["RepMgrCode"].ToString());
         int RevMgr = Convert.ToInt32(dtt.Rows[0]["RevMgrCode"].ToString());
 
+        string strSQL3 = "CWFM_UMANG.[WFMP].[getLeavedatesandLeavereason]";
+
+        SqlCommand cmddd = new SqlCommand(strSQL3);
+        cmddd.Parameters.AddWithValue("@id", Convert.ToInt32(id.ToString()));
+        DataTable dttt = my.GetDataTableViaProcedure(ref cmddd);
+
+        DateTime fd = Convert.ToDateTime(dttt.Rows[0]["from_date"].ToString());
+        DateTime td = Convert.ToDateTime(dttt.Rows[0]["to_date"].ToString());
+        DateTime ao = Convert.ToDateTime(dttt.Rows[0]["applied_on"].ToString());
+
+        string from_date = fd.ToString("dddd, dd MMMM yyyy hh:mm tt");
+        string to_date = td.ToString("dddd, dd MMMM yyyy hh:mm tt");
+        string reason = dttt.Rows[0]["leave_reason"].ToString();
+        string appliedOn = ao.ToString("dddd, dd MMMM yyyy hh:mm tt");
+        string applied_By = dttt.Rows[0]["name"].ToString();
+
         Email.InitiatorEmpId = MyEmpID;
         if (MyEmpID == RepMgr)
         { Email.RecipientsEmpId = empid.ToString(); }
@@ -335,9 +389,11 @@ public partial class LeaveApproval : System.Web.UI.Page
         //Email.BCCsEmpId = MyEmpID.ToString();
         Email.CCsEmpId = MyEmpID.ToString();
         Email.Subject = "Leave Request Declined";
-        Email.Body = "<strong>Hi </strong>" + empid + " ";
-        Email.Body += "<P>"+dt.Rows[0]["First_Name"].ToString()+" " + dt.Rows[0]["Last_Name"].ToString() + " has declined your leave stating '" + comments + "'<P>";
-        Email.Body += "<p>For more information, please visit the dashboard at  <a href='http://iaccess/TA/leave.aspx'>Leave page</a> .";
+        Email.Body = "<strong>Hi, </strong>";
+        Email.Body += "<P>Your below leave application has been Declined by " + dt.Rows[0]["First_Name"].ToString()+" " + dt.Rows[0]["Last_Name"].ToString() +"</P>";
+        Email.Body += "<p>Reason for Decline: '<b><i>"+ comments+"'</b></i></p>";
+        Email.Body += "<p>Leave Application details:</p> <br>";
+        Email.Body += "<table style='border-collapse: collapse;width: 100%;border: 1px solid #000000;'><tr style='background-color: #f2f2f2'><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: red;color: white;'>Start Date</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: red;color: white;'>End Date</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: red;color: white;'>Leave Reason</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: red;color: white;'>Applied On</th></tr><tr style='background-color: #f2f2f2'><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + from_date + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + to_date + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + reason + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + appliedOn + "</td></tr></table>";
         Email.Send();
     }
 }

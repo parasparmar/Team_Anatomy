@@ -14,8 +14,8 @@
     <link rel="stylesheet" href="AdminLTE/bower_components/bootstrap/dist/css/bootstrap.min.css">
 
     <!----------Toastr----------------->
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    
+   <Link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
     <!-- bootstrap datepicker -->
     <link href="AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
     <link rel="stylesheet" href="AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
@@ -32,7 +32,7 @@
     <!-- AdminLTE Skins. Choose a skin from the css/ folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="AdminLTE/dist/css/skins/_all-skins.min.css">
     <!-- DataTables -->
-
+  
 
     <link href="CDN/code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" />
     <link href="CDN/cdn.datatables.net/1.10.15/css/dataTables.jqueryui.min.css" rel="stylesheet" />
