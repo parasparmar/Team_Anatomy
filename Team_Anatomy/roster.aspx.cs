@@ -28,7 +28,7 @@ public partial class roster : System.Web.UI.Page
             try
             {
                 dtEmp = (DataTable)Session["dtEmp"];
-                if (dtEmp==null)
+                if (dtEmp == null)
                 {
                     Response.Redirect("index.aspx", false);
                 }
@@ -103,6 +103,8 @@ public partial class roster : System.Web.UI.Page
         my.append_dropdown(ref ddlYear, strSQL, 0, 0);
         ltlReportingMgrsTeam.Text = "Roster for Team : " + ddlRepManager.SelectedItem.Text;
         ddlRepManager.SelectedIndex = i;
+        ddlYear.ClearSelection();
+        ddlYear.Items.FindByValue(DateTime.Today.Year.ToString()).Selected = true;
         ddlYear_SelectedIndexChanged(ddlRepManager, new EventArgs());
         if (ddlRepManager.SelectedValue.Length > 0 && ddlWeek.SelectedValue.Length > 0 && ddlYear.SelectedValue != "0")
         {
@@ -292,22 +294,29 @@ public partial class roster : System.Web.UI.Page
         //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message5", toastr_script, true);
         int RepMgrCode = Convert.ToInt32(ddlRepManager.SelectedValue);
         int WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
-        
+        int UpdatedBy = PageExtensionMethods.getMyEmployeeID();
         DateTime updatedOn = DateTime.Now;
 
-        string strSQL = "SELECT A.* FROM [CWFM_Umang].[WFMP].[RosterMst] A";
-        strSQL += " Inner join [CWFM_Umang_Prod].[WFMP].[tblMaster] B on A.EmpCode = B.Employee_ID ";
-        strSQL += " where B.[RepMgrCode] = @RepMgrCode ";
-        strSQL += " and [WeekID] = @WeekID";
-        int UpdatedBy = PageExtensionMethods.getMyEmployeeID();
+        // TO Do: Once you get the repmgrcode from ddlRepManager.selected value get the list of employees currently mapped to this mgr from tblMaster.
+        // It's critical for accurately depicting movements.
+        strSQL = "SELECT Distinct A.Employee_Id as EmpCode FROM [CWFM_Umang].[WFMP].[tblMaster] A where A.[RepMgrCode] = " + RepMgrCode;
+        DataTable dtMyReportees = my.GetData(strSQL);
+        string myReportees = string.Empty;
+        foreach (DataRow dr in dtMyReportees.Rows)
+        {
+            myReportees += "'" + dr["EmpCode"].ToString()+ "',";
+            
+        }
+        myReportees = myReportees.Remove(myReportees.Length-1, 1);
+
+
+        // Please Please dont change the below SQL statement.
+        strSQL = "SELECT * FROM [CWFM_Umang].[WFMP].[RosterMst] where EmpCode in (" + myReportees + ") and [WeekID] = " + WeekID;
 
         using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
         {
             cn.Open();
             SqlCommand cmd = new SqlCommand(strSQL, cn);
-            cmd.Parameters.AddWithValue("@RepMgrCode", RepMgrCode);
-            cmd.Parameters.AddWithValue("@WeekID", WeekID);
-
             using (SqlDataAdapter da = new SqlDataAdapter(cmd))
             {
                 using (SqlCommandBuilder cb = new SqlCommandBuilder(da))
@@ -345,7 +354,7 @@ public partial class roster : System.Web.UI.Page
                                 // The rDate has time information and hence the 'between' operator is critical.
                                 // Between is not available in the datatable.select method hence the usage of >= and <.
                                 DataRow[] drc = X.Tables[0].Select("EmpCode = " + R.EmpCode + " and rDate >= #" + R.rDate + "# and rDate <#" + R.rDate.AddDays(1) + "#");
-                                
+
                                 if (drc.Length > 0)
                                 {
                                     // Entry already exists.
@@ -354,12 +363,12 @@ public partial class roster : System.Web.UI.Page
                                     // changes to other non-shift details and hence has been deactivated.
                                     //if (dr["ShiftID"].ToString() != R.ShiftID.ToString())
                                     //{
-                                        dr["WeekID"] = R.WeekID;
-                                        dr["rDate"] = R.rDate;
-                                        dr["ShiftID"] = R.ShiftID;
-                                        dr["RepMgrCode"] = R.RepMgrCode;
-                                        dr["UpdatedBy"] = R.UpdatedBy;
-                                        dr["updatedOn"] = R.updatedOn;
+                                    dr["WeekID"] = R.WeekID;
+                                    dr["rDate"] = R.rDate;
+                                    dr["ShiftID"] = R.ShiftID;
+                                    dr["RepMgrCode"] = R.RepMgrCode;
+                                    dr["UpdatedBy"] = R.UpdatedBy;
+                                    dr["updatedOn"] = R.updatedOn;
                                     //}
                                     // Delete duplicate shifts if any.
                                     for (int i = 1; i < drc.Length; i++)
@@ -395,6 +404,10 @@ public partial class roster : System.Web.UI.Page
                 }
             }
         }
+
+
+
+
 
     }
     private bool isRosterRuleCompliant(ref List<RosterRecord> ListOfR)
@@ -436,7 +449,7 @@ public partial class roster : System.Web.UI.Page
                 if (employee.EmpCode == MyEmpID && employee.rules_WorkOffCompliance == false)
                 {
                     R.Attributes.Add("class", "bg-orange");
-                }                
+                }
                 else
                 {
                     R.Attributes.Remove("class");

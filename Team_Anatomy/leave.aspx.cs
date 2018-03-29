@@ -193,7 +193,8 @@ public partial class leave : System.Web.UI.Page
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Message", "<script>$(document).ready(function(){ $('#pnlLeaveBox').css({ 'display': 'block' });})</script>", false);
             Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.warning('Not more than 2 Work-Offs can be applied in a week.Kindly rectify')", true);
         }
-        else {
+        else
+        {
             Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leaves Successfully applied')", true);
             string received = reservation.Text;
             string[] seperator = { " - " };
@@ -245,7 +246,7 @@ public partial class leave : System.Web.UI.Page
                     }
 
                 }
-                
+
                 string newFromDate;
                 string newToDate;
 

@@ -7,6 +7,8 @@ using System.Configuration;
 using context = System.Web.HttpContext;
 using System.Web;
 using CD;
+using System.Collections.Specialized;
+using System.Text.RegularExpressions;
 
 public class Helper
 {
@@ -477,7 +479,20 @@ public class EmailSender
                         cmd.Parameters.AddWithValue("@xbody", Body);
                         cmd.Parameters.AddWithValue("@xbody_format", MailFormat);
                         cmd.Parameters.AddWithValue("@xfrom_address", InitiatorEmailID);
-                        if (EmailType == 0) { EmailType = (int)emailtype.Development; }
+                        if (EmailType == 0)
+                        {
+                            string ipPattern = @"remip \[(\d+\.\d+\.\d+\.\d+)\]";
+                            string whichServer = my.getConnectionString();
+                            Match mc = Regex.Match(whichServer, ipPattern);
+                            if (mc.Value == "10.252.252.122")
+                            {
+                                EmailType = (int)emailtype.Development;
+                            }
+                            else
+                            {
+                                EmailType = (int)emailtype.Production;
+                            }
+                        }
                         cmd.Parameters.AddWithValue("@xEmailType", EmailType);
                         sentId = cmd.ExecuteNonQuery();
                     }
