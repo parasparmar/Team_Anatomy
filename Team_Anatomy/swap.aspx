@@ -43,295 +43,172 @@
 </asp:Content>
 
 <asp:Content ID="Content5" ContentPlaceHolderID="The_Body" runat="Server">
-    <asp:UpdatePanel ID="UpdatePanel1" runat="server" EnableViewState="true" UpdateMode="Conditional">
-        <ContentTemplate>
-            <div class="row-fluid">
-                <div class="col-md-12">
-                    <!-- Custom Tabs -->
-                    <div class="box box-solid box-primary" style="height: auto;">
-                        <div class="box-header with-border">
-                            <h4 class="box-title">
-                                <asp:Literal ID="ltlReportingMgrsTeam" Text="Roster For Team" runat="server"></asp:Literal></h4>
-                            <div class="box-tools pull-right">
-                                <button class="btn btn-box-tool" type="button" data-widget="collapse">
-                                    <i class="fa fa-minus"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="box-body">
-                            <div class="row">
-
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        Year
+    <%-- <asp:UpdatePanel ID="UpdatePanel1" runat="server" EnableViewState="true" UpdateMode="Conditional">
+        <ContentTemplate>--%>
+    <div class="row-fluid">
+        <div class="col-md-12">
+            <!-- Custom Tabs -->
+            <div class="box box-solid box-primary" style="height: auto;">
+                <div class="box-header with-border">
+                    <h4 class="box-title">
+                        <asp:Literal ID="ltlReportingMgrsTeam" Text="Roster For Team" runat="server"></asp:Literal></h4>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" type="button" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                Year
                                 <asp:DropDownList ID="ddlYear" runat="server" CssClass="form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlYear_SelectedIndexChanged">
                                     <asp:ListItem Selected="True" Text="None" Value="0"></asp:ListItem>
                                 </asp:DropDownList>
-                                    </div>
-                                </div>
-                                <!-- Roster Year-->
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        Week
+                            </div>
+                        </div>
+                        <!-- Roster Year-->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                Week
                                 <asp:DropDownList ID="ddlWeek" runat="server" CssClass="form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlWeek_SelectedIndexChanged">
                                     <asp:ListItem Selected="True" Text="None" Value="0"></asp:ListItem>
                                 </asp:DropDownList>
-                                    </div>
-                                </div>
-                                <!-- Roster Dates-->
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        My Role
-                                <asp:DropDownList ID="ddlRole" runat="server" CssClass="form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlRole_SelectedIndexChanged">
+                            </div>
+                        </div>
+                        <!-- Roster Dates-->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                My Role
+                                <asp:DropDownList ID="ddlRole" runat="server" CssClass="form-control select2" Style="width: 100%;" AutoPostBack="true">
                                     <asp:ListItem Selected="True" Text="Employee" Value="Employee"></asp:ListItem>
                                     <asp:ListItem Text="Reporting Manager" Value="Reporting_Manager"></asp:ListItem>
                                 </asp:DropDownList>
-                                    </div>
-                                </div>
-                                <!-- Role Selection-->
                             </div>
-
                         </div>
+                        <!-- Role Selection-->
                     </div>
-                    <!--tabcontent-->
                 </div>
-                <!-- /.col -->
             </div>
-            <div class="row-fluid">
-                <div class="col-md-12">
+            <!--tabcontent-->
+        </div>
+        <!-- /.col -->
+    </div>
+    <div class="row-fluid">
+        <div class="col-md-12">
+            <div class="box box-solid box-primary">
+                <div class="box-header with-border">
                     <h4 class="box-title">
                         <asp:Literal ID="ltlRosterHeading" runat="server" Text="Week : "></asp:Literal>
                     </h4>
-                    <!-- Custom Tabs -->
-                    <div class="nav-tabs-custom">
-                        <ul class="nav nav-tabs">
-                            <li class="active" id="litab_1" runat="server"><a href="#tab_1" data-toggle="tab">Select Employee to Swap With</a></li>
-                            <li id="litab_2" runat="server"><a href="#tab_2" data-toggle="tab">Select Shifts to Swap</a></li>
-                            <li id="litab_3" runat="server"><a href="#tab_3" data-toggle="tab">Check Status of Your Swaps</a></li>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="tab_1" runat="server">
-                                <asp:Panel ID="pnlRoster" runat="server" Visible="true">
-                                    <asp:GridView ID="gvRoster" runat="server" AutoGenerateColumns="false"
-                                        CssClass="table table-condensed table-responsive compact hover stripe"
-                                        OnPreRender="gv_PreRender" DataKeyNames="ECN" OnRowEditing="gvRoster_RowEditing"
-                                        OnRowUpdating="gvRoster_RowUpdating" OnRowCancelingEdit="gvRoster_RowCancelingEdit">
-                                        <Columns>
-                                            <asp:TemplateField HeaderText="Swap With">
-                                                <ItemTemplate>
-                                                    <asp:Button ID="btnInitiateSwap" runat="server" CommandName="Edit" CssClass="btn btn-primary" Text="Select" />
-                                                </ItemTemplate>
-                                            </asp:TemplateField>
-
-                                            <asp:BoundField DataField="ECN" HeaderText="EmpID" ReadOnly="true" />
-                                            <asp:BoundField DataField="NAME" HeaderText="Name" ReadOnly="true" />
-                                            <asp:BoundField DataField="TEAM_LEADER" HeaderText="RepMgr" ReadOnly="true" />
-
-                                            <asp:TemplateField>
-                                                <ItemTemplate>
-                                                    <asp:Label ID="lbl0" runat="server"></asp:Label>
-                                                </ItemTemplate>
-                                            </asp:TemplateField>
-                                            <asp:TemplateField>
-
-                                                <ItemTemplate>
-                                                    <asp:Label ID="lbl1" runat="server"></asp:Label>
-                                                </ItemTemplate>
-                                            </asp:TemplateField>
-                                            <asp:TemplateField>
-
-                                                <ItemTemplate>
-                                                    <asp:Label ID="lbl2" runat="server"></asp:Label>
-                                                </ItemTemplate>
-                                            </asp:TemplateField>
-                                            <asp:TemplateField>
-
-                                                <ItemTemplate>
-                                                    <asp:Label ID="lbl3" runat="server"></asp:Label>
-                                                </ItemTemplate>
-                                            </asp:TemplateField>
-                                            <asp:TemplateField>
-
-                                                <ItemTemplate>
-                                                    <asp:Label ID="lbl4" runat="server"></asp:Label>
-                                                </ItemTemplate>
-                                            </asp:TemplateField>
-                                            <asp:TemplateField>
-
-                                                <ItemTemplate>
-                                                    <asp:Label ID="lbl5" runat="server"></asp:Label>
-                                                </ItemTemplate>
-                                            </asp:TemplateField>
-                                            <asp:TemplateField>
-                                                <ItemTemplate>
-                                                    <asp:Label ID="lbl6" runat="server"></asp:Label>
-                                                </ItemTemplate>
-                                            </asp:TemplateField>
-                                        </Columns>
-                                    </asp:GridView>
-                                </asp:Panel>
-                            </div>
-                            <!-- /.tab-pane -->
-                            <div class="tab-pane" id="tab_2" runat="server">
-                                <asp:Panel ID="pnlSwap" runat="server" Visible="true">
-                                    <asp:Repeater ID="rptrSwapForm" runat="server" OnItemDataBound="rptrSwapForm_ItemDataBound">
-                                        <HeaderTemplate>
-                                            <table class="table table-condensed table-striped table-responsive compact hover stripe">
-                                                <thead>
-                                                    <th>
-                                                        <h4>Shift Date</h4>
-                                                    </th>
-                                                    <!--Header1-->
-                                                    <th>
-                                                        <h4>
-                                                            <asp:Label ID="lblEmp1" runat="server"></asp:Label>
-                                                            -<asp:Label ID="lblEmpName1" runat="server"></asp:Label>
-                                                        </h4>
-                                                    </th>
-                                                    <!--Header2-->
-                                                    <th>
-                                                        <h4></h4>
-                                                    </th>
-                                                    <!--Header3-->
-                                                    <th>
-                                                        <strong>
-                                                            <h4>
-                                                                <asp:Label ID="lblEmp2" runat="server"></asp:Label>
-                                                                -<asp:Label ID="lblEmpName2" runat="server"></asp:Label></h4>
-                                                        </strong>
-                                                    </th>
-                                                    <!--Header4-->
-                                                    <th>
-                                                        <h4>Headcount</h4>
-                                                    </th>
-                                                    <!--Header5-->
-                                                </thead>
-                                                <tbody>
-                                        </HeaderTemplate>
-                                        <ItemTemplate>
-                                            <tr>
-                                                <td>
-                                                    <p></p>
-                                                </td>
-                                                <!--Column1-->
-                                                <td>
-                                                    <em>Original Shift : </em>
-                                                    <asp:Label ID="lblOriginalShift1" CssClass="label pull-right bg-green" runat="server" Text='<%#Eval("ShiftCode1") %>'></asp:Label>
-
-                                                </td>
-                                                <!--Column2-->
-                                                <td></td>
-                                                <!--Column3-->
-                                                <td>
-                                                    <em>Original Shift : </em>
-                                                    <asp:Label ID="lblOriginalShift2" CssClass="label pull-right bg-green" runat="server" Text='<%#Eval("ShiftCode2") %>'></asp:Label>
-
-                                                </td>
-                                                <!--Column4-->
-                                                <td>
-                                                    <em>Pre-Swap Headcount : </em>
-                                                    <asp:Label ID="lblPreSwapHeadCount" CssClass="link-muted" Text='<%# Convert.ToInt32(Eval("isWorkingShift1")) + Convert.ToInt32(Eval("isWorkingShift2")) %>' runat="server"></asp:Label>
-
-                                                </td>
-                                                <!--Column5-->
-                                            </tr>
-                                            <!--Row1-->
-                                            <tr>
-                                                <td>
-                                                    <strong>
-                                                        <asp:Label ID="lblDate" runat="server" Text='<%# Convert.ToDateTime(Eval("ShiftDate1")).ToString("ddd, dd-MMM-yyyy") %>'></asp:Label>
-                                                    </strong>
-                                                    <asp:HiddenField ID="hfPleaseLock" Value='<%# Eval("PleaseLock") %>' runat="server" />
-                                                </td>
-                                                <!--Column1-->
-                                                <td>
-                                                    <asp:DropDownList ID="ddl1" runat="server" CssClass="form-control select2" Style="width: 100%"></asp:DropDownList>
-                                                </td>
-                                                <!--Column2-->
-                                                <td>
-                                                    <div class="btn-group">
-                                                        <button runat="server" id="btnSwapShift" class="btn btn-primary"><i class="fa fa-exchange"></i>&nbsp</button>
-                                                    </div>
-
-                                                </td>
-                                                <!--Column3-->
-                                                <td>
-                                                    <asp:DropDownList ID="ddl2" runat="server" CssClass="form-control select2" Style="width: 100%"></asp:DropDownList>
-                                                </td>
-                                                <!--Column4-->
-                                                <td>
-                                                    <input type="text" id="tbPostSwapHeadCount" style="width: 15%" readonly="readonly" class="form-control text-muted" placeholder="..." />
-                                                </td>
-                                                <!--Column5-->
-
-                                            </tr>
-                                            <!--Row2-->
-                                        </ItemTemplate>
-                                        <FooterTemplate>
-                                            </tbody>
-                                        </table>
-                                            <div class="row-fluid">
-                                                <div class="col-md-offset-8">
-                                                    <div class="btn-group">
-                                                        <asp:Button ID="btnSubmit" CssClass="btn btn-primary btn-flat" runat="server" OnClick="btnSubmit_Click" Text="Submit Shift Swap" />
-                                                        <asp:Button ID="btnCancel" CssClass="btn btn-warning btn-flat" runat="server" OnClick="btnCancel_Click" Text="Cancel Swap Request" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </FooterTemplate>
-                                    </asp:Repeater>
-                                </asp:Panel>
-                            </div>
-                            <!-- /.tab-pane -->
-                            <div class="tab-pane" id="tab_3" runat="server">
-                                <asp:GridView ID="gvSwapStatus" CssClass="table table-condensed table-bordered table-responsive"
-                                    runat="server" AutoGenerateColumns="false"
-                                    DataKeyNames="Id" OnRowDataBound="gvSwapStatus_RowDataBound">
-                                    <Columns>
-                                        <asp:BoundField DataField="Id" HeaderText="Id" />
-                                        <asp:BoundField DataField="EmpCode1" HeaderText="EmpCode" />
-                                        <asp:BoundField DataField="Initiator" HeaderText="Initiator" />
-                                        <asp:BoundField DataField="InitiatedOn" HeaderText="InitiatedOn" DataFormatString="{0:dd-MMM-yyyy HH:mm}" />
-                                        <asp:BoundField DataField="EmpCode2" HeaderText="ApproverECN" />
-                                        <asp:BoundField DataField="Approver" HeaderText="Approver" />
-                                        <asp:BoundField DataField="RepMgrCode" HeaderText="RepMgrCode" />
-                                        <asp:BoundField DataField="RepMgr" HeaderText="RepMgr" />
-                                        <asp:BoundField DataField="Date" HeaderText="Swap Date" DataFormatString="{0:ddd, dd-MMM-yyyy}" />
-                                        <asp:BoundField DataField="OriginalShift" HeaderText="Initiatiors Shift" />
-                                        <asp:BoundField DataField="SwappedShift" HeaderText="Swapped Shift" />
-                                        <asp:TemplateField HeaderText="Details">
-                                            <ItemTemplate>
-                                                <asp:Panel ID="pnlPendingActions" CssClass="btn-group" Visible="false" runat="server">
-                                                   
-                                                        <asp:Button ID="btnApprove" runat="server" CommandArgument='<%# Eval("Id") %>' CssClass="btn btn-success btn-sm"
-                                                            Text='<i class="fa fa-check"></i>' BorderWidth="1" 
-                                                            OnClick="btnApprove_Click" />
-                                                        <asp:Button ID="btnDecline" runat="server" CommandArgument='<%# Eval("Id") %>' CssClass="btn btn-danger btn-sm" 
-                                                            Text='<i class="fa fa-close"></i>' BorderWidth="1" 
-                                                            OnClick="btnDecline_Click" />
-                                                    
-                                                </asp:Panel>
-                                                <asp:Panel ID="pnlSwapInformation" Visible="false" runat="server">
-                                                    <asp:Label ID="lblSwapInformation" runat="server" ToolTip='<%# Eval("Id") %>' Text="Status : "></asp:Label>
-                                                </asp:Panel>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                    </Columns>
-                                </asp:GridView>
-                            </div>
-                            <!-- /.tab-pane -->
-                        </div>
-                        <!-- /.tab-content -->
-                    </div>
-                    <!-- nav-tabs-custom -->
-                    <!-- /.col -->
                 </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <asp:GridView ID="gvRoster" runat="server" AutoGenerateColumns="false"
+                                CssClass="table table-condensed table-responsive compact hover stripe"
+                                OnPreRender="gv_PreRender" DataKeyNames="ECN" GridLines="None" OnRowEditing="gvRoster_RowEditing" 
+                                 OnRowCancelingEdit="gvRoster_RowCancelingEdit" OnRowDataBound="gvRoster_RowDataBound">
+                                <Columns>
+                                    <asp:BoundField DataField="ECN" HeaderText="EmpID" ReadOnly="true" />
+                                    <asp:BoundField DataField="NAME" HeaderText="Name" ReadOnly="true" />
+                                    <asp:TemplateField>
+                                        <ItemTemplate>
+                                            <asp:Label ID="lbl0" Text='<%# Eval(dtSwapRoster.Columns[2].ColumnName.ToString()) %>' runat="server"></asp:Label>
+                                        </ItemTemplate>
+                                        <EditItemTemplate>
+                                            
+                                            <asp:Label ID="lbl0" Text='<%# Eval(dtSwapRoster.Columns[2].ColumnName.ToString()) %>' CssClass="label label-primary pull-right" runat="server"></asp:Label>
+                                                <asp:DropDownList ID="ddl0" CssClass="select2 form-control" Style="width: 100%" runat="server"></asp:DropDownList>
+                                            
+                                        </EditItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField>
+                                        <ItemTemplate>
+                                            <asp:Label ID="lbl1" Text='<%# Eval(dtSwapRoster.Columns[3].ColumnName.ToString()) %>' runat="server"></asp:Label>
+                                        </ItemTemplate>
+                                        <EditItemTemplate>
+                                            
+                                            <asp:Label ID="lbl1" Text='<%# Eval(dtSwapRoster.Columns[3].ColumnName.ToString()) %>' CssClass="label label-primary pull-right" runat="server"></asp:Label>
+                                            
+                                            <asp:DropDownList ID="ddl1" CssClass="select2 form-control" Style="width: 100%" runat="server"></asp:DropDownList>
+                                        </EditItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField>
+                                        <ItemTemplate>
+                                            <asp:Label ID="lbl2" Text='<%# Eval(dtSwapRoster.Columns[4].ColumnName.ToString()) %>' runat="server"></asp:Label>
+                                        </ItemTemplate>
+                                        <EditItemTemplate>
+                                            
+                                            <asp:Label ID="lbl2" Text='<%# Eval(dtSwapRoster.Columns[4].ColumnName.ToString()) %>' CssClass="label label-primary pull-right" runat="server"></asp:Label>
+                                            
+                                            <asp:DropDownList ID="ddl2" CssClass="select2 form-control" Style="width: 100%" runat="server"></asp:DropDownList>
+                                        </EditItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField>
+                                        <ItemTemplate>
+                                            <asp:Label ID="lbl3" Text='<%# Eval(dtSwapRoster.Columns[5].ColumnName.ToString()) %>' runat="server"></asp:Label>
+                                        </ItemTemplate>
+                                        <EditItemTemplate>
+                                            
+                                            <asp:Label ID="lbl3" Text='<%# Eval(dtSwapRoster.Columns[5].ColumnName.ToString()) %>' CssClass="label label-primary pull-right" runat="server"></asp:Label>
+                                            
+                                            <asp:DropDownList ID="ddl3" CssClass="select2 form-control" Style="width: 100%" runat="server"></asp:DropDownList>
+                                        </EditItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField>
+                                        <ItemTemplate>
+                                            <asp:Label ID="lbl4" Text='<%# Eval(dtSwapRoster.Columns[6].ColumnName.ToString()) %>' runat="server"></asp:Label>
+                                        </ItemTemplate>
+                                        <EditItemTemplate>
+                                            
+                                            <asp:Label ID="lbl4" Text='<%# Eval(dtSwapRoster.Columns[6].ColumnName.ToString()) %>' CssClass="label label-primary pull-right" runat="server"></asp:Label>
+                                            
+                                            <asp:DropDownList ID="ddl4" CssClass="select2 form-control" Style="width: 100%" runat="server"></asp:DropDownList>
+                                        </EditItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField>
+                                        <ItemTemplate>
+                                            <asp:Label ID="lbl5" Text='<%# Eval(dtSwapRoster.Columns[7].ColumnName.ToString()) %>' runat="server"></asp:Label>
+                                        </ItemTemplate>
+                                        <EditItemTemplate>
+                                            
+                                            <asp:Label ID="lbl5" Text='<%# Eval(dtSwapRoster.Columns[7].ColumnName.ToString()) %>' CssClass="label label-primary pull-right" runat="server"></asp:Label>
+                                            
+                                            <asp:DropDownList ID="ddl5" CssClass="select2 form-control" Style="width: 100%" runat="server"></asp:DropDownList>
+                                        </EditItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField>
+                                        <ItemTemplate>
+                                            <asp:Label ID="lbl6" Text='<%# Eval(dtSwapRoster.Columns[8].ColumnName.ToString()) %>' runat="server"></asp:Label>
+                                        </ItemTemplate>
+                                        <EditItemTemplate>
+                                            
+                                            <asp:Label ID="lbl6" Text='<%# Eval(dtSwapRoster.Columns[8].ColumnName.ToString()) %>' CssClass="label label-primary pull-right" runat="server"></asp:Label>
+                                            
+                                            <asp:DropDownList ID="ddl6" CssClass="select2 form-control" Style="width: 100%" runat="server"></asp:DropDownList>
+                                        </EditItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:CommandField DeleteText="" EditText="Select" InsertText="" NewText="" SelectText="" ShowEditButton="True" UpdateText="Initiate" ButtonType="Button" ShowHeader="True" HeaderText="Swap With">
+                                        <ControlStyle CssClass="btn btn-primary"></ControlStyle>
+                                    </asp:CommandField>
+
+                                </Columns>
+                            </asp:GridView>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-        </ContentTemplate>
+        </div>
+    </div>
+    <%--</ContentTemplate>
         <Triggers>
         </Triggers>
-    </asp:UpdatePanel>
+    </asp:UpdatePanel>--%>
 </asp:Content>
+
 <asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">
     <!-- Select2 -->
     <script src="AdminLTE/bower_components/select2/dist/js/select2.full.min.js"></script>
@@ -343,9 +220,6 @@
 
             //Initialize Select2 Elements
             $('.select2').select2({});
-
-            //$('input[id*="hfPleaseLock"]')
-
             $('btn[id*="btnSwapShift"]').click(function () {
 
                 var myRow = $(this).parents('tr');
@@ -361,8 +235,8 @@
 
                     var a = ddl1.val();
                     var b = ddl2.val();
-                    //alert('Paras Original Shift : ' + a);
-                    //alert('Vishal Original Shift :' + b);
+                    //alert('Paras  ' + a);
+                    //alert('Vishal ' + b);
                     // Initiate swap...
 
                     ddl1.val(b);
@@ -477,10 +351,6 @@
 
 
             });
-
-
-
-
         }
 
         function isWorkingShift(Shift) {
@@ -494,7 +364,6 @@
                 }
             }
         }
-
 
         $(function () {
             pluginsInitializer();

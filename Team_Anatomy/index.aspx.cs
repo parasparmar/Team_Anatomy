@@ -52,7 +52,7 @@ public partial class index : System.Web.UI.Page
                 {
 
                     Session["dtEmp"] = dt;
-                    Response.Redirect("roster.aspx", false);
+                    Response.Redirect("swap.aspx", false);
                 }
                 else
                 {

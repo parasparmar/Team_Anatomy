@@ -199,7 +199,7 @@
                         <div class="box-body">
                             <asp:Panel ID="pnlRoster" runat="server" Visible="true">
                                 <asp:GridView ID="gvRoster" runat="server" AutoGenerateColumns="false"
-                                    CssClass="table table-condensed table-responsive compact hover stripe"
+                                    CssClass="table table-condensed table-responsive compact hover stripe DataTable"
                                     OnPreRender="gv_PreRender" DataKeyNames="EmpID">
                                     <Columns>
                                         <asp:BoundField DataField="EmpID" HeaderText="EmpID" />

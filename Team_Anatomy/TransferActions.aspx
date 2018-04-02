@@ -60,7 +60,7 @@
                     <asp:BoundField DataField="ToMgrName" HeaderText="To" />
 
                     <asp:BoundField DataField="InitiatedBy" HeaderText="Initiator" />
-                    <asp:BoundField DataField="InitOn" HeaderText="Initiated"  DataFormatString="{0:dd-MMM-yyyy HH:mm:ss.ms}" />
+                    <asp:BoundField DataField="InitOn" HeaderText="Initiated" DataFormatString="{0:dd-MMM-yyyy HH:mm:ss.ms}" />
                     <asp:BoundField DataField="MovementProgress" HeaderText="Status" />
                     <asp:TemplateField HeaderText="Pending Action">
                         <ItemTemplate>
@@ -82,7 +82,7 @@
                 </Columns>
 
                 <EmptyDataTemplate>
-                    <h1>There are no transfers pending at your end or for anyone in your team.</h1> 
+                    <h1>There are no transfers pending at your end or for anyone in your team.</h1>
                 </EmptyDataTemplate>
             </asp:GridView>
         </div>
@@ -101,28 +101,22 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-
-
             <asp:GridView ID="gvCompletedTransfers" runat="server" CssClass="table table-responsive"
                 OnPreRender="gv_PreRender" DataKeyNames="Id,EmpId" AutoGenerateColumns="false">
-
                 <Columns>
-
                     <asp:BoundField DataField="EmpName" HeaderText="Employee" />
                     <asp:BoundField DataField="MovementType" HeaderText="Type" />
                     <asp:BoundField DataField="EffectiveDate" HeaderText="Effective" DataFormatString="{0:dd-MMM-yyyy}" />
                     <asp:BoundField DataField="FromMgrName" HeaderText="From" />
                     <asp:BoundField DataField="ToMgrName" HeaderText="To" />
-
                     <asp:BoundField DataField="InitiatedBy" HeaderText="Initiator" />
                     <asp:BoundField DataField="InitOn" HeaderText="Initiated" DataFormatString="{0:dd-MMM-yyyy HH:mm:ss.ms}" />
                     <asp:BoundField DataField="MovementProgress" HeaderText="Status" />
                     <asp:BoundField DataField="UpdatedOn" HeaderText="Completed" DataFormatString="{0:dd-MMM-yyyy HH:mm:ss.ms}" />
                     <asp:BoundField DataField="Id" HeaderText="MovementID" />
                 </Columns>
-
                 <EmptyDataTemplate>
-                     <h1>No transfers found for anyone in your team.</h1> 
+                    <h1>No transfers found for anyone in your team.</h1>
                 </EmptyDataTemplate>
             </asp:GridView>
         </div>

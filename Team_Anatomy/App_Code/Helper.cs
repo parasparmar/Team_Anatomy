@@ -457,10 +457,10 @@ public class EmailSender
     {
         int sentId = 0;
         string errorMessage = string.Empty;
-        if (InitiatorEmpId != 0 && RecipientsEmpId != null && Subject != null & Body != null)
+        if (RecipientsEmpId != null && Subject != null & Body != null)
         {
             RecipientsEmpId = convertAndReplaceDelimitedEmpIDs2EmailIds(RecipientsEmpId);
-            string InitiatorEmailID = EmailFromEmpID(InitiatorEmpId);
+            string InitiatorEmailID = "Support_iAccess@sitel.com";
             if (CCsEmpId != null && CCsEmpId.Length > 0) { CCsEmpId = convertAndReplaceDelimitedEmpIDs2EmailIds(CCsEmpId); }
             if (BCCsEmpId != null && BCCsEmpId.Length > 0) { BCCsEmpId = convertAndReplaceDelimitedEmpIDs2EmailIds(BCCsEmpId); }
             try
@@ -468,7 +468,7 @@ public class EmailSender
                 using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
                 {
                     cn.Open();
-                    using (SqlCommand cmd = new SqlCommand("Master.dbo.SendEMailDB", cn))
+                    using (SqlCommand cmd = new SqlCommand("Common.dbo.SendEMailDB", cn))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
 
@@ -481,16 +481,16 @@ public class EmailSender
                         cmd.Parameters.AddWithValue("@xfrom_address", InitiatorEmailID);
                         if (EmailType == 0)
                         {
-                            string ipPattern = @"remip \[(\d+\.\d+\.\d+\.\d+)\]";
+                            string ipPattern = @"\[(\d+\.\d+\.\d+\.\d+)\]";
                             string whichServer = my.getConnectionString();
                             Match mc = Regex.Match(whichServer, ipPattern);
-                            if (mc.Value == "10.252.252.122")
+                            if (mc.Value == "10.252.252.121")
                             {
-                                EmailType = (int)emailtype.Development;
+                                EmailType = (int)emailtype.Production;
                             }
                             else
                             {
-                                EmailType = (int)emailtype.Production;
+                                EmailType = (int)emailtype.Development;
                             }
                         }
                         cmd.Parameters.AddWithValue("@xEmailType", EmailType);

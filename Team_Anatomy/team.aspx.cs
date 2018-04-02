@@ -40,6 +40,7 @@ public partial class team : System.Web.UI.Page
         }
         catch (Exception Ex)
         {
+            string Message = Ex.Message;
             Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "index.aspx", false);
         }
     }
