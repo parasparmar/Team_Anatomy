@@ -26,7 +26,7 @@ public partial class movement : System.Web.UI.Page
         try
         {
             dtEmp = Session["dtEmp"] as DataTable;
-            if (dtEmp.Rows.Count <= 0)
+            if (dtEmp == null)
             {
                 Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "index.aspx", false);
             }
@@ -288,7 +288,7 @@ public partial class movement : System.Web.UI.Page
     }
     private void fillTeamList(int EmpCode, string gvTeamList)
     {
-        if (dtEmp.Rows.Count > 0)
+        if (dtEmp != null && dtEmp.Rows.Count > 0)
         {
             GridView v = (GridView)Page.FindControlRecursive(gvTeamList);
             v.DataSource = my.GetData("Exec [WFMP].[Transfer_TeamList] " + EmpCode);
@@ -301,7 +301,7 @@ public partial class movement : System.Web.UI.Page
     }
     private void fillTeamList(int EmpCode, ref GridView gvTeamList)
     {
-        if (dtEmp.Rows.Count > 0)
+        if (dtEmp != null && dtEmp.Rows.Count > 0)
         {
             gvTeamList.DataSource = my.GetData("Exec [WFMP].[Transfer_TeamList] " + EmpCode);
             gvTeamList.DataBind();
@@ -539,7 +539,7 @@ public partial class movement : System.Web.UI.Page
                 //Transfers.Add(M);
                 // Go...
 
-                rowsAffected = M.InitiateTransfer();                
+                rowsAffected = M.InitiateTransfer();
             }
 
         }

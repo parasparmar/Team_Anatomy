@@ -181,6 +181,7 @@ public partial class TransferActions : System.Web.UI.Page
         }
         catch (Exception Ex)
         {
+            Console.Write(Ex.Message);
             Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "index.aspx", false);
         }
 

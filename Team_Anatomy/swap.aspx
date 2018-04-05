@@ -23,6 +23,12 @@
             display: none;
         }
     </style>
+    <script type="text/javascript">
+function SetMyID(xID) {
+                $('#xMyID').val(xID);
+
+            }
+    </script>
 
 </asp:Content>
 
@@ -59,7 +65,7 @@
                     </div>
                 </div>
                 <div class="box-body">
-                    <div class="row">
+                    <asp:Panel ID="pnl1" runat="server" Visible="true" CssClass="row">
                         <div class="col-md-3">
                             <div class="form-group">
                                 Year
@@ -88,121 +94,57 @@
                             </div>
                         </div>
                         <!-- Role Selection-->
-                    </div>
+                    </asp:Panel>
+                    <!--Roster Wise View-->
                 </div>
             </div>
             <!--tabcontent-->
         </div>
         <!-- /.col -->
     </div>
-    <div class="row-fluid">
+    <asp:Panel ID="pnl2" runat="server" CssClass="row-fluid" Visible="true">
         <div class="col-md-12">
             <div class="box box-solid box-primary">
                 <div class="box-header with-border">
                     <h4 class="box-title">
                         <asp:Literal ID="ltlRosterHeading" runat="server" Text="Week : "></asp:Literal>
+                        <asp:Button ID="btnSubmit" runat="server" CssClass="btn btn-info" OnClick="btnSubmit_Click" />
                     </h4>
                 </div>
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-md-12">
-                            <asp:GridView ID="gvRoster" runat="server" AutoGenerateColumns="false"
-                                CssClass="table table-condensed table-responsive compact hover stripe"
-                                OnPreRender="gv_PreRender" DataKeyNames="ECN" GridLines="None" OnRowEditing="gvRoster_RowEditing" 
-                                 OnRowCancelingEdit="gvRoster_RowCancelingEdit" OnRowDataBound="gvRoster_RowDataBound">
-                                <Columns>
-                                    <asp:BoundField DataField="ECN" HeaderText="EmpID" ReadOnly="true" />
-                                    <asp:BoundField DataField="NAME" HeaderText="Name" ReadOnly="true" />
-                                    <asp:TemplateField>
-                                        <ItemTemplate>
-                                            <asp:Label ID="lbl0" Text='<%# Eval(dtSwapRoster.Columns[2].ColumnName.ToString()) %>' runat="server"></asp:Label>
-                                        </ItemTemplate>
-                                        <EditItemTemplate>
-                                            
-                                            <asp:Label ID="lbl0" Text='<%# Eval(dtSwapRoster.Columns[2].ColumnName.ToString()) %>' CssClass="label label-primary pull-right" runat="server"></asp:Label>
-                                                <asp:DropDownList ID="ddl0" CssClass="select2 form-control" Style="width: 100%" runat="server"></asp:DropDownList>
-                                            
-                                        </EditItemTemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField>
-                                        <ItemTemplate>
-                                            <asp:Label ID="lbl1" Text='<%# Eval(dtSwapRoster.Columns[3].ColumnName.ToString()) %>' runat="server"></asp:Label>
-                                        </ItemTemplate>
-                                        <EditItemTemplate>
-                                            
-                                            <asp:Label ID="lbl1" Text='<%# Eval(dtSwapRoster.Columns[3].ColumnName.ToString()) %>' CssClass="label label-primary pull-right" runat="server"></asp:Label>
-                                            
-                                            <asp:DropDownList ID="ddl1" CssClass="select2 form-control" Style="width: 100%" runat="server"></asp:DropDownList>
-                                        </EditItemTemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField>
-                                        <ItemTemplate>
-                                            <asp:Label ID="lbl2" Text='<%# Eval(dtSwapRoster.Columns[4].ColumnName.ToString()) %>' runat="server"></asp:Label>
-                                        </ItemTemplate>
-                                        <EditItemTemplate>
-                                            
-                                            <asp:Label ID="lbl2" Text='<%# Eval(dtSwapRoster.Columns[4].ColumnName.ToString()) %>' CssClass="label label-primary pull-right" runat="server"></asp:Label>
-                                            
-                                            <asp:DropDownList ID="ddl2" CssClass="select2 form-control" Style="width: 100%" runat="server"></asp:DropDownList>
-                                        </EditItemTemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField>
-                                        <ItemTemplate>
-                                            <asp:Label ID="lbl3" Text='<%# Eval(dtSwapRoster.Columns[5].ColumnName.ToString()) %>' runat="server"></asp:Label>
-                                        </ItemTemplate>
-                                        <EditItemTemplate>
-                                            
-                                            <asp:Label ID="lbl3" Text='<%# Eval(dtSwapRoster.Columns[5].ColumnName.ToString()) %>' CssClass="label label-primary pull-right" runat="server"></asp:Label>
-                                            
-                                            <asp:DropDownList ID="ddl3" CssClass="select2 form-control" Style="width: 100%" runat="server"></asp:DropDownList>
-                                        </EditItemTemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField>
-                                        <ItemTemplate>
-                                            <asp:Label ID="lbl4" Text='<%# Eval(dtSwapRoster.Columns[6].ColumnName.ToString()) %>' runat="server"></asp:Label>
-                                        </ItemTemplate>
-                                        <EditItemTemplate>
-                                            
-                                            <asp:Label ID="lbl4" Text='<%# Eval(dtSwapRoster.Columns[6].ColumnName.ToString()) %>' CssClass="label label-primary pull-right" runat="server"></asp:Label>
-                                            
-                                            <asp:DropDownList ID="ddl4" CssClass="select2 form-control" Style="width: 100%" runat="server"></asp:DropDownList>
-                                        </EditItemTemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField>
-                                        <ItemTemplate>
-                                            <asp:Label ID="lbl5" Text='<%# Eval(dtSwapRoster.Columns[7].ColumnName.ToString()) %>' runat="server"></asp:Label>
-                                        </ItemTemplate>
-                                        <EditItemTemplate>
-                                            
-                                            <asp:Label ID="lbl5" Text='<%# Eval(dtSwapRoster.Columns[7].ColumnName.ToString()) %>' CssClass="label label-primary pull-right" runat="server"></asp:Label>
-                                            
-                                            <asp:DropDownList ID="ddl5" CssClass="select2 form-control" Style="width: 100%" runat="server"></asp:DropDownList>
-                                        </EditItemTemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField>
-                                        <ItemTemplate>
-                                            <asp:Label ID="lbl6" Text='<%# Eval(dtSwapRoster.Columns[8].ColumnName.ToString()) %>' runat="server"></asp:Label>
-                                        </ItemTemplate>
-                                        <EditItemTemplate>
-                                            
-                                            <asp:Label ID="lbl6" Text='<%# Eval(dtSwapRoster.Columns[8].ColumnName.ToString()) %>' CssClass="label label-primary pull-right" runat="server"></asp:Label>
-                                            
-                                            <asp:DropDownList ID="ddl6" CssClass="select2 form-control" Style="width: 100%" runat="server"></asp:DropDownList>
-                                        </EditItemTemplate>
-                                    </asp:TemplateField>
-                                    <asp:CommandField DeleteText="" EditText="Select" InsertText="" NewText="" SelectText="" ShowEditButton="True" UpdateText="Initiate" ButtonType="Button" ShowHeader="True" HeaderText="Swap With">
-                                        <ControlStyle CssClass="btn btn-primary"></ControlStyle>
-                                    </asp:CommandField>
+                        <asp:HiddenField ID="xMyID" runat="server" Value="" />
 
-                                </Columns>
-                            </asp:GridView>
+                        <div id="dvRoster" class="col-md-12" runat="server">
+                            <%--<asp:Table ID="tblRoster" runat="server" CssClass="xcls datatable table table-responsive table-condensed">--%>
                         </div>
                     </div>
                 </div>
 
             </div>
         </div>
-    </div>
+    </asp:Panel>
+    <asp:Panel ID="Panel1" runat="server" CssClass="row-fluid" Visible="true">
+        <div class="col-md-12">
+            <div class="box box-solid box-primary">
+                <div class="box-header with-border">
+                    <h4 class="box-title">
+                        <asp:Literal ID="Literal1" runat="server" Text="Week : "></asp:Literal><asp:Button ID="Button1" runat="server" CssClass="btn btn-info" />
+                    </h4>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div id="dvSwap" class="col-md-12" runat="server">
+                            <%--<asp:Table ID="tblRoster" runat="server" CssClass="xcls datatable table table-responsive table-condensed">--%>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </asp:Panel>
+    <asp:Panel runat="server" ID="pnl3" CssClass="row-fluid" Visible="false">
+    </asp:Panel>
     <%--</ContentTemplate>
         <Triggers>
         </Triggers>
@@ -220,149 +162,21 @@
 
             //Initialize Select2 Elements
             $('.select2').select2({});
-            $('btn[id*="btnSwapShift"]').click(function () {
+            // Bind an event
+            $('.select2[id*="ddl"]').on('select2:select', function (e) {
+                var ddlX = $(this).attr('id')
+                var myID = ddlX.substring(ddlX.length - 1);
 
-                var myRow = $(this).parents('tr');
-
-                var ddl1 = myRow.find('#ddl1');
-                var ddl2 = myRow.find('#ddl2');
-
-                var hf1 = myRow.find('#hfPleaseLock');
-                if (hf1.val() == 1) {
-                    alert("This shift is locked for swaps.");
-
-                } else {
-
-                    var a = ddl1.val();
-                    var b = ddl2.val();
-                    //alert('Paras  ' + a);
-                    //alert('Vishal ' + b);
-                    // Initiate swap...
-
-                    ddl1.val(b);
-                    ddl1.trigger('change');
-
-                    ddl2.val(a);
-                    ddl2.trigger('change');
-
-                    //alert('Paras Swapped Shift : ' + ddl1.val());
-                    //alert('Vishal Swapped Shift : ' + ddl2.val());
-
-                }
-
-
-
+                var data = e.params.data;
+                var lblOriginalShift = "lbl" + myID;
+                var lblSelectedShift = "Newlbl" + myID;
+                var HiddenField = "hf" + myID;
+                $("#" + lblSelectedShift).text(data.text);
+                $("#" + HiddenField).val(data.id);
+                //alert(myID + " Set ID : " + $("#" + HiddenField).val() + " value : " + $("#" + lblSelectedShift).text());
             });
-            $(".select2").change(function () {
-                var myRow = $(this).parents('tr');
-                var btnSwapShift = myRow.find("#btnSwapShift");
 
 
-                var lblOriginalShift1 = myRow.prev().find('#lblOriginalShift1');
-                //alert('originalShift1 : ' + lblOriginalShift1.html());
-
-                var lblOriginalShift2 = myRow.prev().find('#lblOriginalShift2');
-                // alert('originalShift2 : ' + lblOriginalShift2.html());
-
-                var ddl1 = myRow.find('#ddl1');
-                var ddl2 = myRow.find('#ddl2');
-
-                var originalShift1 = lblOriginalShift1.text();
-                var selectedShift1 = ddl1.find(':selected').first().val();
-                if (selectedShift1 == null) { ddl1.find(originalShift1).select2(':select'); }
-                //alert('originalShift1 : ' + originalShift1 + ' & selectedShift1 : ' + selectedShift1);
-
-
-                var originalShift2 = lblOriginalShift2.text();
-                var selectedShift2 = ddl2.find(':selected').first().val();
-                if (selectedShift2 == null) { ddl1.find(originalShift2).select2(':select'); }
-                // When the dropdownlist is changed, check if the original shift matches the selected shift.
-                // check if the original shift matches the selected shift. If it does then ensure that the button is of primary class. else warning.
-
-                var originalHC1 = 0;
-                var originalHC2 = 0;
-                var selectedShiftHC1 = 0;
-                var selectedShiftHC2 = 0;
-                if (isWorkingShift(originalShift1)) { originalHC1 = 1; } else { originalHC1 = 0; }
-                if (isWorkingShift(originalShift2)) { originalHC2 = 1; } else { originalHC2 = 0; }
-                if (isWorkingShift(selectedShift1)) { selectedShiftHC1 = 1; } else { selectedShiftHC1 = 0; }
-                if (isWorkingShift(selectedShift2)) { selectedShiftHC2 = 1; } else { selectedShiftHC2 = 0; }
-                var originalHC = parseInt(originalHC1) + parseInt(originalHC2);
-                var selectedShiftHC = parseInt(selectedShiftHC1) + parseInt(selectedShiftHC2);
-
-                var tbPostSwapHeadCount = myRow.find('#tbPostSwapHeadCount');
-                tbPostSwapHeadCount.val(selectedShiftHC);
-
-                btnSwapShift.toggleClass('btn-primary btn-warning');
-                if (originalHC == selectedShiftHC) {
-
-                    $('#btnSubmit').removeAttr('disabled');
-                    $(this).enabled = true;
-                    if (originalShift1 == selectedShift1) {
-                        lblOriginalShift1.removeClass('bg-red');
-                        lblOriginalShift1.removeClass('bg-yellow');
-                        lblOriginalShift1.addClass('bg-green');
-
-                    } else {
-                        lblOriginalShift1.removeClass('bg-red');
-                        lblOriginalShift1.removeClass('bg-green');
-                        lblOriginalShift1.addClass('bg-yellow');
-                    }
-
-                    if (originalShift2 == selectedShift2) {
-                        lblOriginalShift2.removeClass('bg-red');
-                        lblOriginalShift2.removeClass('bg-yellow');
-                        lblOriginalShift2.addClass('bg-green');
-                    } else {
-                        lblOriginalShift2.removeClass('bg-red');
-                        lblOriginalShift2.removeClass('bg-green');
-                        lblOriginalShift2.addClass('bg-yellow');
-                    }
-
-                } else {
-
-                    $('#btnSubmit').attr('disabled');
-                    $(this).enabled = false;
-                    if (originalShift1 == selectedShift1) {
-                        lblOriginalShift1.removeClass('bg-red');
-                        lblOriginalShift1.removeClass('bg-yellow');
-                        lblOriginalShift1.addClass('bg-green');
-
-                    } else {
-                        lblOriginalShift1.removeClass('bg-green');
-                        lblOriginalShift1.removeClass('bg-yellow');
-                        lblOriginalShift1.addClass('bg-red');
-                    }
-
-                    if (originalShift2 == selectedShift2) {
-                        lblOriginalShift2.removeClass('bg-red');
-                        lblOriginalShift2.removeClass('bg-yellow');
-                        lblOriginalShift2.addClass('bg-green');
-                    } else {
-                        lblOriginalShift2.removeClass('bg-green');
-                        lblOriginalShift2.removeClass('bg-yellow');
-                        lblOriginalShift2.addClass('bg-red');
-                    }
-
-                }
-
-                // Check if the DDL1 OR DDL2 shiftS contain WO, then HC=0, take the sum of ddl1&2_HC and populate the tbPostSwapHeadCount textbox.
-
-
-
-            });
-        }
-
-        function isWorkingShift(Shift) {
-            if (Shift != undefined && Shift.length > 0) {
-                if (Shift.indexOf(":") > 0) {
-                    return true;
-                } else if (Shift == "W0") {
-                    return false;
-                } else {
-                    return false;
-                }
-            }
         }
 
         $(function () {

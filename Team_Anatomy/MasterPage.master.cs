@@ -32,7 +32,7 @@ public partial class MasterPage : System.Web.UI.MasterPage
         try
         {
             dt = (DataTable)Session["dtEmp"];
-            if (dt.Rows.Count > 0)
+            if (dt != null)
             {
                 DataRow dr = dt.Rows[0];
                 lblName.Text = dr["First_Name"] + " " + dr["Last_Name"];

@@ -29,7 +29,7 @@ public partial class myroster : System.Web.UI.Page
             try
             {
                 dtEmp = (DataTable)Session["dtEmp"];
-                if (dtEmp.Rows.Count <= 0)
+                if (dtEmp == null)
                 {
                     Response.Redirect("index.aspx", false);
                 }
