@@ -346,6 +346,38 @@ public partial class swap_p : System.Web.UI.Page
 
             }
         }
+
+        if (e.Item.ItemType == ListItemType.Footer)
+        {
+            for (int i = 1; i < dtSwapRoster.Columns.Count; i++)
+            {
+                Label h = e.Item.FindControl("lblHCBefore" + i) as Label;
+                Label k = e.Item.FindControl("lblHCAfter" + i) as Label;
+                if (i == 2)
+                {
+                    h.Text = "Working Headcount";
+                }
+                else if (i >= 3)
+                {
+                    // The sum of all shifts containing : and not equal to 00:00:00 to 00:00:00
+                    int workingShifts = 0;
+                    string columnName = dtSwapRoster.Columns[i].ColumnName.ToString();
+                    var ids = dtSwapRoster.AsEnumerable().Select(r => r.Field<string>(columnName)).ToList();
+                    foreach (string id in ids)
+                    {
+                        if (id.Contains(":") && id.Contains("-"))
+                        {
+                            workingShifts++;
+                        }
+                    }
+                    h.Text = workingShifts.ToString();
+                    k.Text = workingShifts.ToString();
+                }
+
+            }
+        }
+
+
         if ((e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem) && e.Item.ItemIndex < 3)
         {
             for (int j = 1; j < dtSwapRoster.Columns.Count; j++)
@@ -372,19 +404,17 @@ public partial class swap_p : System.Web.UI.Page
                         ListItem li2 = new ListItem(SwappableShift);
                         ddl.Items.Add(li2);
                     }
-                    
+
                     ddl.SelectedValue = myShift;
 
                     // Before Label populated
                     Label d = e.Item.FindControl("lblBefore" + j) as Label;
                     d.Text = dtSwapRoster.Rows[e.Item.ItemIndex][j].ToString();
-
-                  
-
                 }
             }
         }
     }
+
 }
 
 class SwapShift

@@ -242,43 +242,112 @@
                                         </td>
                                         <td>
                                             <asp:Label ID="lblBefore3" runat="server" CssClass="label pull-left bg-green"></asp:Label>
+
                                             <asp:Label ID="lblAfter3" runat="server" CssClass="label pull-right bg-yellow"></asp:Label>
                                             <asp:DropDownList ID="ddl3" runat="server" CssClass="form-control"></asp:DropDownList>
                                         </td>
                                         <td>
                                             <asp:Label ID="lblBefore4" runat="server" CssClass="label pull-left bg-green"></asp:Label>
+
                                             <asp:Label ID="lblAfter4" runat="server" CssClass="label pull-right bg-yellow"></asp:Label>
                                             <asp:DropDownList ID="ddl4" runat="server" CssClass="form-control"></asp:DropDownList>
                                         </td>
                                         <td>
                                             <asp:Label ID="lblBefore5" runat="server" CssClass="label pull-left bg-green"></asp:Label>
+
                                             <asp:Label ID="lblAfter5" runat="server" CssClass="label pull-right bg-yellow"></asp:Label>
                                             <asp:DropDownList ID="ddl5" runat="server" CssClass="form-control"></asp:DropDownList>
                                         </td>
                                         <td>
                                             <asp:Label ID="lblBefore6" runat="server" CssClass="label pull-left bg-green"></asp:Label>
+
                                             <asp:Label ID="lblAfter6" runat="server" CssClass="label pull-right bg-yellow"></asp:Label>
                                             <asp:DropDownList ID="ddl6" runat="server" CssClass="form-control"></asp:DropDownList>
                                         </td>
                                         <td>
                                             <asp:Label ID="lblBefore7" runat="server" CssClass="label pull-left bg-green"></asp:Label>
+
                                             <asp:Label ID="lblAfter7" runat="server" CssClass="label pull-right bg-yellow"></asp:Label>
                                             <asp:DropDownList ID="ddl7" runat="server" CssClass="form-control"></asp:DropDownList>
                                         </td>
                                         <td>
                                             <asp:Label ID="lblBefore8" runat="server" CssClass="label pull-left bg-green"></asp:Label>
+
                                             <asp:Label ID="lblAfter8" runat="server" CssClass="label pull-right bg-yellow"></asp:Label>
                                             <asp:DropDownList ID="ddl8" runat="server" CssClass="form-control"></asp:DropDownList>
                                         </td>
                                         <td>
                                             <asp:Label ID="lblBefore9" runat="server" CssClass="label pull-left bg-green"></asp:Label>
+
                                             <asp:Label ID="lblAfter9" runat="server" CssClass="label pull-right bg-yellow"></asp:Label>
                                             <asp:DropDownList ID="ddl9" runat="server" CssClass="form-control"></asp:DropDownList>
                                         </td>
                                     </tr>
                                 </ItemTemplate>
                                 <FooterTemplate>
-                                    </tbody>                                    
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td>
+                                                <asp:Label ID="lblHCBefore1" runat="server"></asp:Label>
+                                            </td>
+                                            <td>
+                                                <asp:Label ID="lblHCBefore2" runat="server"></asp:Label>
+                                            </td>
+                                            <td>
+
+                                                <i class="fa fa-exchange">
+                                                    <asp:Label ID="lblHCBefore3" runat="server" CssClass="label pull-left bg-green"></asp:Label>
+                                                    <asp:Label ID="lblHCAfter3" runat="server" CssClass="label  bg-yellow"></asp:Label>
+
+                                                </i>
+
+                                            </td>
+                                            <td>
+                                                
+                                                <i class="fa fa-exchange">
+                                                    <asp:Label ID="lblHCBefore4" runat="server" CssClass="label pull-left bg-green"></asp:Label>
+                                                    <asp:Label ID="lblHCAfter4" runat="server" CssClass="label  bg-yellow"></asp:Label>
+                                                </i>
+
+                                            </td>
+                                            <td>
+
+                                                <i class="fa fa-exchange">
+                                                    <asp:Label ID="lblHCBefore5" runat="server" CssClass="label pull-left bg-green"></asp:Label>
+                                                    <asp:Label ID="lblHCAfter5" runat="server" CssClass="label  bg-yellow"></asp:Label></i>
+
+                                            </td>
+                                            <td>
+
+                                                <i class="fa fa-exchange">
+                                                    <asp:Label ID="lblHCBefore6" runat="server" CssClass="label pull-left bg-green"></asp:Label>
+                                                    <asp:Label ID="lblHCAfter6" runat="server" CssClass="label  bg-yellow"></asp:Label></i>
+
+                                            </td>
+                                            <td>
+
+                                                <i class="fa fa-exchange">
+                                                    <asp:Label ID="lblHCBefore7" runat="server" CssClass="label pull-left bg-green"></asp:Label>
+                                                    <asp:Label ID="lblHCAfter7" runat="server" CssClass="label  bg-yellow"></asp:Label></i>
+
+                                            </td>
+                                            <td>
+
+                                                <i class="fa fa-exchange">
+                                                    <asp:Label ID="lblHCBefore8" runat="server" CssClass="label pull-left bg-green"></asp:Label>
+                                                    <asp:Label ID="lblHCAfter8" runat="server" CssClass="label  bg-yellow"></asp:Label></i>
+
+                                            </td>
+                                            <td>
+
+                                                <i class="fa fa-exchange">
+                                                    <asp:Label ID="lblHCBefore9" runat="server" CssClass="label pull-left bg-green"></asp:Label>
+                                                    <asp:Label ID="lblHCAfter9" runat="server" CssClass="label  bg-yellow"></asp:Label></i>
+
+                                            </td>
+                                        </tr>
+                                    </tfoot>
                                     </table>
                                 </FooterTemplate>
                             </asp:Repeater>
@@ -350,9 +419,11 @@
                 var index = MyRow.index();
 
                 ShiftSwapper($(this), index);
+
             });
 
             function ShiftSwapper(ddlX, index) {
+
                 var toggle = 0;
                 if (index == 1) { toggle = 0; } else { toggle = 1; }
 
@@ -360,18 +431,27 @@
                 var ddlID = ddlX.attr('id');
                 var myID = ddlID.substring(ddlID.length - 1);
                 if (parseInt(myID)) {
-                    
-                    var theID = '[id^="lblBefore' + + myID + '"]' ;                    
+
+                    var theID = '[id^="lblBefore' + myID + '"]';
                     var lblBeforeShift = $(theID).eq(index);
                     var BeforeShift = lblBeforeShift.text();
-                    
-                    theID = '[id^="lblAfter' + + myID + '"]';
+
+                    theID = '[id^="lblAfter' + myID + '"]';
                     var lblAfterShift = $(theID).eq(index);
                     lblAfterShift.text("");
                     if (BeforeShift != SelectedShift) {
                         lblAfterShift.text(SelectedShift);
                     }
                 }
+            }
+
+            function ComplianceChecks() {
+                //Checks for daily Headcount invariance.
+                var HCBefore = $("[id^='lblHCBefore']");
+                var HCAfter = $("[id^='lblHCAfter']");
+                //Checks for at least 1 WO per week.
+
+                //Disable approved leave swaps.
             }
 
         }
