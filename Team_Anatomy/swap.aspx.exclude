@@ -129,14 +129,16 @@ function SetMyID(xID) {
             <div class="box box-solid box-primary">
                 <div class="box-header with-border">
                     <h4 class="box-title">
-                        <asp:Literal ID="Literal1" runat="server" Text="Week : "></asp:Literal><asp:Button ID="Button1" runat="server" CssClass="btn btn-info" />
+                        <asp:Literal ID="Literal1" runat="server" Text="Week : "></asp:Literal>
+                        <asp:Button ID="btn2" runat="server" CssClass="btn btn-info" OnClick="Button1_Click"/>
                     </h4>
                 </div>
                 <div class="box-body">
                     <div class="row">
                         <div id="dvSwap" class="col-md-12" runat="server">
-                            <%--<asp:Table ID="tblRoster" runat="server" CssClass="xcls datatable table table-responsive table-condensed">--%>
                         </div>
+                        
+
                     </div>
                 </div>
 
