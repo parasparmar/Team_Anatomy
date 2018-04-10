@@ -96,7 +96,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 My Role
-                                <asp:DropDownList ID="ddlRole" runat="server" CssClass="form-control select2" Style="width: 100%;" AutoPostBack="true">
+                                <asp:DropDownList ID="ddlRole" runat="server" CssClass="form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlRole_SelectedIndexChanged">
                                     <asp:ListItem Selected="True" Text="Employee" Value="Employee"></asp:ListItem>
                                     <asp:ListItem Text="Reporting Manager" Value="Reporting_Manager"></asp:ListItem>
                                 </asp:DropDownList>
@@ -304,7 +304,7 @@
 
                                             </td>
                                             <td>
-                                                
+
                                                 <i class="fa fa-exchange">
                                                     <asp:Label ID="lblHCBefore4" runat="server" CssClass="label pull-left bg-green"></asp:Label>
                                                     <asp:Label ID="lblHCAfter4" runat="server" CssClass="label  bg-yellow"></asp:Label>
@@ -355,8 +355,8 @@
                         <div class="col-md-12">
                             <div class="box-footer">
                                 <div class="btn-group">
-                                    <asp:Button ID="btnSubmitStage3" Text="Confirmed" runat="server" CssClass="btn btn-primary disabled" />
-                                    <asp:Button ID="btnCancelStage3" Text="Cancel" runat="server" CssClass="btn btn-warning disabled" />
+                                    <asp:Button ID="btnSubmitStage3" Text="Confirmed" runat="server" CssClass="btn btn-primary" OnClick="btnSubmitStage3_Click" />
+                                    <asp:Button ID="btnCancelStage3" Text="Cancel" runat="server" CssClass="btn btn-warning" OnClick="btnCancelStage3_Click" />
                                 </div>
                             </div>
                         </div>
@@ -372,7 +372,7 @@
             <div class="box box-solid box-primary">
                 <div class="box-header with-border">
                     <h4 class="box-title">
-                        <asp:Literal ID="Literal2" runat="server" Text="Week : "></asp:Literal>
+                        <asp:Literal ID="Literal2" runat="server" Text="Swap Dashboard : "></asp:Literal>
                     </h4>
                     <div class="box-tools pull-right">
                         <button class="btn btn-box-tool" type="button" data-widget="collapse">
@@ -383,10 +383,39 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <asp:GridView ID="gvStage3" runat="server" AutoGenerateColumns="true"
-                                CssClass="table table-condensed table-responsive table-compact table-hover table-stripe"
-                                OnPreRender="gv_PreRender" DataKeyNames="ECN" GridLines="None">
+                            <asp:GridView ID="gvSwapStatus" CssClass="table table-condensed table-bordered table-responsive"
+                                runat="server" AutoGenerateColumns="false"
+                                DataKeyNames="Id">
+                                <Columns>
+                                    <asp:BoundField DataField="Id" HeaderText="Id" />
+                                    <asp:BoundField DataField="EmpCode1" HeaderText="EmpCode" />
+                                    <asp:BoundField DataField="Initiator" HeaderText="Initiator" />
+                                    <asp:BoundField DataField="InitiatedOn" HeaderText="InitiatedOn" DataFormatString="{0:dd-MMM-yyyy HH:mm}" />
+                                    <asp:BoundField DataField="EmpCode2" HeaderText="ApproverECN" />
+                                    <asp:BoundField DataField="Approver" HeaderText="Approver" />
+                                    <asp:BoundField DataField="RepMgrCode" HeaderText="RepMgrCode" />
+                                    <asp:BoundField DataField="RepMgr" HeaderText="RepMgr" />
+                                    <asp:BoundField DataField="Date" HeaderText="Swap Date" DataFormatString="{0:ddd, dd-MMM-yyyy}" />
+                                    <asp:BoundField DataField="OriginalShift" HeaderText="Initiatiors Shift" />
+                                    <asp:BoundField DataField="SwappedShift" HeaderText="Swapped Shift" />
+                                    <asp:TemplateField HeaderText="Details">
+                                        <ItemTemplate>
+                                            <asp:Panel ID="pnlPendingActions" CssClass="btn-group" Visible="false" runat="server">
+                                                <asp:Button ID="btnApprove" runat="server" CommandArgument='<%# Eval("Id") %>' CssClass="btn btn-success btn-sm"
+                                                    Text="Approve" BorderWidth="1"
+                                                    OnClick="btnApprove_Click" />
+                                                <asp:Button ID="btnDecline" runat="server" CommandArgument='<%# Eval("Id") %>' CssClass="btn btn-danger btn-sm"
+                                                    Text="Decline" BorderWidth="1"
+                                                    OnClick="btnDecline_Click" />
+                                            </asp:Panel>
+                                            <asp:Panel ID="pnlSwapInformation" Visible="false" runat="server">
+                                                <asp:Label ID="lblSwapInformation" runat="server" ToolTip='<%# Eval("Id") %>' Text="Status : "></asp:Label>
+                                            </asp:Panel>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
                             </asp:GridView>
+                            
                         </div>
                     </div>
                 </div>
@@ -420,7 +449,11 @@
 
                 ShiftSwapper($(this), index);
 
+
+                //var HCAfter = $("#lblHCAfter" + myID);
+                //var HCBefore = $("#lblHCBefore" + myID);
             });
+
 
             function ShiftSwapper(ddlX, index) {
 
@@ -441,7 +474,18 @@
                     lblAfterShift.text("");
                     if (BeforeShift != SelectedShift) {
                         lblAfterShift.text(SelectedShift);
+                    } else {
+                        lblAfterShift.text("Unactionable Swap");
+                        //lblAfterShift.attr("class",)
                     }
+                }
+            }
+
+            function isWorkingShift(SelectedShift) {
+                if (SelectedShift.search(":") > 0 && SelectedShift.search("-") > 0) {
+                    return 1;
+                } else {
+                    return 0;
                 }
             }
 

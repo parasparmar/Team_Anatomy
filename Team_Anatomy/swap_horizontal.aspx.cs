@@ -11,19 +11,16 @@ using System.Globalization;
 using System.Text;
 using System.Web.UI.HtmlControls;
 
-
-public partial class swap_p : System.Web.UI.Page
+public partial class swap_horizontal : System.Web.UI.Page
 {
     public DataTable dtEmp;
     public DataTable dtSwapRoster;
-    public DataTable dtSwapRosterWFormattedDates;
     Helper my;
     private string strSQL;
     private int MyEmpID { get; set; }
     private int SwappedEmployeeID { get; set; }
-    private int SwappedIndex { get; set; }
     private int MyRepMgr { get; set; }
-
+    private int currentWeek { get; set; }
     private int WeekID { get; set; }
 
     protected void Page_Load(object sender, EventArgs e)
@@ -35,7 +32,7 @@ public partial class swap_p : System.Web.UI.Page
             try
             {
                 dtEmp = (DataTable)Session["dtEmp"];
-                if (dtEmp == null)
+                if (dtEmp.Rows.Count <= 0)
                 {
                     Response.Redirect("index.aspx", false);
                 }
@@ -44,6 +41,7 @@ public partial class swap_p : System.Web.UI.Page
                     // In Production Use the below
                     this.MyEmpID = Convert.ToInt32(dtEmp.Rows[0]["Employee_Id"].ToString());
                     MyRepMgr = Convert.ToInt32(dtEmp.Rows[0]["RepMgrCode"].ToString());
+                    currentWeek = my.getSingleton("SELECT [WeekId] FROM [CWFM_Umang].[WFMP].[tblRstWeeks] where GETDATE() between FrDate and ToDate");
                 }
             }
             catch (Exception Ex)
@@ -54,13 +52,12 @@ public partial class swap_p : System.Web.UI.Page
             Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
             title.Text = "Shift Swaps";
             fillddlYear();
-            GetSelectedRecord();
             fillgvSwapStatus();
         }
         else
         {
             dtEmp = (DataTable)Session["dtEmp"];
-            if (dtEmp == null)
+            if (dtEmp.Rows.Count <= 0)
             {
                 Response.Redirect("index.aspx", false);
             }
@@ -69,9 +66,10 @@ public partial class swap_p : System.Web.UI.Page
                 // In Production Use the below
                 this.MyEmpID = Convert.ToInt32(dtEmp.Rows[0]["Employee_Id"].ToString());
                 MyRepMgr = Convert.ToInt32(dtEmp.Rows[0]["RepMgrCode"].ToString());
+                currentWeek = my.getSingleton("SELECT [WeekId] FROM [CWFM_Umang].[WFMP].[tblRstWeeks] where GETDATE() between FrDate and ToDate");
             }
         }
-        
+
     }
     protected void fillddlYear()
     {
@@ -80,6 +78,7 @@ public partial class swap_p : System.Web.UI.Page
         ddlYear.SelectedIndex = ddlYear.Items.IndexOf(new ListItem(DateTime.Today.Year.ToString()));
         ltlReportingMgrsTeam.Text = "Roster For " + ddlYear.SelectedItem.Text;
         ddlYear_SelectedIndexChanged(ddlYear, new EventArgs());
+        
     }
     protected void ddlYear_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -120,53 +119,82 @@ public partial class swap_p : System.Web.UI.Page
             fillgvRoster(this.MyEmpID, WeekID);
         }
     }
-    /// <summary>
-    /// Fills the Roster with shifts for all employees reporting to this employee's reporting manager.
-    /// </summary>
-    /// <param name="MyEmpID">The EmpID of the viewer</param>
-    /// <param name="WeekID">The Week ID for the Selected dates</param>
-    /// <param name="isInEditMode">Optional parameter. If true then the dropdowns are populated for the edit mode with unique shifts</param>
-    private void fillgvRoster(int MyEmpID, int WeekID, bool isInEditMode = false)
+    private void fillgvRoster(int MyEmpID, int WeekID)
     {
+
         DataTable dtDates = my.GetData("Select * from [WFMP].[tblRstWeeks] where WeekId = " + WeekID);
         DateTime FromDate = Convert.ToDateTime(dtDates.Rows[0]["FrDate"].ToString());
         DateTime ToDate = Convert.ToDateTime(dtDates.Rows[0]["ToDate"].ToString());
-        DataTable dtShifts2Populate = my.GetData("Select ShiftID, ShiftCode from WFMP.tblShiftCode");
 
-
-        SqlCommand cmd = new SqlCommand("[WFMP].[Swap_GetSwapWithinSpecificTeam_2]");
+        SqlCommand cmd = new SqlCommand("[WFMP].[Swap_GetSwapWithinSpecificTeam]");
         cmd.Parameters.AddWithValue("@EmpID", this.MyEmpID);
         cmd.Parameters.AddWithValue("@FromDate", FromDate);
         cmd.Parameters.AddWithValue("@ToDate", ToDate);
         dtSwapRoster = my.GetDataTableViaProcedure(ref cmd);
-        string[] rowFields = {"xSort", "ECN", "NAME"};
+
+        string[] rowFields = { "ECN", "NAME", "TEAM_LEADER" };
         string[] columnFields = { "ShiftDate" };
         Pivot pvt = new Pivot(dtSwapRoster);
         dtSwapRoster = pvt.PivotData("ShiftCode", AggregateFunction.First, rowFields, columnFields);
-        dtSwapRosterWFormattedDates = dtSwapRoster;
-
-
-
+        string colName;
         DateTime colDate;
-        int RowCount = dtSwapRosterWFormattedDates.Rows.Count;
-        int ColCount = dtSwapRosterWFormattedDates.Columns.Count;
-        int i = 0;
-        foreach (DataColumn column in dtSwapRosterWFormattedDates.Columns)
+        int RowCount = dtSwapRoster.Rows.Count;
+        int ColCount = dtSwapRoster.Columns.Count;
+
+        for (int j = 1; j < ColCount + 1; j++)
         {
-            if (DateTime.TryParse(column.ColumnName, CultureInfo.InvariantCulture, DateTimeStyles.None, out colDate))
+            colName = dtSwapRoster.Columns[j - 1].ColumnName;
+            if (DateTime.TryParse(colName, CultureInfo.InvariantCulture, DateTimeStyles.None, out colDate))
             {
-                column.ColumnName = colDate.ToString("ddd, dd-MMM-yyyy");
-                gvRoster.Columns[i].HeaderText = column.ColumnName.ToString();
+                string col_Date = colDate.ToString("ddd, dd-MMM-yyyy");
+                dtSwapRoster.Columns[j - 1].ColumnName = col_Date;
+                gvRoster.Columns[j].HeaderText = col_Date;
             }
-            i++;
         }
 
-        gvRoster.DataSource = dtSwapRosterWFormattedDates;
-        gvRoster.DataBind();
 
+        gvRoster.DataSource = dtSwapRoster;
+        gvRoster.DataBind();
+        gvRoster_PostFillActions(gvRoster, dtSwapRoster);
+    }
+    private void gvRoster_PostFillActions(GridView gv, DataTable dt)
+    {
+        int RowCount = dt.Rows.Count;
+        int ColCount = dt.Columns.Count;
+
+        // Set the date Header rows
+        // The gv has dates beginning from 4th column onwards and shows 7 dates. ie:- indices 4 through ColCount = 10
+        string lblName;
+        for (int i = 0; i < RowCount; i++)
+        {
+            //if (gv.Rows[i].Cells[1].Text == SwappedEmployeeID.ToString())
+            //{
+            //    gv.Rows[i].CssClass = "";
+            //}
+            if (gv.Rows[i].Cells[1].Text == MyEmpID.ToString())
+            {
+                Button btnInitiateSwap = gv.Rows[i].Cells[0].FindControl("btnInitiateSwap") as Button;
+                btnInitiateSwap.Enabled = false;
+                btnInitiateSwap.CssClass = "btn btn-info disabled";
+                btnInitiateSwap.Text = "Roster";
+            }
+            for (int j = 4; j < ColCount + 1; j++)
+            {
+
+                lblName = "lbl" + (j - 4);
+                Label v = (Label)gv.Rows[i].FindControl(lblName);
+                v.Text = dt.Rows[i][j - 1].ToString();
+
+            }
+        }
 
     }
+    private void BtnInitiateSwap_Click(object sender, EventArgs e)
+    {
+        GridViewEditEventArgs c = new GridViewEditEventArgs(0);
+        gvRoster_RowEditing(gvRoster, c);
 
+    }
     protected void gv_PreRender(object sender, EventArgs e)
     {
         GridView gv = (GridView)sender;
@@ -179,310 +207,220 @@ public partial class swap_p : System.Web.UI.Page
             gv.BorderWidth = Unit.Pixel(1);
         }
     }
-
     protected void gvRoster_RowEditing(object sender, GridViewEditEventArgs e)
     {
-
-        foreach (GridViewRow row in gvRoster.Rows)
+        // Normally the selected employee needs to undergo a shift edit,
+        // However due to the swap being initiated by current employee we'd like the current employee to be placed in edit mode.
+        // With the caveat that the shift options should be gathered from the swappedEmployee's shift for that day.
+        SwappedEmployeeID = Convert.ToInt32(gvRoster.Rows[e.NewEditIndex].Cells[1].Text);
+        fillRepeaterSwap(MyEmpID, SwappedEmployeeID);
+        foreach (GridViewRow r in gvRoster.Rows)
         {
-            if (row.Cells[0].Text == MyEmpID.ToString())
+            Button b = r.Cells[0].FindControl("btnInitiateSwap") as Button;
+            if (b.CssClass == "btn btn-primary")
             {
-                gvRoster.EditIndex = row.RowIndex;
-                SwappedEmployeeID = Convert.ToInt32(gvRoster.Rows[e.NewEditIndex].Cells[0].Text);
-                ViewState["SwappedEmployeeID"] = SwappedEmployeeID;
-                SwappedIndex = e.NewEditIndex;
+                b.CssClass += " disabled";
+                b.Text = "Locked";
             }
 
         }
-        //gvRoster.EditIndex = e.NewEditIndex;
+        litab_1.Attributes.Remove("class");        
+        tab_1.Attributes.Remove("class");
+        tab_1.Attributes.Add("class", "tab-pane");
 
-        WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
-        fillgvRoster(MyEmpID, WeekID, true);
+
+        litab_2.Attributes.Add("class", "active");
+        tab_2.Attributes.Remove("class");
+        tab_2.Attributes.Add("class", "tab-pane active");
     }
-
-    protected void gvRoster_RowDataBound(object sender, GridViewRowEventArgs e)
+    protected void gvRoster_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
 
-        if (e.Row.RowIndex > 0)
+    }
+    protected void gvRoster_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+    {
+        foreach (GridViewRow r in gvRoster.Rows)
         {
-            GridViewRow row = gvRoster.Rows[e.Row.RowIndex - 1];
-            if (row.Cells[1].Text == MyEmpID.ToString())
-            {
-                RadioButton rdo = row.Cells[0].FindControl("rdSelect") as RadioButton;
-                if (rdo != null) { rdo.Enabled = false; }
-
-                if (dtSwapRoster != null && dtSwapRoster.Rows.Count > 0)
-                {
-                    for (int c = 2; c < row.Cells.Count; c++)
-                    {
-                        DropDownList l = row.FindControl("ddl" + (c - 2).ToString()) as DropDownList;
-                        if (l != null)
-                        {
-                            string myDate = gvRoster.Columns[c].HeaderText.ToString();
-                            DateTime dtThisDay = new DateTime();
-                            if (DateTime.TryParseExact(myDate, "ddd, dd-MMM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dtThisDay))
-                            {
-                                var query = dtSwapRoster.AsEnumerable()
-                                            .Where(s => s.Field<int>("ECN") == MyEmpID || s.Field<int>("ECN") == SwappedEmployeeID)
-                                            .Where(s => s.Field<DateTime>("ShiftDate") == dtThisDay)
-                                            .Select(p => new { ShiftID = p.Field<int>("ShiftID"), ShiftCode = p.Field<string>("ShiftCode") })
-                                            .Distinct();
-
-                                l.DataSource = query.ToList();
-                                l.DataTextField = "ShiftCode";
-                                l.DataValueField = "ShiftID";
-                                l.SelectedIndex = 0;
-                                l.DataBind();
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    ControlCollection c = row.Cells[0].Controls;
-                    c.Clear();
-                    Literal lockIcon = new Literal();
-                    lockIcon.Text = "<i class='glyphicon glyphicon-lock'></i>";
-                    c.Add(lockIcon);
-                }
-            }
-            if (row.Cells[1].Text == SwappedEmployeeID.ToString())
-            {
-                var c = row.Cells[0].Controls;
-                c.Clear();
-                Literal ExchangeIcon = new Literal();
-                ExchangeIcon.Text = "<i class='fa fa-exchange'></i>";
-                c.Add(ExchangeIcon);
-            }
+            r.RowState = DataControlRowState.Normal;
+        }
+        WeekID = Convert.ToInt32(ddlWeek.SelectedValue.ToString());
+        if (WeekID > 0)
+        {
+            fillgvRoster(MyEmpID, WeekID);
         }
     }
-
-    private void GetSelectedRecord()
+    protected void fillRepeaterSwap(int MyEmpID, int SwappedEmployeeID)
     {
-        for (int i = 0; i < gvRoster.Rows.Count; i++)
-        {
-            RadioButton rb = (RadioButton)gvRoster.Rows[i].Cells[0].FindControl("rdSelect");
-            if (rb != null)
-            {
-                if (rb.Checked)
-                {
-                    HiddenField hf = (HiddenField)gvRoster.Rows[i].Cells[0].FindControl("HiddenField1");
-                    if (hf != null)
-                    {
-                        ViewState["SelectedSwapPartner"] = hf.Value;
-                    }
-                    break;
-                }
-            }
-        }
-    }
-
-    private void SetSelectedRecord()
-    {
-        for (int i = 0; i < gvRoster.Rows.Count; i++)
-        {
-            RadioButton rb = (RadioButton)gvRoster.Rows[i].Cells[0].FindControl("rdSelect");
-            if (rb != null)
-            {
-                HiddenField hf = (HiddenField)gvRoster.Rows[i].Cells[0].FindControl("HiddenField1");
-                if (hf != null && ViewState["SelectedSwapPartner"] != null)
-                {
-                    if (hf.Value.Equals(ViewState["SelectedSwapPartner"].ToString()))
-                    {
-                        rb.Checked = true;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    protected void rdSelect_CheckedChanged(object sender, EventArgs e)
-    {
-        string swapID;
-        RadioButton rb = (RadioButton)sender;
-        swapID = rb.Text;
-        SwappedEmployeeID = Convert.ToInt32(swapID);
-        WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
-        fillSwapRepeater(SwappedEmployeeID, WeekID);
-    }
-
-    private void fillSwapRepeater(int SwappedEmployeeID, int WeekID)
-    {
-        DataTable dtDates = my.GetData("Select * from [WFMP].[tblRstWeeks] where WeekId = " + WeekID);
+        //pnlRoster.Visible = false;
+        //pnlSwap.Visible = true;
+        WeekID = Convert.ToInt32(ddlWeek.SelectedValue.ToString());
+        string strSQL = "Select * from WFMP.tblRstWeeks where WeekID = " + WeekID;
+        DataTable dtDates = my.GetData(strSQL);
         DateTime FromDate = Convert.ToDateTime(dtDates.Rows[0]["FrDate"].ToString());
         DateTime ToDate = Convert.ToDateTime(dtDates.Rows[0]["ToDate"].ToString());
-        DataTable dtShifts2Populate = my.GetData("Select ShiftID, ShiftCode from WFMP.tblShiftCode");
 
-        SqlCommand cmd = new SqlCommand("[WFMP].[Swap_GetSwapWithinSpecificTeam]");
-        cmd.Parameters.AddWithValue("@EmpID", this.MyEmpID);
+        SqlCommand cmd = new SqlCommand("[WFMP].[Swap_GetSwapBetweenSpecificEmployees]");
+        cmd.Parameters.AddWithValue("@EmpID1", MyEmpID);
+        cmd.Parameters.AddWithValue("@EmpID2", SwappedEmployeeID);
         cmd.Parameters.AddWithValue("@FromDate", FromDate);
         cmd.Parameters.AddWithValue("@ToDate", ToDate);
         dtSwapRoster = my.GetDataTableViaProcedure(ref cmd);
-        DataView dv = new DataView(dtSwapRoster);
-        dv.RowFilter = "ECN = " + MyEmpID + " or ECN = " + SwappedEmployeeID;
-        dv.Sort = "xSort asc";
-        dtSwapRoster = dv.ToTable();
-        rptSwapStage2.DataSource = dtSwapRoster;
-        rptSwapStage2.DataBind();
+
+
+        rptrSwapForm.DataSource = dtSwapRoster;
+        rptrSwapForm.DataBind();
+
+        Label ECN1 = (Label)rptrSwapForm.FindControlRecursive("lblEmp1");
+        ECN1.Text = dtSwapRoster.Rows[0]["ECN1"].ToString();
+
+        Label lblEmpName1 = (Label)rptrSwapForm.FindControlRecursive("lblEmpName1");
+        lblEmpName1.Text = dtSwapRoster.Rows[0]["NAME1"].ToString();
+
+        Label ECN2 = (Label)rptrSwapForm.FindControlRecursive("lblEmp2");
+        ECN2.Text = dtSwapRoster.Rows[0]["ECN2"].ToString();
+
+        Label lblEmpName2 = (Label)rptrSwapForm.FindControlRecursive("lblEmpName2");
+        lblEmpName2.Text = dtSwapRoster.Rows[0]["NAME2"].ToString();
+
     }
-
-    protected void rptSwapStage2_ItemDataBound(object sender, RepeaterItemEventArgs e)
+    protected void rptrSwapForm_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
-        if (e.Item.ItemType == ListItemType.Header)
+
+
+        if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
         {
-            for (int i = 1; i < dtSwapRoster.Columns.Count; i++)
+            HiddenField hfPleaseLock = e.Item.FindControlRecursive("hfPleaseLock") as HiddenField;
+            int PleaseLock = Convert.ToInt32(hfPleaseLock.Value);
+
+
+            DropDownList D1 = ((DropDownList)e.Item.FindControl("ddl1"));
+            DropDownList D2 = ((DropDownList)e.Item.FindControl("ddl2"));
+            ListItemCollection L = new ListItemCollection();
+
+            ListItem L1 = new ListItem(dtSwapRoster.Rows[e.Item.ItemIndex]["ShiftCode1"].ToString(), dtSwapRoster.Rows[e.Item.ItemIndex]["ShiftId1"].ToString());
+            ListItem L2 = new ListItem(dtSwapRoster.Rows[e.Item.ItemIndex]["ShiftCode2"].ToString(), dtSwapRoster.Rows[e.Item.ItemIndex]["ShiftId2"].ToString());
+
+            if (PleaseLock == 1)
             {
-                Label h = e.Item.FindControl("h" + i) as Label;
-
-                if (i < 3)
+                HtmlButton btn = (HtmlButton)e.Item.FindControlRecursive("btnSwapShift");
+                if (btn != null)
                 {
-                    h.Text = dtSwapRoster.Columns[i].ColumnName.ToString();
-                }
-                else
-                {
-                    DateTime dtShift = Convert.ToDateTime(dtSwapRoster.Columns[i].ColumnName.ToString());
-                    h.Text = dtShift.Date.ToString("ddd, dd-MMM-yyyy");
-
+                    btn.Attributes.Remove("class");
+                    btn.Attributes.Add("class", "btn btn-warning disabled"); 
                 }
 
+
+                L.Clear();
+                L.Add(L1);
+                D1.DataSource = L;
+                D1.DataTextField = "Text";
+                D1.DataValueField = "Value";
+                D1.DataBind();
+
+                L.Clear();
+                L.Add(L2);
+                D2.DataSource = L;
+                D2.DataTextField = "Text";
+                D2.DataValueField = "Value";
+                D2.DataBind();
+
+                D1.SelectedValue = L1.Value;
+                D2.SelectedValue = L2.Value;
+
+                D1.Enabled = false;
+                D2.Enabled = false;
             }
-        }
-
-        if (e.Item.ItemType == ListItemType.Footer)
-        {
-            for (int i = 1; i < dtSwapRoster.Columns.Count; i++)
+            else
             {
-                Label h = e.Item.FindControl("lblHCBefore" + i) as Label;
-                Label k = e.Item.FindControl("lblHCAfter" + i) as Label;
-                if (i == 2)
-                {
-                    h.Text = "Working Headcount";
-                }
-                else if (i >= 3)
-                {
-                    // The sum of all shifts containing : and not equal to 00:00:00 to 00:00:00
-                    int workingShifts = 0;
-                    string columnName = dtSwapRoster.Columns[i].ColumnName.ToString();
-                    var ids = dtSwapRoster.AsEnumerable().Select(r => r.Field<string>(columnName)).ToList();
-                    foreach (string id in ids)
-                    {
-                        if (id.Contains(":") && id.Contains("-"))
-                        {
-                            workingShifts++;
-                        }
-                    }
-                    h.Text = workingShifts.ToString();
-                    k.Text = workingShifts.ToString();
-                }
+                L.Add(L1);
+                L.Add(L2);
 
-            }
-        }
+                D1.DataSource = L;
+                D1.DataTextField = "Text";
+                D1.DataValueField = "Value";
 
-        if ((e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem) && e.Item.ItemIndex < 3)
-        {
-            for (int j = 1; j < dtSwapRoster.Columns.Count; j++)
-            {
-                if (j < 3)
-                {
-                    Label d = e.Item.FindControl("ddl" + j) as Label;
-                    d.Text = dtSwapRoster.Rows[e.Item.ItemIndex][j].ToString();
+                D2.DataSource = L;
+                D2.DataTextField = "Text";
+                D2.DataValueField = "Value";
 
-                }
-                else
-                {
-                    int toggle = 0;
-                    if (e.Item.ItemIndex == 0) { toggle = 1; } else { toggle = 0; }
-                    DropDownList ddl = e.Item.FindControl("ddl" + j) as DropDownList;
-                    string myShift = dtSwapRoster.Rows[e.Item.ItemIndex][j].ToString();
-                    string SwappableShift = dtSwapRoster.Rows[toggle][j].ToString();
-                    ListItem li1 = new ListItem(myShift);
-                    ddl.Items.Add(li1);
+                D1.DataBind();
+                D2.DataBind();
 
-                    //Duplicate Shifts Eliminated.
-                    if (myShift != SwappableShift)
-                    {
-                        ListItem li2 = new ListItem(SwappableShift);
-                        ddl.Items.Add(li2);
-                    }
+                D1.SelectedValue = L1.Value;
+                D2.SelectedValue = L2.Value;
 
-                    ddl.SelectedValue = myShift;
-
-                    // Before Label populated
-                    Label d = e.Item.FindControl("lblBefore" + j) as Label;
-                    d.Text = dtSwapRoster.Rows[e.Item.ItemIndex][j].ToString();
-                }
             }
         }
     }
-
-    protected void btnSubmitStage3_Click(object sender, EventArgs e)
+    protected void btnSubmit_Click(object sender, EventArgs e)
     {
-        // Convert ShiftCodes to IDs by looking up the shiftcode table
-        string strSQL = "select ShiftID, ShiftCode from WFMP.tblShiftCode where Active=1";
-        DataTable dtShiftCodes = my.GetData(strSQL);
-        Dictionary<string, int> dcShiftLookup = dtShiftCodes.AsEnumerable()
-            .ToDictionary(row => row.Field<string>("ShiftCode"), row => row.Field<int>("ShiftID"));
+        InitiateSaveProcess();
+    }
+    private void InitiateSaveProcess()
+    {
+        List<SwapShift_Horizontal> S = new List<SwapShift_Horizontal>();
+        Label EmpCode1 = (Label)rptrSwapForm.FindControlRecursive("lblEmp1");
+        int ECN1 = Convert.ToInt32(EmpCode1.Text.ToString());
 
-        List<SwapShift> P = new List<SwapShift>();
-        Label lblEmpCode1 = rptSwapStage2.Items[0].FindControl("ddl1") as Label;
-        Label lblEmpCode2 = rptSwapStage2.Items[1].FindControl("ddl1") as Label;
+        Label EmpCode2 = (Label)rptrSwapForm.FindControlRecursive("lblEmp2");
+        int ECN2 = Convert.ToInt32(EmpCode2.Text.ToString());
 
-        for (int j = 1; j <= 9; j++)
+        foreach (RepeaterItem i in rptrSwapForm.Items)
         {
-            SwapShift me = new SwapShift();
-            me.EmpCode1 = Convert.ToInt32(lblEmpCode1.Text.ToString());
-            me.EmpCode2 = Convert.ToInt32(lblEmpCode2.Text.ToString());
-
-            if (j > 2)
+            SwapShift_Horizontal Me = new SwapShift_Horizontal();
+            Me.RepMgrCode = MyRepMgr;
+            Me.EmpCode1 = ECN1;
+            Me.EmpCode2 = ECN2;
+            // Fill date
+            Label lblDate = (Label)i.FindControl("lblDate");
+            DateTime rDate;
+            if (DateTime.TryParseExact(lblDate.Text, "ddd, dd-MMM-yyyy", new CultureInfo(""), DateTimeStyles.None, out rDate))
             {
-                Label lblDate = rptSwapStage2.Controls[0].Controls[0].FindControl("h" + j) as Label;
-                DateTime DateOfSwap;
-                if (DateTime.TryParse(lblDate.Text, out DateOfSwap)) { me.Date = DateOfSwap; }
+                Me.Date = rDate;
+            }
+            // Fill EmpCode
 
-                Label lblBeforeShift1 = rptSwapStage2.Items[0].FindControl("lblBefore" + j) as Label;
-                me.ShiftCode1 = lblBeforeShift1.Text;
-                me.ShiftID1 = dcShiftLookup[me.ShiftCode1];
+            // Fill Me with Newly Chosen Shifts
+            DropDownList ddl1 = (DropDownList)i.FindControlRecursive("ddl1");
+            if (ddl1 != null && ddl1.SelectedValue != null) { Me.NewShiftID1 = Convert.ToInt32(ddl1.SelectedValue); }
 
-                DropDownList ddlAfterShift1 = rptSwapStage2.Items[0].FindControl("ddl" + j) as DropDownList;
-                if (ddlAfterShift1 != null)
+            DropDownList ddl2 = (DropDownList)i.FindControlRecursive("ddl2");
+            if (ddl2 != null && ddl2.SelectedValue != null) { Me.NewShiftID2 = Convert.ToInt32(ddl2.SelectedValue); }
+            // Fail First, Fail Fast.
+            if (Me.NewShiftID1 != 0 && Me.NewShiftID2 != 0)
+            {
+                // Fill Me with Original Shifts
+                Label lblOriginalShift1 = (Label)i.FindControlRecursive("lblOriginalShift1");
+                string ShiftCode1 = lblOriginalShift1.Text.ToString();
+                Me.ShiftID1 = Convert.ToInt32(ddl1.Items.FindByText(ShiftCode1).Value);
+
+                Label lblOriginalShift2 = (Label)i.FindControlRecursive("lblOriginalShift2");
+                string ShiftCode2 = lblOriginalShift2.Text.ToString();
+                Me.ShiftID2 = Convert.ToInt32(ddl1.Items.FindByText(ShiftCode2).Value);
+
+                Me.isWorkingShift1 = Me.ShiftID1 < 49 ? 1 : 0;
+                Me.isWorkingShift2 = Me.ShiftID2 < 49 ? 1 : 0;
+                Me.isNewWorkingShift1 = Me.NewShiftID1 < 49 ? 1 : 0;
+                Me.isNewWorkingShift2 = Me.NewShiftID2 < 49 ? 1 : 0;
+
+                int originalHeadCount = Me.isWorkingShift1 + Me.isWorkingShift2;
+                int postSwapHeadCount = Me.isNewWorkingShift1 + Me.isNewWorkingShift2;
+
+                Me.InitiatedOn = DateTime.Now;
+                // Validate Exact Swaps : For a given EmpCode1<>EmpCode2 & Date, check NewShiftID1= ShiftID2 and NewShiftID2=ShiftID1
+                // This is the only valid case for which the Update should go through.            
+                if (originalHeadCount == postSwapHeadCount && Me.ShiftID1 != Me.ShiftID2 && Me.NewShiftID1 == Me.ShiftID2 && Me.NewShiftID2 == Me.ShiftID1)
                 {
-                    me.NewShiftCode1 = ddlAfterShift1.SelectedValue;
-                    me.NewShiftID1 = dcShiftLookup[me.NewShiftCode1];
+                    S.Add(Me);
                 }
-
-                Label lblBeforeShift2 = rptSwapStage2.Items[1].FindControl("lblBefore" + j) as Label;
-                me.ShiftCode2 = lblBeforeShift2.Text;
-                me.ShiftID2 = dcShiftLookup[me.ShiftCode2];
-
-                DropDownList ddlAfterShift2 = rptSwapStage2.Items[1].FindControl("ddl" + j) as DropDownList;
-                if (ddlAfterShift2 != null)
-                {
-                    me.NewShiftCode2 = ddlAfterShift2.SelectedValue;
-                    me.NewShiftID2 = dcShiftLookup[me.NewShiftCode2];
-                }
-                me.RepMgrCode = MyRepMgr;
-                me.InitiatedOn = DateTime.Now;
-                me.Active = 1;
-
-                // Basic Valid Swap 
-                if (me.ShiftCode1 == me.NewShiftCode2 && me.ShiftCode2 == me.NewShiftCode1 && me.ShiftCode1 != me.ShiftCode2)
-                {
-                    P.Add(me);
-                }
-
             }
         }
-        SwapShift.Save(P);
+        if (S.Count > 0) { SwapShift_Horizontal.Save(S); }
+    }
+    protected void ddlRole_SelectedIndexChanged(object sender, EventArgs e)
+    {
         fillgvSwapStatus();
     }
-
-    protected void btnCancelStage3_Click(object sender, EventArgs e)
-    {
-
-        fillgvSwapStatus();
-    }
-
     private void fillgvSwapStatus()
     {
         string strSQL = "WFMP.Swap_getSwapStatus";
@@ -594,47 +532,70 @@ public partial class swap_p : System.Web.UI.Page
         }
 
     }
+    protected void btn_appr_Click(object sender, EventArgs e)
+    {
+
+        //ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "hideModal();", true);
+        //ScriptManager.RegisterStartupScript(this, this.GetType(), "show", "toastA();", true);
+    }
     protected void btnApprove_Click(object sender, EventArgs e)
     {
+
         Button btnApprove = sender as Button;
         int ID = Convert.ToInt32(btnApprove.CommandArgument.ToString());
-        SwapShift S = new SwapShift(ID);
+        SwapShift_Horizontal S = new SwapShift_Horizontal(ID);
         S.ApproveSwap(MyEmpID);
         fillgvSwapStatus();
     }
     protected void btnDecline_Click(object sender, EventArgs e)
     {
-        Button btnDecline = sender as Button;
-        int ID = Convert.ToInt32(btnDecline.CommandArgument.ToString());
-        SwapShift S = new SwapShift(ID);
+        Button btnApprove = sender as Button;
+        int ID = Convert.ToInt32(btnApprove.CommandArgument.ToString());
+        SwapShift_Horizontal S = new SwapShift_Horizontal(ID);
         S.DeclineSwap(MyEmpID);
-        fillgvSwapStatus();
     }
+    protected void btnCancel_Click(object sender, EventArgs e)
+    {
+        foreach (GridViewRow r in gvRoster.Rows)
+        {
+            Button b = r.Cells[0].FindControl("btnInitiateSwap") as Button;
+            if (b.CssClass == "btn btn-primary disabled")
+            {
+                b.CssClass = "btn btn-primary";
+                b.Text = "Select";
+            }
+        }
+        fillgvSwapStatus();
+        rptrSwapForm.DataSource = null;
+        rptrSwapForm.DataBind();
 
-
-    protected void ddlRole_SelectedIndexChanged(object sender, EventArgs e)
+        litab_1.Attributes.Add("class", "active");
+        tab_1.Attributes.Remove("class");
+        tab_1.Attributes.Add("class", "tab-pane active");
+        
+        litab_2.Attributes.Remove("class");
+        tab_2.Attributes.Remove("class");
+        tab_2.Attributes.Add("class", "tab-pane");
+    }
+    protected void gvSwapStatus_RowDataBound(object sender, GridViewRowEventArgs e)
     {
 
     }
 }
 
-class SwapShift
+class SwapShift_Horizontal
 {
     public int ID { get; private set; }
     public DateTime Date { get; set; }
     public int EmpCode1 { get; set; }
     public int ShiftID1 { get; set; }
-    public string ShiftCode1 { get; set; }
     public int isWorkingShift1 { get; set; }
     public int NewShiftID1 { get; set; }
-    public string NewShiftCode1 { get; set; }
     public int isNewWorkingShift1 { get; set; }
     public int EmpCode2 { get; set; }
     public int ShiftID2 { get; set; }
-    public string ShiftCode2 { get; set; }
     public int isWorkingShift2 { get; set; }
     public int NewShiftID2 { get; set; }
-    public string NewShiftCode2 { get; set; }
     public int isNewWorkingShift2 { get; set; }
     public DateTime InitiatedOn { get; set; }
     public int ActionByEmpCode2 { get; set; }
@@ -644,8 +605,10 @@ class SwapShift
     public DateTime? ActionByRepMgrOn { get; set; }
     public int Active { get; set; }
 
-    public SwapShift() { }
-    public SwapShift(int ID)
+
+
+    public SwapShift_Horizontal() { }
+    public SwapShift_Horizontal(int ID)
     {
         string strSQL = "select * from WFMP.tblSwap A where id=@Id";
         SqlCommand cmd = new SqlCommand(strSQL);
@@ -673,6 +636,7 @@ class SwapShift
         }
 
     }
+
     public bool ApproveSwap(int SenderEmpCode)
     {
         if (SenderEmpCode == this.EmpCode1) { return false; }
@@ -695,6 +659,7 @@ class SwapShift
             return false;
         }
     }
+
     public bool DeclineSwap(int SenderEmpCode)
     {
         if (SenderEmpCode == this.EmpCode1)
@@ -721,24 +686,23 @@ class SwapShift
         }
 
     }
-    public static int Save(SwapShift Me)
+
+    public static int Save(SwapShift_Horizontal Me)
     {
         int rowsAffected = 0;
         int originalHeadCount = Me.isWorkingShift1 + Me.isWorkingShift2;
         int postSwapHeadCount = Me.isNewWorkingShift1 + Me.isNewWorkingShift2;
-
-
-
         if (originalHeadCount == postSwapHeadCount && Me.NewShiftID1 == Me.ShiftID2 && Me.NewShiftID2 == Me.ShiftID1)
         {
             rowsAffected += Insert(Me);
         }
         return rowsAffected;
     }
-    public static int Save(List<SwapShift> Entries)
+
+    public static int Save(List<SwapShift_Horizontal> Entries)
     {
         int rowsAffected = 0;
-        foreach (SwapShift Me in Entries)
+        foreach (SwapShift_Horizontal Me in Entries)
         {
             int originalHeadCount = Me.isWorkingShift1 + Me.isWorkingShift2;
             int postSwapHeadCount = Me.isNewWorkingShift1 + Me.isNewWorkingShift2;
@@ -749,7 +713,9 @@ class SwapShift
         }
         return rowsAffected;
     }
-    private static int Insert(SwapShift s)
+
+
+    private static int Insert(SwapShift_Horizontal s)
     {
 
         int rowsAffected = 0;
@@ -782,7 +748,8 @@ class SwapShift
         }
         return rowsAffected;
     }
-    private static int Update(SwapShift s)
+
+    private static int Update(SwapShift_Horizontal s)
     {
         Helper my = new Helper();
         int rowsAffected = 0;
@@ -812,8 +779,9 @@ class SwapShift
         // This will actually commit all approved swaps to the roster.
         Commit2Roster();
         return rowsAffected;
-
+        
     }
+
     private static int Commit2Roster()
     {
         Helper my = new Helper();

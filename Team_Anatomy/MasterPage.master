@@ -368,7 +368,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="http://iaccess/pacman/index.aspx">
+                                <a href="../pacman/index.aspx">
                                     <i class="fa fa-dollar"></i><span>PACMAN</span>
                                 </a>
                             </li>
