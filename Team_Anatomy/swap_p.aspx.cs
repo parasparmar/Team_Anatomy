@@ -71,19 +71,20 @@ public partial class swap_p : System.Web.UI.Page
                 MyRepMgr = Convert.ToInt32(dtEmp.Rows[0]["RepMgrCode"].ToString());
             }
         }
-        
+
     }
     protected void fillddlYear()
     {
         strSQL = "select distinct ryear as Year from CWFM_Umang.WFMP.tblRstWeeks";
         my.append_dropdown(ref ddlYear, strSQL, 0, 0);
-        ddlYear.SelectedIndex = ddlYear.Items.IndexOf(new ListItem(DateTime.Today.Year.ToString()));
-        ltlReportingMgrsTeam.Text = "Roster For " + ddlYear.SelectedItem.Text;
+        ddlYear.SelectedIndex = ddlYear.Items.IndexOf(new ListItem(DateTime.Today.Year.ToString()));        
         ddlYear_SelectedIndexChanged(ddlYear, new EventArgs());
+
+
     }
     protected void ddlYear_SelectedIndexChanged(object sender, EventArgs e)
     {
-
+        ltlReportingMgrsTeam.Text = "Step 1 : Swap Basics : Year Selected : " + ddlYear.SelectedItem.Text;
         // When The manager in the dropdown is a reporting manager
         strSQL = "WFMP.GetWeeks";
         SqlCommand cmd = new SqlCommand(strSQL);
@@ -97,26 +98,27 @@ public partial class swap_p : System.Web.UI.Page
         if (ddlYear.Text == DateTime.Today.Year.ToString())
         {
             string RowID = my.getSingleton("Select A.[WeekId] from [CWFM_Umang].[WFMP].[tblRstWeeks] A where '" + DateTime.Today.Date + "' between A.FrDate and a.ToDate").ToString();
+            //ddlWeek.SelectedIndex = ddlWeek.Items.IndexOf(ddlWeek.Items.FindByValue(RowID));
             ddlWeek.SelectedIndex = ddlWeek.Items.IndexOf(ddlWeek.Items.FindByValue(RowID));
         }
         else
         {
             ddlWeek.SelectedIndex = 0;
         }
-
-
-        ltlRosterHeading.Text = "Week : " + ddlWeek.SelectedItem.Text;
         // To Do : The two lines below are only for convenience. THey should be removed from production, uat and development.
         ddlWeek.SelectedIndex = 0;
+
+        // To Do : Let this line remain
         ddlWeek_SelectedIndexChanged(ddlYear, new EventArgs());
     }
     protected void ddlWeek_SelectedIndexChanged(object sender, EventArgs e)
     {
-        ltlRosterHeading.Text = "Week : " + ddlWeek.SelectedItem.Text;
+        
         if (ddlWeek.SelectedValue.Length > 0 && ddlYear.SelectedValue != "0")
         {
 
             WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
+            ltlReportingMgrsTeam.Text = "Step 1 : Swap Basics : Week Selected : " + ddlWeek.SelectedItem.Text;
             fillgvRoster(this.MyEmpID, WeekID);
         }
     }
@@ -139,7 +141,7 @@ public partial class swap_p : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@FromDate", FromDate);
         cmd.Parameters.AddWithValue("@ToDate", ToDate);
         dtSwapRoster = my.GetDataTableViaProcedure(ref cmd);
-        string[] rowFields = {"xSort", "ECN", "NAME"};
+        string[] rowFields = { "xSort", "ECN", "NAME" };
         string[] columnFields = { "ShiftDate" };
         Pivot pvt = new Pivot(dtSwapRoster);
         dtSwapRoster = pvt.PivotData("ShiftCode", AggregateFunction.First, rowFields, columnFields);
@@ -166,7 +168,6 @@ public partial class swap_p : System.Web.UI.Page
 
 
     }
-
     protected void gv_PreRender(object sender, EventArgs e)
     {
         GridView gv = (GridView)sender;
@@ -179,7 +180,6 @@ public partial class swap_p : System.Web.UI.Page
             gv.BorderWidth = Unit.Pixel(1);
         }
     }
-
     protected void gvRoster_RowEditing(object sender, GridViewEditEventArgs e)
     {
 
@@ -199,7 +199,6 @@ public partial class swap_p : System.Web.UI.Page
         WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
         fillgvRoster(MyEmpID, WeekID, true);
     }
-
     protected void gvRoster_RowDataBound(object sender, GridViewRowEventArgs e)
     {
 
@@ -256,7 +255,6 @@ public partial class swap_p : System.Web.UI.Page
             }
         }
     }
-
     private void GetSelectedRecord()
     {
         for (int i = 0; i < gvRoster.Rows.Count; i++)
@@ -276,7 +274,6 @@ public partial class swap_p : System.Web.UI.Page
             }
         }
     }
-
     private void SetSelectedRecord()
     {
         for (int i = 0; i < gvRoster.Rows.Count; i++)
@@ -296,7 +293,6 @@ public partial class swap_p : System.Web.UI.Page
             }
         }
     }
-
     protected void rdSelect_CheckedChanged(object sender, EventArgs e)
     {
         string swapID;
@@ -306,7 +302,6 @@ public partial class swap_p : System.Web.UI.Page
         WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
         fillSwapRepeater(SwappedEmployeeID, WeekID);
     }
-
     private void fillSwapRepeater(int SwappedEmployeeID, int WeekID)
     {
         DataTable dtDates = my.GetData("Select * from [WFMP].[tblRstWeeks] where WeekId = " + WeekID);
@@ -326,7 +321,6 @@ public partial class swap_p : System.Web.UI.Page
         rptSwapStage2.DataSource = dtSwapRoster;
         rptSwapStage2.DataBind();
     }
-
     protected void rptSwapStage2_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e.Item.ItemType == ListItemType.Header)
@@ -415,7 +409,6 @@ public partial class swap_p : System.Web.UI.Page
             }
         }
     }
-
     protected void btnSubmitStage3_Click(object sender, EventArgs e)
     {
         // Convert ShiftCodes to IDs by looking up the shiftcode table
@@ -476,13 +469,11 @@ public partial class swap_p : System.Web.UI.Page
         SwapShift.Save(P);
         fillgvSwapStatus();
     }
-
     protected void btnCancelStage3_Click(object sender, EventArgs e)
     {
 
         fillgvSwapStatus();
     }
-
     private void fillgvSwapStatus()
     {
         string strSQL = "WFMP.Swap_getSwapStatus";
@@ -610,11 +601,23 @@ public partial class swap_p : System.Web.UI.Page
         S.DeclineSwap(MyEmpID);
         fillgvSwapStatus();
     }
-
-
     protected void ddlRole_SelectedIndexChanged(object sender, EventArgs e)
     {
 
+    }
+
+
+
+    protected void hdShouldIProceed_ValueChanged(object sender, EventArgs e)
+    {
+        if (hdShouldIProceed.Value == "1")
+        {
+            pnlEnableSubmission.Visible = true;
+        }
+        else
+        {
+            pnlEnableSubmission.Visible = false;
+        }
     }
 }
 

@@ -62,12 +62,68 @@
         <ContentTemplate>--%>
     <div class="row-fluid">
         <div class="col-md-12">
+            <div class="box box-solid box-primary">
+                <div class="box-header with-border">
+                    <div class="box-tools pull-left">
+                        <button class="btn btn-box-tool" type="button" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                    <h4 class="box-title">Swap Dashboard : Approve or Decline Pending Swap Requests.
+                    </h4>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <asp:GridView ID="gvSwapStatus" CssClass="table table-condensed table-bordered table-responsive"
+                                runat="server" AutoGenerateColumns="false"
+                                DataKeyNames="Id">
+                                <Columns>
+                                    <asp:BoundField DataField="Id" HeaderText="Id" />
+                                    <asp:BoundField DataField="Date" HeaderText="Swap Date" DataFormatString="{0:ddd, dd-MMM-yyyy}" />
+                                    <asp:BoundField DataField="OriginalShift" HeaderText="Initiatior's Shift" />
+                                    <asp:BoundField DataField="SwappedShift" HeaderText="Partner's Shift" />
+                                    <asp:BoundField DataField="EmpCode1" HeaderText="EmpCode" />
+                                    <asp:BoundField DataField="Initiator" HeaderText="Swap Initiator" />
+                                    <asp:BoundField DataField="EmpCode2" HeaderText="Partner" />
+                                    <asp:BoundField DataField="Approver" HeaderText="Swap Partner" />
+                                    <asp:BoundField DataField="RepMgrCode" HeaderText="RM" />
+                                    <asp:BoundField DataField="RepMgr" HeaderText="Reporting Manager" />
+                                    <asp:BoundField DataField="InitiatedOn" HeaderText="Initiated" DataFormatString="{0:dd-MMM-yyyy HH:mm}" />
+
+                                    <asp:TemplateField HeaderText="Status">
+                                        <ItemTemplate>
+                                            <asp:Panel ID="pnlPendingActions" CssClass="btn-group" Visible="false" runat="server">
+                                                <asp:Button ID="btnApprove" runat="server" CommandArgument='<%# Eval("Id") %>' CssClass="btn btn-success btn-sm"
+                                                    Text="Approve" BorderWidth="1"
+                                                    OnClick="btnApprove_Click" />
+                                                <asp:Button ID="btnDecline" runat="server" CommandArgument='<%# Eval("Id") %>' CssClass="btn btn-danger btn-sm"
+                                                    Text="Decline" BorderWidth="1"
+                                                    OnClick="btnDecline_Click" />
+                                            </asp:Panel>
+                                            <asp:Panel ID="pnlSwapInformation" Visible="false" runat="server">
+                                                <asp:Label ID="lblSwapInformation" runat="server" ToolTip='<%# Eval("Id") %>' Text="Status : "></asp:Label>
+                                            </asp:Panel>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
+                            </asp:GridView>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Swap Stage 1 : Swap Dashboard : View, Approve or Decline Swaps-->
+
+    <div class="row-fluid">
+        <div class="col-md-12">
             <!-- Custom Tabs -->
             <div class="box box-solid box-primary" style="height: auto;">
                 <div class="box-header with-border">
                     <h4 class="box-title">
-                        <asp:Literal ID="ltlReportingMgrsTeam" Text="Roster For Team" runat="server"></asp:Literal></h4>
-                    <div class="box-tools pull-right">
+                        <asp:Literal ID="ltlReportingMgrsTeam" Text="Step 1 : Swap Basics" runat="server"></asp:Literal></h4>
+                    <div class="box-tools pull-left">
                         <button class="btn btn-box-tool" type="button" data-widget="collapse">
                             <i class="fa fa-minus"></i>
                         </button>
@@ -116,10 +172,9 @@
         <div class="col-md-12">
             <div class="box box-solid box-primary">
                 <div class="box-header with-border">
-                    <h4 class="box-title">
-                        <asp:Literal ID="ltlRosterHeading" runat="server" Text="Week : "></asp:Literal>
+                    <h4 class="box-title">Step 2 : Select your Shift Swap Partner
                     </h4>
-                    <div class="box-tools pull-right">
+                    <div class="box-tools pull-left">
                         <button class="btn btn-box-tool" type="button" data-widget="collapse">
                             <i class="fa fa-minus"></i>
                         </button>
@@ -180,6 +235,9 @@
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                 </Columns>
+                                <EmptyDataTemplate>
+                                    <h4>The Roster for the Selected Week could not be found. Kindly do check with your reporting manager.</h4>
+                                </EmptyDataTemplate>
                             </asp:GridView>
                         </div>
                     </div>
@@ -187,22 +245,22 @@
             </div>
         </div>
     </div>
-    <!--Swap Stage 2-->
+    <!--Swap Stage 2: Select the Swap Partner-->
 
     <div class="row-fluid">
         <div class="col-md-12">
             <div class="box box-solid box-primary">
                 <div class="box-header with-border">
                     <h4 class="box-title">
-                        <asp:Literal ID="Literal1" runat="server" Text="Week : "></asp:Literal>
+                        <asp:Literal ID="ltlSwapInitiator" runat="server" Text="Step 3 : Initiate the Swap Request"></asp:Literal>
                     </h4>
-                    <div class="box-tools pull-right">
+                    <div class="box-tools pull-left">
                         <button class="btn btn-box-tool" type="button" data-widget="collapse">
                             <i class="fa fa-minus"></i>
                         </button>
                     </div>
                 </div>
-                <asp:Panel ID="pnlStage3" runat="server" class="box-body" Visible="true">
+                <div class="box-body">
                     <div class="row">
                         <div class="col-md-12">
                             <asp:Repeater ID="rptSwapStage2" runat="server" OnItemDataBound="rptSwapStage2_ItemDataBound">
@@ -295,56 +353,46 @@
                                                 <asp:Label ID="lblHCBefore2" runat="server"></asp:Label>
                                             </td>
                                             <td>
-
                                                 <i class="fa fa-exchange">
                                                     <asp:Label ID="lblHCBefore3" runat="server" CssClass="label pull-left bg-green"></asp:Label>
                                                     <asp:Label ID="lblHCAfter3" runat="server" CssClass="label  bg-yellow"></asp:Label>
-
                                                 </i>
-
                                             </td>
                                             <td>
-
                                                 <i class="fa fa-exchange">
                                                     <asp:Label ID="lblHCBefore4" runat="server" CssClass="label pull-left bg-green"></asp:Label>
                                                     <asp:Label ID="lblHCAfter4" runat="server" CssClass="label  bg-yellow"></asp:Label>
                                                 </i>
-
                                             </td>
                                             <td>
-
                                                 <i class="fa fa-exchange">
                                                     <asp:Label ID="lblHCBefore5" runat="server" CssClass="label pull-left bg-green"></asp:Label>
-                                                    <asp:Label ID="lblHCAfter5" runat="server" CssClass="label  bg-yellow"></asp:Label></i>
-
+                                                    <asp:Label ID="lblHCAfter5" runat="server" CssClass="label  bg-yellow"></asp:Label>
+                                                </i>
                                             </td>
                                             <td>
-
                                                 <i class="fa fa-exchange">
                                                     <asp:Label ID="lblHCBefore6" runat="server" CssClass="label pull-left bg-green"></asp:Label>
-                                                    <asp:Label ID="lblHCAfter6" runat="server" CssClass="label  bg-yellow"></asp:Label></i>
-
+                                                    <asp:Label ID="lblHCAfter6" runat="server" CssClass="label  bg-yellow"></asp:Label>
+                                                </i>
                                             </td>
                                             <td>
-
                                                 <i class="fa fa-exchange">
                                                     <asp:Label ID="lblHCBefore7" runat="server" CssClass="label pull-left bg-green"></asp:Label>
-                                                    <asp:Label ID="lblHCAfter7" runat="server" CssClass="label  bg-yellow"></asp:Label></i>
-
+                                                    <asp:Label ID="lblHCAfter7" runat="server" CssClass="label  bg-yellow"></asp:Label>
+                                                </i>
                                             </td>
                                             <td>
-
                                                 <i class="fa fa-exchange">
                                                     <asp:Label ID="lblHCBefore8" runat="server" CssClass="label pull-left bg-green"></asp:Label>
-                                                    <asp:Label ID="lblHCAfter8" runat="server" CssClass="label  bg-yellow"></asp:Label></i>
-
+                                                    <asp:Label ID="lblHCAfter8" runat="server" CssClass="label  bg-yellow"></asp:Label>
+                                                </i>
                                             </td>
                                             <td>
-
                                                 <i class="fa fa-exchange">
                                                     <asp:Label ID="lblHCBefore9" runat="server" CssClass="label pull-left bg-green"></asp:Label>
-                                                    <asp:Label ID="lblHCAfter9" runat="server" CssClass="label  bg-yellow"></asp:Label></i>
-
+                                                    <asp:Label ID="lblHCAfter9" runat="server" CssClass="label  bg-yellow"></asp:Label>
+                                                </i>
                                             </td>
                                         </tr>
                                     </tfoot>
@@ -354,75 +402,28 @@
                         </div>
                         <div class="col-md-12">
                             <div class="box-footer">
-                                <div class="btn-group">
-                                    <asp:Button ID="btnSubmitStage3" Text="Confirmed" runat="server" CssClass="btn btn-primary" OnClick="btnSubmitStage3_Click" />
-                                    <asp:Button ID="btnCancelStage3" Text="Cancel" runat="server" CssClass="btn btn-warning" OnClick="btnCancelStage3_Click" />
+                                <asp:Panel ID="pnlEnableSubmission" runat="server" Visible="false">
+                                    <div class="col-md-3">
+                                        <div class="btn-group">
+                                            <asp:Button ID="btnSubmitStage3" Text="Confirmed" runat="server" CssClass="btn btn-primary" OnClick="btnSubmitStage3_Click" />
+                                            <asp:Button ID="btnCancelStage3" Text="Cancel" runat="server" CssClass="btn btn-warning" OnClick="btnCancelStage3_Click" />
+                                        </div>
+                                    </div>
+                                </asp:Panel>
+                                <div class="col-md-9">
+                                    <asp:HiddenField ID="hdShouldIProceed" runat="server" Value="0" OnValueChanged="hdShouldIProceed_ValueChanged" />
+                                    <asp:Label ID="lblHelpfulMessage" runat="server" Text="Hint : " CssClass="well-lg"></asp:Label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </asp:Panel>
+                </div>
             </div>
         </div>
     </div>
-    <!--Swap Stage 3-->
+    <!--Swap Stage 3 : Initiate a Swap Request-->
 
-    <div class="row-fluid">
-        <div class="col-md-12">
-            <div class="box box-solid box-primary">
-                <div class="box-header with-border">
-                    <h4 class="box-title">
-                        <asp:Literal ID="Literal2" runat="server" Text="Swap Dashboard : "></asp:Literal>
-                    </h4>
-                    <div class="box-tools pull-right">
-                        <button class="btn btn-box-tool" type="button" data-widget="collapse">
-                            <i class="fa fa-minus"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="box-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <asp:GridView ID="gvSwapStatus" CssClass="table table-condensed table-bordered table-responsive"
-                                runat="server" AutoGenerateColumns="false"
-                                DataKeyNames="Id">
-                                <Columns>
-                                    <asp:BoundField DataField="Id" HeaderText="Id" />
-                                    <asp:BoundField DataField="EmpCode1" HeaderText="EmpCode" />
-                                    <asp:BoundField DataField="Initiator" HeaderText="Initiator" />
-                                    <asp:BoundField DataField="InitiatedOn" HeaderText="InitiatedOn" DataFormatString="{0:dd-MMM-yyyy HH:mm}" />
-                                    <asp:BoundField DataField="EmpCode2" HeaderText="ApproverECN" />
-                                    <asp:BoundField DataField="Approver" HeaderText="Approver" />
-                                    <asp:BoundField DataField="RepMgrCode" HeaderText="RepMgrCode" />
-                                    <asp:BoundField DataField="RepMgr" HeaderText="RepMgr" />
-                                    <asp:BoundField DataField="Date" HeaderText="Swap Date" DataFormatString="{0:ddd, dd-MMM-yyyy}" />
-                                    <asp:BoundField DataField="OriginalShift" HeaderText="Initiatiors Shift" />
-                                    <asp:BoundField DataField="SwappedShift" HeaderText="Swapped Shift" />
-                                    <asp:TemplateField HeaderText="Details">
-                                        <ItemTemplate>
-                                            <asp:Panel ID="pnlPendingActions" CssClass="btn-group" Visible="false" runat="server">
-                                                <asp:Button ID="btnApprove" runat="server" CommandArgument='<%# Eval("Id") %>' CssClass="btn btn-success btn-sm"
-                                                    Text="Approve" BorderWidth="1"
-                                                    OnClick="btnApprove_Click" />
-                                                <asp:Button ID="btnDecline" runat="server" CommandArgument='<%# Eval("Id") %>' CssClass="btn btn-danger btn-sm"
-                                                    Text="Decline" BorderWidth="1"
-                                                    OnClick="btnDecline_Click" />
-                                            </asp:Panel>
-                                            <asp:Panel ID="pnlSwapInformation" Visible="false" runat="server">
-                                                <asp:Label ID="lblSwapInformation" runat="server" ToolTip='<%# Eval("Id") %>' Text="Status : "></asp:Label>
-                                            </asp:Panel>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                </Columns>
-                            </asp:GridView>
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--Swap Stage 4-->
+
 
     <%--</ContentTemplate>
         <Triggers>
@@ -446,17 +447,17 @@
             $('[id^="ddl"]').change(function () {
                 var MyRow = $(this).closest("tr");
                 var index = MyRow.index();
-
-                ShiftSwapper($(this), index);
-
-
-                //var HCAfter = $("#lblHCAfter" + myID);
-                //var HCBefore = $("#lblHCBefore" + myID);
+                var AmICompliant = true;
+                var AmICompliant = ShiftSwapper($(this), index);
+                if (AmICompliant == true) {
+                    $("#hdShouldIProceed").val("1");                    
+                } else {
+                    $("#hdShouldIProceed").val("0");
+                }
+                return AmICompliant;
             });
-
-
             function ShiftSwapper(ddlX, index) {
-
+                var AmICompliant = true;
                 var toggle = 0;
                 if (index == 1) { toggle = 0; } else { toggle = 1; }
 
@@ -464,48 +465,134 @@
                 var ddlID = ddlX.attr('id');
                 var myID = ddlID.substring(ddlID.length - 1);
                 if (parseInt(myID)) {
+                    // Get the Selected shift of the partner's dropdown
+                    var theID = '[id ^= "ddl' + myID + '"]';
+                    var ddlY = $(theID).eq(toggle);
+                    var SelectedShift2 = ddlY.val();
 
-                    var theID = '[id^="lblBefore' + myID + '"]';
+                    // Get the Before shift of my dropdown
+                    theID = '[id^="lblBefore' + myID + '"]';
                     var lblBeforeShift = $(theID).eq(index);
                     var BeforeShift = lblBeforeShift.text();
 
+
+                    // Get the Before shift of the partner's dropdown
+                    var lblBeforeShift2 = $(theID).eq(toggle);
+                    var BeforeShift2 = lblBeforeShift2.text();
+
+                    // Blank out the AfterShift of my label
                     theID = '[id^="lblAfter' + myID + '"]';
                     var lblAfterShift = $(theID).eq(index);
                     lblAfterShift.text("");
+
+                    // Get the Before Headcount.
+                    theID = '[id^="lblHCBefore' + myID + '"]';
+                    var lblHCBefore = $(theID);
+                    var HCBefore = parseInt(lblHCBefore.text());
+
+                    // Get the handle to the label of the After Headcount.
+                    theID = '[id^="lblHCAfter' + myID + '"]';
+                    var lblHCAfter = $(theID);
+
+                    var lblHelpfulMessage = $("#lblHelpfulMessage");
+                    var message = "";
+                    lblHelpfulMessage.text(message);
+                    var isRuleOfLegalShiftSwaps = RuleOfLegalShiftSwaps();
+                    var isRuleOfHeadCountInvariance = RuleOfHeadCountInvariance();
+                    var isRuleOfWorkOffsInvariance = RuleOfWorkOffsInvariance();
+
+                    if (isRuleOfLegalShiftSwaps == false) { message = "Rule 1: RuleOfLegalShiftSwaps : Your Selected Shift should match your Swap Partner's Rostered Shift AND vice versa.<br/>"}                    
+                    if (isRuleOfHeadCountInvariance == false) { message += "Rule 2: RuleOfHeadCountInvariance : The Pre and Post headcounts for the day should match exactly.<br/>" }                    
+                    if (isRuleOfWorkOffsInvariance == false) { message += "Rule 3: RuleOfWorkOffsInvariance : You and your Shift Swap Partner should have atleast 1 and at the most 2 Work Offs this week.<br/>" }
+                    lblHelpfulMessage.text(message);
+
+                    return AmICompliant;
+                }
+
+                function RuleOfLegalShiftSwaps() {
+                    // Stage1 : Validate the Rule of Legal Swap - per change request.
                     if (BeforeShift != SelectedShift) {
+                        // The only case where we need to calculate headcounts and set labels.
                         lblAfterShift.text(SelectedShift);
+                        // Remove warnings
+                        lblAfterShift.removeClass("bg-red");
+                        lblAfterShift.addClass("bg-yellow");
+
+                        RuleOfHeadCountInvariance();
+                        return true;
+                    } else if (BeforeShift == SelectedShift) {
+                        // Remove warnings
+                        lblAfterShift.removeClass("bg-red");
+                        lblAfterShift.addClass("bg-yellow");
+                        RuleOfHeadCountInvariance();
+                        return false;
                     } else {
-                        lblAfterShift.text("Unactionable Swap");
-                        //lblAfterShift.attr("class",)
+                        // Set warnings
+                        lblAfterShift.text("Un-Actionable Swap");
+                        lblAfterShift.removeClass("bg-yellow");
+                        lblAfterShift.addClass("bg-red");
+                        RuleOfHeadCountInvariance();
+                        return false;
                     }
                 }
-            }
 
-            function isWorkingShift(SelectedShift) {
-                if (SelectedShift.search(":") > 0 && SelectedShift.search("-") > 0) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-
-            function ComplianceChecks() {
                 //Checks for daily Headcount invariance.
-                var HCBefore = $("[id^='lblHCBefore']");
-                var HCAfter = $("[id^='lblHCAfter']");
-                //Checks for at least 1 WO per week.
+                function RuleOfHeadCountInvariance() {
+                    // Set the HCAfter
+                    HCAfter = parseInt(isWorkingShift(SelectedShift) + isWorkingShift(SelectedShift2));
+                    lblHCAfter.text(HCAfter);
 
-                //Disable approved leave swaps.
+                    if (HCBefore != HCAfter) {
+                        //set warning
+                        lblHCAfter.removeClass("bg-yellow");
+                        lblHCAfter.addClass("bg-red");
+                        return false;
+                    } else {
+                        //remove warning
+                        lblHCAfter.removeClass("bg-red");
+                        lblHCAfter.addClass("bg-yellow");
+                        return true;
+                    }
+                }
+
+                function RuleOfWorkOffsInvariance() {
+                    var MyRow = ddlX.closest("tr");
+                    var MyScheduledWOs = 0;
+                    var MyWOs = 0;
+
+                    // What's the count of WOs after the selected shifts are swapped.
+                    MyRow.find('[id^="ddl"]').each(function (e) {
+                        if (e > 1) {
+                            var MyShift = $(this).val();
+                            // If the ddl selected is a WO then push..
+                            if (MyShift == "WO") {
+                                MyWOs++;
+                                if (MyWOs > 2) {
+                                    $(this).addClass("text-red");
+                                } else {
+                                    $(this).removeClass("text-red");
+                                }
+                            }
+                        }
+                    });
+                    if (MyWOs > 2) { return false; } else { return true; }
+                }
+
+                function isWorkingShift(SelectedShift) {
+                    if (/[0-9]{2}:[0-9]{2}/.test(SelectedShift)) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                }
+
             }
-
         }
 
         $(function () {
             pluginsInitializer();
         });
-
-
-
+        
         //On UpdatePanel Refresh
         var prm = Sys.WebForms.PageRequestManager.getInstance();
         if (prm != null) {
