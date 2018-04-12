@@ -608,17 +608,17 @@ public partial class swap_p : System.Web.UI.Page
 
 
 
-    protected void hdShouldIProceed_ValueChanged(object sender, EventArgs e)
-    {
-        if (hdShouldIProceed.Value == "1")
-        {
-            pnlEnableSubmission.Visible = true;
-        }
-        else
-        {
-            pnlEnableSubmission.Visible = false;
-        }
-    }
+    //protected void hdShouldIProceed_ValueChanged(object sender, EventArgs e)
+    //{
+    //    if (hdShouldIProceed.Value == "1")
+    //    {
+    //        pnlEnableSubmission.Visible = true;
+    //    }
+    //    else
+    //    {
+    //        pnlEnableSubmission.Visible = false;
+    //    }
+    //}
 }
 
 class SwapShift

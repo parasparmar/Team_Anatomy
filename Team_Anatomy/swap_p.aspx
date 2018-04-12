@@ -402,7 +402,7 @@
                         </div>
                         <div class="col-md-12">
                             <div class="box-footer">
-                                <asp:Panel ID="pnlEnableSubmission" runat="server" Visible="false">
+                                <asp:Panel ID="pnlEnableSubmission" runat="server" Visible="true">
                                     <div class="col-md-3">
                                         <div class="btn-group">
                                             <asp:Button ID="btnSubmitStage3" Text="Confirmed" runat="server" CssClass="btn btn-primary" OnClick="btnSubmitStage3_Click" />
@@ -411,8 +411,8 @@
                                     </div>
                                 </asp:Panel>
                                 <div class="col-md-9">
-                                    <asp:HiddenField ID="hdShouldIProceed" runat="server" Value="0" OnValueChanged="hdShouldIProceed_ValueChanged" />
-                                    <asp:Label ID="lblHelpfulMessage" runat="server" Text="Hint : " CssClass="well-lg"></asp:Label>
+                                    <input id="hdShouldIProceed" type="text" readonly="readonly" name="hdShouldIProceed" value="0" />                                    
+                                    <pre><asp:Label ID="lblHelpfulMessage" runat="server" Text=""></asp:Label></pre>
                                 </div>
                             </div>
                         </div>
@@ -501,9 +501,9 @@
                     var isRuleOfHeadCountInvariance = RuleOfHeadCountInvariance();
                     var isRuleOfWorkOffsInvariance = RuleOfWorkOffsInvariance();
 
-                    if (isRuleOfLegalShiftSwaps == false) { message = "Rule 1: RuleOfLegalShiftSwaps : Your Selected Shift should match your Swap Partner's Rostered Shift AND vice versa.<br/>"}                    
-                    if (isRuleOfHeadCountInvariance == false) { message += "Rule 2: RuleOfHeadCountInvariance : The Pre and Post headcounts for the day should match exactly.<br/>" }                    
-                    if (isRuleOfWorkOffsInvariance == false) { message += "Rule 3: RuleOfWorkOffsInvariance : You and your Shift Swap Partner should have atleast 1 and at the most 2 Work Offs this week.<br/>" }
+                    if (isRuleOfLegalShiftSwaps == false) { message = "LegalShiftSwaps : Your Selected Shift should match your Swap Partner's Rostered Shift AND vice versa."}                    
+                    if (isRuleOfHeadCountInvariance == false) { message += "HeadCountInvariance : The Pre and Post headcounts for the day should match exactly.<br/>" }                    
+                    if (isRuleOfWorkOffsInvariance == false) { message += "WorkOffs between 1 and 2 : You and your Shift Swap Partner should have atleast 1 and at the most 2 Work Offs this week.<br/>" }
                     lblHelpfulMessage.text(message);
 
                     return AmICompliant;
