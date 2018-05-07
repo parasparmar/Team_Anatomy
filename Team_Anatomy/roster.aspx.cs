@@ -58,7 +58,7 @@ public partial class roster : System.Web.UI.Page
         strSQL += " , A.Employee_ID as MgrID, A.First_Name +' '+A.Middle_Name+' '+A.Last_Name as MgrName";
         strSQL += "  FROM [CWFM_Umang].[WFMP].[tblMaster] A ";
         strSQL += " INNER JOIN [CWFM_Umang].[WFMP].[tblMaster] B ON B.Employee_ID = A.RepMgrCode";
-        strSQL += " WHERE A.RepMgrCode = " + MyEmpID + "";
+        strSQL += " WHERE A.EmpStatus=1 and A.RepMgrCode = " + MyEmpID + "";
 
         ListItem i = new ListItem();
 

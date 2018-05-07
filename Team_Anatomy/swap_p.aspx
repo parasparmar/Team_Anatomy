@@ -402,18 +402,17 @@
                         </div>
                         <div class="col-md-12">
                             <div class="box-footer">
-                                <asp:Panel ID="pnlEnableSubmission" runat="server" Visible="true">
-                                    <div class="col-md-3">
-                                        <div class="btn-group">
-                                            <asp:Button ID="btnSubmitStage3" Text="Confirmed" runat="server" CssClass="btn btn-primary" OnClick="btnSubmitStage3_Click" />
-                                            <asp:Button ID="btnCancelStage3" Text="Cancel" runat="server" CssClass="btn btn-warning" OnClick="btnCancelStage3_Click" />
-                                        </div>
-                                    </div>
-                                </asp:Panel>
-                                <div class="col-md-9">
-                                    <input id="hdShouldIProceed" type="text" readonly="readonly" name="hdShouldIProceed" value="0" />                                    
-                                    <pre><asp:Label ID="lblHelpfulMessage" runat="server" Text=""></asp:Label></pre>
+                                <div id="dvHelpfulMessage" class="col-md-9 alert alert-warning" style="display: none">
+                                    <h4 id="headingHelpfulMessage"><i id="iconHelpfulMessage" class="icon fa fa-warning"></i>Please Note!</h4>
+                                    <div id="lblHelpfulMessage"></div>
                                 </div>
+                                <div id="dvEnableSubmission" class="col-md-3 alert" style="display: none">
+                                    <div class="btn-group">
+                                        <asp:Button ID="btnSubmitStage3" Text="Confirmed" runat="server" CssClass="btn btn-primary" OnClick="btnSubmitStage3_Click" />
+                                        <asp:Button ID="btnCancelStage3" Text="Cancel" runat="server" CssClass="btn btn-warning" OnClick="btnCancelStage3_Click" />
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -445,22 +444,31 @@
 
             // Bind the validation events to the labels
             $('[id^="ddl"]').change(function () {
-                var MyRow = $(this).closest("tr");
-                var index = MyRow.index();
+                var Row = $(this).closest("tr");
+
+                var index = Row.index();
                 var AmICompliant = true;
-                var AmICompliant = ShiftSwapper($(this), index);
+                AmICompliant = ShiftSwapper($(this), index);
+                var dvEnableSubmission = $("#dvEnableSubmission");
                 if (AmICompliant == true) {
-                    $("#hdShouldIProceed").val("1");                    
+                    dvEnableSubmission.show();
                 } else {
-                    $("#hdShouldIProceed").val("0");
+                    dvEnableSubmission.hide();
                 }
-                return AmICompliant;
             });
             function ShiftSwapper(ddlX, index) {
-                var AmICompliant = true;
                 var toggle = 0;
-                if (index == 1) { toggle = 0; } else { toggle = 1; }
-
+                var MyRow;
+                var PartnersRow;
+                if (index == 1) {
+                    toggle = 0;
+                    PartnersRow = ddlX.closest("tr");
+                    MyRow = PartnersRow.prev();
+                } else {
+                    toggle = 1;
+                    MyRow = ddlX.closest("tr");
+                    PartnersRow = MyRow.next();
+                }
                 var SelectedShift = ddlX.val();
                 var ddlID = ddlX.attr('id');
                 var myID = ddlID.substring(ddlID.length - 1);
@@ -485,6 +493,10 @@
                     var lblAfterShift = $(theID).eq(index);
                     lblAfterShift.text("");
 
+                    // Blank out the AfterShift of my partner's dropdown
+                    var lblAfterShift2 = $(theID).eq(toggle);
+                    var AfterShift2 = lblAfterShift2.text();
+
                     // Get the Before Headcount.
                     theID = '[id^="lblHCBefore' + myID + '"]';
                     var lblHCBefore = $(theID);
@@ -493,51 +505,95 @@
                     // Get the handle to the label of the After Headcount.
                     theID = '[id^="lblHCAfter' + myID + '"]';
                     var lblHCAfter = $(theID);
+                    var HCAfter = parseInt(lblHCAfter.text());
 
+                    // The only case where we need to calculate headcounts and set labels.
+                    lblAfterShift.text(SelectedShift);
+                    lblAfterShift2.text(SelectedShift2);
+
+
+                    // Get the handle to the HelpfulMessage and it's components.
                     var lblHelpfulMessage = $("#lblHelpfulMessage");
-                    var message = "";
-                    lblHelpfulMessage.text(message);
-                    var isRuleOfLegalShiftSwaps = RuleOfLegalShiftSwaps();
-                    var isRuleOfHeadCountInvariance = RuleOfHeadCountInvariance();
-                    var isRuleOfWorkOffsInvariance = RuleOfWorkOffsInvariance();
+                    var dvHelpfulMessage = $("#dvHelpfulMessage");
+                    var headingHelpfulMessage = $("#headingHelpfulMessage");
+                    var iconHelpfulMessage = $("#iconHelpfulMessage");
+                    var dvEnableSubmission = $("dvEnableSubmission");
 
-                    if (isRuleOfLegalShiftSwaps == false) { message = "LegalShiftSwaps : Your Selected Shift should match your Swap Partner's Rostered Shift AND vice versa."}                    
-                    if (isRuleOfHeadCountInvariance == false) { message += "HeadCountInvariance : The Pre and Post headcounts for the day should match exactly.<br/>" }                    
-                    if (isRuleOfWorkOffsInvariance == false) { message += "WorkOffs between 1 and 2 : You and your Shift Swap Partner should have atleast 1 and at the most 2 Work Offs this week.<br/>" }
-                    lblHelpfulMessage.text(message);
 
+
+                    var Compliance = new Object;
+                    var message = new Array();
+                    Compliance.RuleOfLegalShiftSwaps = RuleOfLegalShiftSwaps(message);
+                    Compliance.RuleOfHeadCountInvariance = RuleOfHeadCountInvariance(message);
+                    Compliance.RuleOfWorkOffsInvariance = RuleOfWorkOffsInvariance(message);
+
+
+                    if (Compliance.RuleOfLegalShiftSwaps && Compliance.RuleOfHeadCountInvariance && Compliance.RuleOfWorkOffsInvariance) {
+                        AmICompliant = true;
+                        dvHelpfulMessage.removeClass("alert-warning");
+                        dvHelpfulMessage.addClass("alert-success");
+                        iconHelpfulMessage.removeClass("fa-warning");
+                        iconHelpfulMessage.addClass("fa-check-square");
+                        dvHelpfulMessage.show();
+                        dvEnableSubmission.show();
+                        headingHelpfulMessage.text("Passed");
+                        headingHelpfulMessage.prepend('<i id="iconHelpfulMessage" class="icon fa fa-check-square"></i>');
+                    }
+                    else {
+                        AmICompliant = false;
+                        dvHelpfulMessage.removeClass("alert-success");
+                        dvHelpfulMessage.addClass("alert-warning");
+                        iconHelpfulMessage.removeClass("fa-check-square");
+                        iconHelpfulMessage.addClass("fa-warning");
+                        dvHelpfulMessage.show();
+                        dvEnableSubmission.show();
+                    }
+                    MessageWriter();
                     return AmICompliant;
                 }
+                function MessageWriter() {
+                    lblHelpfulMessage.text("");
+                    lblHelpfulMessage.append("<ul>");
+                    for (m in message) {
+                        lblHelpfulMessage.append("<li>" + message[m] + "</li>");
+                    }
+                    lblHelpfulMessage.append("</ul>");
+                }
+                function RuleOfLegalShiftSwaps(message) {
 
-                function RuleOfLegalShiftSwaps() {
                     // Stage1 : Validate the Rule of Legal Swap - per change request.
-                    if (BeforeShift != SelectedShift) {
-                        // The only case where we need to calculate headcounts and set labels.
-                        lblAfterShift.text(SelectedShift);
-                        // Remove warnings
-                        lblAfterShift.removeClass("bg-red");
-                        lblAfterShift.addClass("bg-yellow");
+                    if (SelectedShift == BeforeShift2 && SelectedShift2 == BeforeShift) {
 
-                        RuleOfHeadCountInvariance();
-                        return true;
-                    } else if (BeforeShift == SelectedShift) {
                         // Remove warnings
                         lblAfterShift.removeClass("bg-red");
                         lblAfterShift.addClass("bg-yellow");
-                        RuleOfHeadCountInvariance();
+                        message.push("Legal Shift Swaps : Passed.");
+                        return true;
+                    } else if (SelectedShift != BeforeShift2) {
+                        // Remove warnings
+                        lblAfterShift.removeClass("bg-red");
+                        lblAfterShift.addClass("bg-yellow");
+                        message.push("Legal Shift Swaps : Failed. Your Shift Swap is not valid.");
                         return false;
-                    } else {
+                    }
+                    else if (SelectedShift2 != BeforeShift) {
+                        // Remove warnings
+                        lblAfterShift.removeClass("bg-red");
+                        lblAfterShift.addClass("bg-yellow");
+                        message.push("Legal Shift Swaps : Failed. Your Partner's Shift Swap is not valid.");
+                        return false;
+                    }
+                    else {
                         // Set warnings
                         lblAfterShift.text("Un-Actionable Swap");
                         lblAfterShift.removeClass("bg-yellow");
                         lblAfterShift.addClass("bg-red");
-                        RuleOfHeadCountInvariance();
+                        message.push("Legal Shift Swaps : Failed. Un-Actionable Swap");
                         return false;
                     }
                 }
-
                 //Checks for daily Headcount invariance.
-                function RuleOfHeadCountInvariance() {
+                function RuleOfHeadCountInvariance(message) {
                     // Set the HCAfter
                     HCAfter = parseInt(isWorkingShift(SelectedShift) + isWorkingShift(SelectedShift2));
                     lblHCAfter.text(HCAfter);
@@ -546,53 +602,86 @@
                         //set warning
                         lblHCAfter.removeClass("bg-yellow");
                         lblHCAfter.addClass("bg-red");
+                        message.push("Headcount Invariance : Failed. The Pre and Post Swap Headcounts are different. Swaps are only allowed when the headcount does not change.");
+
                         return false;
                     } else {
                         //remove warning
                         lblHCAfter.removeClass("bg-red");
                         lblHCAfter.addClass("bg-yellow");
+                        message.push("Headcount Invariance : Passed.");
                         return true;
                     }
                 }
+                function RuleOfWorkOffsInvariance(message) {
 
-                function RuleOfWorkOffsInvariance() {
-                    var MyRow = ddlX.closest("tr");
-                    var MyScheduledWOs = 0;
+                    function WOCounter(TheRow) {
+                        var WOCount = 0;
+                        var MyShift;
+                        TheRow.each(function (e) {
+
+                            // If the ddl selected is an input..
+                            if ($(this).is('input,select,textarea')) {
+                                MyShift = $(this).val();
+                            } else {
+                                // If the ddl selected is an text type..
+                                MyShift = $(this).html();
+                            }
+
+                            if (MyShift.toUpperCase().trim() === "WO") {
+                                WOCount++;
+                            }
+
+                        });
+                        return WOCount;
+                    }
+
+
+                    var MyShifts = MyRow.find('[id^="ddl"]');
+
+                    var MyPartnersShifts = PartnersRow.find('[id^="ddl"]');
+                    var MyRosteredShifts = MyRow.find('[id^="lblBefore"]');
+                    var PartnersRosteredShifts = PartnersRow.find('[id^="lblBefore"]');
+
                     var MyWOs = 0;
+                    var MyRosteredWOs = 0;
+                    var PartnersWOs = 0;
+                    var PartnersRosteredWOs = 0;
+
+                    MyWOs = WOCounter(MyShifts);
+                    MyRosteredWOs = WOCounter(MyRosteredShifts);
+
+                    PartnersWOs = WOCounter(MyPartnersShifts);
+                    PartnersRosteredWOs = WOCounter(PartnersRosteredShifts);
 
                     // What's the count of WOs after the selected shifts are swapped.
-                    MyRow.find('[id^="ddl"]').each(function (e) {
-                        if (e > 1) {
-                            var MyShift = $(this).val();
-                            // If the ddl selected is a WO then push..
-                            if (MyShift == "WO") {
-                                MyWOs++;
-                                if (MyWOs > 2) {
-                                    $(this).addClass("text-red");
-                                } else {
-                                    $(this).removeClass("text-red");
-                                }
-                            }
-                        }
-                    });
-                    if (MyWOs > 2) { return false; } else { return true; }
-                }
+                    if (MyWOs < 1) { message.push("Workoff Checks : Failed. Post the swap, you have " + MyWOs + " WorkOffs of the minimum 1 allowed."); }
+                    if (MyWOs > 2) { message.push("Workoff Checks : Failed. Post the swap, you have " + MyWOs + " WorkOffs of the maximum 2 allowed."); }
+                    if (PartnersWOs < 1) { message.push("Workoff Checks : Failed. Post the swap, your swap Partner has " + MyWOs + " WorkOffs of the minimum 1 allowed."); }
+                    if (PartnersWOs > 2) { message.push("Workoff Checks : Failed. Post the swap, your swap Partner has " + MyWOs + " WorkOffs of the maximum 2 allowed."); }
 
-                function isWorkingShift(SelectedShift) {
-                    if (/[0-9]{2}:[0-9]{2}/.test(SelectedShift)) {
-                        return 1;
+                    if (MyWOs != MyRosteredWOs) { message.push("Workoff Checks : Failed. You were rostered " + MyRosteredWOs + " WorkOffs and have " + MyWOs + " now. Are you sure?"); }
+                    if (PartnersWOs != PartnersRosteredWOs) { message.push("Workoff Checks : Failed. Your Partner was rostered " + MyRosteredWOs + " WorkOffs and has " + PartnersWOs + " now. Are you sure?"); }
+
+                    if (MyWOs >= 1 && MyWOs <= 2 && PartnersWOs >= 1 && PartnersWOs <= 2 && MyWOs == MyRosteredWOs && PartnersWOs == PartnersRosteredWOs) {
+                        message.push("Workoff Checks : Passed.");
+                        return true;
                     } else {
-                        return 0;
+                        return false;
                     }
                 }
 
+                function isWorkingShift(SelectedShift) {
+                    if (/[0-9]{2}:[0-9]{2}/.test(SelectedShift)) { return 1; }
+                    else { return 0; }
+                }
             }
         }
 
         $(function () {
             pluginsInitializer();
         });
-        
+
         //On UpdatePanel Refresh
         var prm = Sys.WebForms.PageRequestManager.getInstance();
         if (prm != null) {

@@ -51,7 +51,7 @@ public partial class profile : System.Web.UI.Page
             lblDOJ.Text = Convert.ToDateTime(dr["DOJ"]).ToString("dd-MMM-yyyy");
             lblEmailID.Text = dr["Email_Office"].ToString();
             lblContactNumber.Text = dr["Contact_Number"].ToString();
-            if (dr["UserImage"].ToString().Length > 0)
+            if (dr["UserImage"] != null && dr["UserImage"].ToString().Length > 0)
             {
                 imgbtnUserImage.ImageUrl = "sitel/user_images/" + dr["UserImage"].ToString();
 
@@ -65,7 +65,6 @@ public partial class profile : System.Web.UI.Page
             lblSite.Text = dr["SiteID"].ToString();
             /////---------------Personal Section 
             if (dr["Gender"] != null && dr["Gender"].ToString().Length > 0) { tbGender.Items.FindByText(dr["Gender"].ToString()).Selected = true; }
-
 
             tbDate_of_Birth.Text = dr["Date_of_Birth"].ToString().Length == 0 ? string.Empty : Convert.ToDateTime(dr["Date_of_Birth"].ToString()).ToString("dd-MMM-yyyy");
 
@@ -89,14 +88,19 @@ public partial class profile : System.Web.UI.Page
             tbEmergencyContactPerson.Text = dr["EmergencyContactPerson"].ToString();
             tbEmail_id.Text = dr["Email_Personal"].ToString();
             /////---------------Transport Section 
-            //tbTransport_User.Text = dr["Transport"].ToString();            
-            if (dr["Transport"] != null && dr["Transport"].ToString().Length > 0) {
+            if (dr["Transport"] != null && dr["Transport"].ToString().Length > 0)
+            {
                 tbTransport_User.SelectedValue = dr["Transport"].ToString();
             }
             tbAddress_Line_1.Text = dr["Address1"].ToString();
             tbAddress_Line_2.Text = dr["Address2"].ToString();
             tbAddress_Landmark.Text = dr["Landmark"].ToString();
+            if (dr["Location"].ToString() != null) { ddlAddress_Location.Items.FindByValue(dr["Location"].ToString()).Selected = true; }
+            if (dr["SubLocation"].ToString() != null) { ddlAddress_SubLocation.Items.FindByValue(dr["SubLocation"].ToString()).Selected = true; }
             tbAddress_City.Text = dr["City"].ToString();
+            ddlAddress_Pincode.Items.FindByValue(dr["Pincode"].ToString());
+
+
 
             /////---------------Work Experience
             tbTotal_Work_Experience.Text = dr["Total_Work_Experience"].ToString();
@@ -188,17 +192,23 @@ public partial class profile : System.Web.UI.Page
         int Employee_ID = Convert.ToInt32(lblEmployee_ID.Text);
         int Gender = Convert.ToInt32(tbGender.SelectedValue.ToString());
         int MaritalStatus = Convert.ToInt32(tbMaritalStatus.SelectedValue.ToString());
-        string Address_Country = tbAddress_Country.Text;
+        //string Address_Country = tbAddress_Country.Text;
         string Address_City = tbAddress_City.Text;
         string Address1 = tbAddress_Line_1.Text;
         string Address2 = tbAddress_Line_2.Text;
         string Landmark = tbAddress_Landmark.Text;
-        string Permanent_Address_City = tbPermanent_Address_City.Text;
+        int Location=0;
+        if (ddlAddress_Location.SelectedValue != null) { Location = Convert.ToInt32(ddlAddress_Location.SelectedValue.ToString()); }
+        string SubLocation = string.Empty;
+        if (ddlAddress_SubLocation != null) { SubLocation = ddlAddress_SubLocation.SelectedValue.ToString(); }
+        int Pincode = 0;
+        if (ddlAddress_Pincode != null) { Pincode = Convert.ToInt32(ddlAddress_Pincode.SelectedValue.ToString()); }
+        //string Permanent_Address_City = tbPermanent_Address_City.Text;
         string EmergencyContactPerson = tbEmergencyContactPerson.Text;
         string EmergencyContactNo = tbEmergencyContactNo.Text;
         string Email_Personal = tbEmail_id.Text;
         bool Transport = tbTransport_User.SelectedItem.ToString() == "Yes" ? true : false;
-        string Country = tbAddress_Country.Text;
+        
         string City = tbAddress_City.Text;
         int Qualification = Convert.ToInt32(tbQualification.SelectedValue.ToString());
 
@@ -251,7 +261,7 @@ public partial class profile : System.Web.UI.Page
 
         string Updated_by = myid;
         DateTime Update_Date = DateTime.Now;
-        string the_Procedure = "WFMP.updateEmployeeProfileData";
+        string the_Procedure = "WFMP.Profile_UpdateEmployeeData";
 
         try
         {
@@ -272,6 +282,9 @@ public partial class profile : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@Address1", Address1);
                     cmd.Parameters.AddWithValue("@Address2", Address2);
                     cmd.Parameters.AddWithValue("@Landmark", Landmark);
+                    cmd.Parameters.AddWithValue("@Location", Location);
+                    cmd.Parameters.AddWithValue("@SubLocation", SubLocation);
+                    cmd.Parameters.AddWithValue("@Pincode", Pincode);
                     cmd.Parameters.AddWithValue("@City", City);
 
                     cmd.Parameters.AddWithValue("@Skill1", Skill1);
@@ -306,7 +319,7 @@ public partial class profile : System.Web.UI.Page
                     {
                         cmd.Parameters.AddWithValue("@Total_Work_Experience", Total_Work_Experience);
                     }
-                    //Procedure or function 'updateEmployeeProfileData' expects parameter '@Employee_ID', which was not supplied.            
+                    //Procedure or function 'Profile_UpdateEmployeeData' expects parameter '@Employee_ID', which was not supplied.            
                     int rowsAffected = cmd.ExecuteNonQuery();
 
                     this.intialize_me();
@@ -318,7 +331,7 @@ public partial class profile : System.Web.UI.Page
             Response.Write(Ex.Message);
         }
 
-        Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Data uploaded successfull.')", true);
+        Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Data uploaded successfully.')", true);
 
     }
     protected void fillOptionLists()
@@ -336,6 +349,13 @@ public partial class profile : System.Web.UI.Page
         //Fill tbMaritalStatus
         strSQL = "SELECT [Id],[MaritalStatus] FROM [CWFM_Umang].[WFMP].[tblMaritalStatus]";
         my.append_dropdown(ref tbMaritalStatus, strSQL, 1, 0);
+
+        strSQL = "Select Id,Location from WFMP.tblLocation where Active=1";
+        my.append_dropdown(ref ddlAddress_Location, strSQL, 1, 0);
+
+        strSQL = "Select Pincode, Convert(varchar,Pincode) + ' ( '+ PostOffice+' )' as PO from WFMP.tblPincode";
+        my.append_dropdown(ref ddlAddress_Pincode, strSQL, 1, 0);
+
 
     }
 

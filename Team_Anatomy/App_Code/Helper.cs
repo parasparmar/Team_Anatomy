@@ -46,7 +46,7 @@ public class Helper
             cn.Dispose();
         }
     }
-    public int ExecuteDMLCommand(ref SqlCommand cmd, string sql_string, string operation)
+    public int ExecuteDMLCommand(ref SqlCommand cmd, string sql_string="", string operation="E")
     {
         open_db();
         int returnValue = 0;
@@ -376,7 +376,7 @@ public class Helper
 
 public class EmailSender
 {
-    private string _initiatorEmail;
+    
     private string[] _recipientsEmailAddresses { get; set; }
     public int InitiatorEmpId { get; set; }
     public string RecipientsEmpId { get; set; }
@@ -390,7 +390,7 @@ public class EmailSender
     Helper my = new Helper();
     public EmailSender()
     {
-        if (_initiatorEmail != null && _initiatorEmail != string.Empty) { From = _initiatorEmail.ToString(); }
+        
 
     }
 

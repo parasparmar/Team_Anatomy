@@ -30,7 +30,7 @@ public partial class index : System.Web.UI.Page
             myID = PageExtensionMethods.getMyWindowsID().ToString();
             RedirectBasedOnNTNameLookup(myID);
         }
-        
+
     }
 
     private void RedirectBasedOnNTNameLookup(string myID)
@@ -39,10 +39,7 @@ public partial class index : System.Web.UI.Page
         DataTable dt = new DataTable();
         if (myID != "IDNotFound")
         {
-
-            //myID = "vshir001"; //Prashant Goradia pgora001
-            //myID = "gsing017"; //Prashant Goradia pgora001
-            //myID = "utiwa002"; //Prashant Goradia pgora001
+            //myID = "Ctirt002"; //RTA Vinod Chauhan vfern016 nrodr058 vshir001 Jfurt002 yramd001 atike001 vpere018 mchau006  ykand001 vfern016
             SqlCommand cmd = new SqlCommand("WFMP.getEmployeeData");
             cmd.Parameters.AddWithValue("@NT_ID", myID);
             
@@ -53,7 +50,19 @@ public partial class index : System.Web.UI.Page
                 {
 
                     Session["dtEmp"] = dt;
-                    Response.Redirect("swap_p.aspx", false);
+                    if (Request.UrlReferrer != null)
+                    {
+                        ViewState["PreviousPageUrl"] = Request.UrlReferrer.ToString();
+                    }
+                    else
+                    {
+                        // Development and Production settings.
+                        // In Production please redirect to index.aspx else ...
+
+                        Response.Redirect("profile.aspx", false);
+                    }
+
+
                 }
                 else
                 {
@@ -72,7 +81,7 @@ public partial class index : System.Web.UI.Page
             Response.Redirect("lockscreen.aspx", false);
         }
 
-        
+
     }
 
     private DataTable getSkillsetImpersonator()

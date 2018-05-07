@@ -228,7 +228,7 @@
                 <!-- Logo -->
                 <a href="Index.aspx" class="logo">
                     <!-- mini logo for sidebar mini 50x50 pixels -->
-                    <span class="logo-mini">i<b>A</b></span>
+                    <span class="logo-mini"><b>IA</b></span>
                     <!-- logo for regular state and mobile devices -->
                     <span class="logo-lg">i<b>A</b>ccess</span>
                 </a>
@@ -368,8 +368,18 @@
                                 </a>
                             </li>
                             <li>
+                                <a href="swap_p.aspx">
+                                    <i class="fa fa-exchange"></i><span>Shift Swaps</span>
+                                </a>
+                            </li>
+							<li>
                                 <a href="../pacman/index.aspx">
                                     <i class="fa fa-dollar"></i><span>PACMAN</span>
+                                </a>
+                            </li>
+			    <li>
+                                <a href="IntervalTracker.aspx">
+                                    <i class="fa fa-sliders"></i><span>Interval Tracker</span>
                                 </a>
                             </li>
                         </ul>

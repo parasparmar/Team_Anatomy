@@ -84,6 +84,7 @@ public partial class leave : System.Web.UI.Page
 
 
     }
+
     private void fillgvLeaveDetails()
     {
         string received = reservation.Text;
@@ -102,8 +103,12 @@ public partial class leave : System.Web.UI.Page
         //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Key2", "pluginsInitializer()", true);
 
     }
+
+
+
     protected void gvLeaveDetails_RowDataBound(object sender, GridViewRowEventArgs e)
     {
+
         GridView gv = (GridView)sender;
         GridViewRow gvr = (GridViewRow)e.Row;
         if (gvr.RowIndex >= 0)
@@ -115,7 +120,10 @@ public partial class leave : System.Web.UI.Page
             lbl.Text = ondate.DayOfWeek.ToString();
 
             DropDownList ddl = (DropDownList)gvr.FindControlRecursive("ddlSelectLeave");
-            strsql = "select LeaveId, LeaveText from WFMP.tblLeaveType where Active=1";
+            if (ondate > DateTime.Now)
+            { strsql = "select LeaveId, LeaveText from WFMP.tblLeaveType where Active=1 and LeaveId <> 4"; }
+            else if (ondate < DateTime.Now)
+            { strsql = "select LeaveId, LeaveText from WFMP.tblLeaveType where Active = 1 and LeaveId<> 3"; }
             DataTable dt = my.GetData(strsql);
 
             ddl.DataSource = dt;
@@ -124,6 +132,7 @@ public partial class leave : System.Web.UI.Page
             ddl.DataBind();
         }
     }
+
     private void fillgvLeaveLog()
     {
 
@@ -143,6 +152,7 @@ public partial class leave : System.Web.UI.Page
         ViewState["sortdr"] = "Asc";
 
     }
+
     private void clearfields()
     {
         ddl_leave_dropdown.ClearSelection();
@@ -150,6 +160,7 @@ public partial class leave : System.Web.UI.Page
         gvLeaveDetails.DataSource = null;
         gvLeaveDetails.DataBind();
     }
+
     protected void gvLeaveLog_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         GridView gv = (GridView)sender;
@@ -178,7 +189,7 @@ public partial class leave : System.Web.UI.Page
             DateTime fromdate = Convert.ToDateTime(fdate);
             DateTime today = DateTime.Today;
 
-            if (stat1 == "Declined" || today > fromdate || dt == 1 || stat2 == "declined")//
+            if ( today > fromdate || dt == 1 || stat2 == "declined")
             {
                 btn.CssClass = "btn btn-sm btn-danger disabled";
                 btn.Enabled = false;
@@ -192,10 +203,10 @@ public partial class leave : System.Web.UI.Page
         {
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Message", "<script>$(document).ready(function(){ $('#pnlLeaveBox').css({ 'display': 'block' });})</script>", false);
             Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.warning('Not more than 2 Work-Offs can be applied in a week.Kindly rectify')", true);
+
         }
-        else
-        {
-            Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leaves Successfully applied')", true);
+        else {
+            //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leaves Successfully applied')", true);
             string received = reservation.Text;
             string[] seperator = { " - " };
             DateTime from_Date = Convert.ToDateTime(received.Split(seperator, StringSplitOptions.None).First<string>());
@@ -246,12 +257,13 @@ public partial class leave : System.Web.UI.Page
                     }
 
                 }
-
+                
                 string newFromDate;
                 string newToDate;
 
                 newFromDate = String.Format("{0:dddd, MMMM d, yyyy}", from_Date);
                 newToDate = String.Format("{0:dddd, MMMM d, yyyy}", end_Date);
+                string leavereason = txt_leave_reason.Text.ToString();
 
                 Email.InitiatorEmpId = MyEmpID;
                 Email.RecipientsEmpId = dt.Rows[0]["RepMgrCode"].ToString();
@@ -259,8 +271,8 @@ public partial class leave : System.Web.UI.Page
                 Email.Subject = "Leave Request";
                 Email.Body = "<strong>Hi, </strong>";
                 Email.Body += "<P>" + dt.Rows[0]["First_Name"].ToString() + " " + dt.Rows[0]["Last_Name"].ToString() + " has requested leave from " + newFromDate + " to " + newToDate; //+ " for given reason"+" ' "+ txt_leave_reason.Text.ToString()+ " '.<P>";
-                Email.Body += "<br> Reason: this is test email from dev. <br>";
-                Email.Send();
+                Email.Body += "<br> Reason: <i>"+ leavereason + "</i> <br>";
+               // Email.Send();
                 Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave applied successfully.')", true);
 
                 fillgvLeaveLog();
@@ -273,6 +285,7 @@ public partial class leave : System.Web.UI.Page
                     Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.warning('Current Leave applied coincides with previous uncalled leave .Kindly Reapply.')", true);
                     clearfields();
                 }
+
             }
         }
     }
@@ -326,9 +339,12 @@ public partial class leave : System.Web.UI.Page
                     }
                 }
             }
+
         }
         return trueValue;
     }
+
+
     string fdate { get; set; }
     string tdate { get; set; }//imp
     protected void btn_Cancel_Click(object sender, EventArgs e)
@@ -343,6 +359,7 @@ public partial class leave : System.Web.UI.Page
         fdate = row.Cells[0].Text.ToString();
         tdate = row.Cells[1].Text.ToString();
     }
+
     protected void btn_save_cancel_reason_Click(object sender, EventArgs e)
     {
 
@@ -350,7 +367,7 @@ public partial class leave : System.Web.UI.Page
         string id = (lblLeaveID.Value);
         SqlConnection con = new SqlConnection(my.getConnectionString());
         con.Open();
-        //string fdate = row.Cells[0].Text.ToString();
+        //string fdate = Row.Cells[0].Text.ToString();
         //string tdate = row.Cells[1].Text.ToString();
         DateTime from_date = Convert.ToDateTime(fdate);
         DateTime to_date = Convert.ToDateTime(tdate);
@@ -361,10 +378,11 @@ public partial class leave : System.Web.UI.Page
         String Sql = "UPDATE [WFMP].[tbl_leave_request]";
         Sql += "SET [cancel_reason]='" + cancel_reason + "', [CancelDate]='" + CancelDate + "'";
 
-        Sql += "WHERE [id] = '" + id + "'";
+        Sql += "WHERE [id] = '" + id + "'; exec [WFMP].[Leave_Cancel2Roster] '" + id + "'";
 
         SqlCommand cmd = new SqlCommand(Sql, con);
         cmd.Connection = con;
+
         int Rows = cmd.ExecuteNonQuery();
         con.Close();
         txt_cancel_reason.Text = String.Empty;
@@ -428,6 +446,7 @@ public partial class leave : System.Web.UI.Page
             gv.FooterRow.TableSection = TableRowSection.TableFooter;
         }
     }
+
     protected void gvLeaveLog_Sorting(object sender, GridViewSortEventArgs e)
     {
         DataTable dtrslt = (DataTable)ViewState["dirState"];
@@ -448,6 +467,7 @@ public partial class leave : System.Web.UI.Page
         }
 
     }
+
     protected void gvLeaveLog_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         gvLeaveLog.PageIndex = e.NewPageIndex;

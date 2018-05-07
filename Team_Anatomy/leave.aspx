@@ -36,7 +36,7 @@
         }
 
         .bg-red {
-           /* border-radius: 100%;*/
+            border-radius: 100%;
             background: -ms-linear-gradient(left, rgba(255,52,41,1) 0%, rgba(255,82,77,1) 0%, rgba(255,82,77,1) 0%, rgba(255,9,5,1) 0%, rgba(255,14,10,1) 0%, rgba(235,0,23,1) 100%);
         }
 

@@ -1,10 +1,10 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="LeaveApproval.aspx.cs" Inherits="LeaveApproval" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="headPlaceHolder" runat="Server">
-        <%--toastr--%>
+    <%--toastr--%>
     <%--<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />--%>
 
-     <%--<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" rel="stylesheet"/>--%> 
+    <%--<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" rel="stylesheet"/>--%>
 
     <style>
         /*.example-modal .modal {
@@ -18,11 +18,11 @@
             z-index: 1;
         }*/
         .red {
-            color:red;
+            color: red;
         }
 
         .content-wrapper {
-            min-height:897.76px !important;
+            min-height: 897.76px !important;
         }
 
         .badge {
@@ -42,8 +42,8 @@
         }*/
 
         .left {
-        /*float:left;*/
-        width: 100%;
+            /*float:left;*/
+            width: 100%;
         }
 
         .right {
@@ -97,27 +97,42 @@
                             <h4 class="box-title">View Leaves of Employees</h4>
                         </div>
                         <div class="box-body">
-                            <div class="row">
+                            
                                 <asp:Panel CssClass="col-md-6" ID="pnlAmIRvwMgr" Visible="true" runat="server">
+                                    <div class="row">
+                                <div class="col-lg-6">
                                     <div class="form-group">
-
-                                        <asp:DropDownList ID="ddlRepManager" runat="server" CssClass="form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlRepManager_SelectedIndexChanged">
+                                        <asp:DropDownList ID="ddlRepManager" runat="server" CssClass="col-md-6 form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlRepManager_SelectedIndexChanged">
                                             <asp:ListItem Selected="True" Text="None" Value="0"></asp:ListItem>
                                         </asp:DropDownList>
-                                    </div>
-                                    <!-- ddlRepManager-->
-                                </asp:Panel>
-                                <!-- pnlAmIRvwMgr-->
+                                        </div>
+                                        </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <asp:DropDownList ID="ddlActionFilter" runat="server" CssClass="col-md-6 form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlActionFilter_SelectedIndexChanged">
+                                            <asp:ListItem Value="1" Text="All" runat="server"></asp:ListItem>
+                                            <asp:ListItem Value="2" Text="Level1 Pending" runat="server"></asp:ListItem>
+                                            <asp:ListItem Value="3" Text="Level2 Pending" runat="server"></asp:ListItem>
+                                            <asp:ListItem Value="4" Text="Level1 Actioned" runat="server"></asp:ListItem>
+                                            <asp:ListItem Value="5" Text="Level2 Actioned" runat="server"></asp:ListItem>
+                                        </asp:DropDownList>
+                                         </div>
+                                        </div>
                             </div>
+                            <!-- ddlRepManager-->
+                            </asp:Panel>
+                                <!-- pnlAmIRvwMgr-->
+                        </div>
 
-                          <%--  <div class="box box-primary">--%>
+                        <%--  <div class="box box-primary">--%>
                         <div class="box-header with-border">
                             <h3 class="box-title">Employee Leave Log</h3>
                         </div>
                         <div class="box-body">
                             <div class="box-body">
-                                <asp:GridView ID="gvApprLeaveLog" runat="server" 
-                                    CssClass="table table-bordered table-hover "  AutoGenerateColumns="false"><%--ApprleavelogDataTable OnPreRender="gv_PreRender" Datatable--%>
+                                <asp:GridView ID="gvApprLeaveLog" runat="server"
+                                    CssClass="table table-bordered table-hover ApprleavelogDataTable" OnPreRender="gv_PreRender" AutoGenerateColumns="false">
+                                    <%--ApprleavelogDataTable OnPreRender="gv_PreRender" Datatable--%>
                                     <Columns>
                                         <asp:BoundField DataField="ecn" HeaderText="Emp Code"></asp:BoundField>
                                         <asp:BoundField DataField="name" HeaderText="Name"></asp:BoundField>
@@ -148,20 +163,19 @@
                             </div>
                         </div>
 
-                    <%--</div>--%>
-
-                        </div>
+                        <%--</div>--%>
                     </div>
-                    <!--tabcontent-->
                 </div>
-                <!-- /.col -->
+                <!--tabcontent-->
+            </div>
+            <!-- /.col -->
             </div>
 
 
             <div class="row-fluid">
                 <div class="col-md-12">
                     <!-- Custom Tabs -->
-                  <%--  put here the leave log--%>
+                    <%--  put here the leave log--%>
                     <!-- /.box-footer-->
                 </div>
                 <!--tabcontent-->
@@ -170,18 +184,21 @@
             </div>
             <div class="modal" id="modal-details">
                 <div class="modal-dialog">
-                    <div class="modal-content" style="border:1px solid #3c8dbc">
-                        <div class="modal-header" style="background-color:#3c8dbc">
+                    <div class="modal-content" style="border: 1px solid #3c8dbc">
+                        <div class="modal-header" style="background-color: #3c8dbc">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" style="color:white">Leave Details for <asp:Label ID="lblEmployeeName" runat="server"></asp:Label> &nbsp<asp:Label ID="lblEmployeeID" runat="server"></asp:Label></h4>   
+                            <h4 class="modal-title" style="color: white">Leave Details for
+                                <asp:Label ID="lblEmployeeName" runat="server"></asp:Label>
+                                &nbsp Employee ID- <asp:Label ID="lblEmployeeID" runat="server"></asp:Label></h4>
                         </div>
                         <div class="modal-body">
                             <asp:GridView ID="gvdatewiseAppr" runat="server"
                                 CssClass="table table-bordered table-hover "
-                                AutoGenerateColumns="false" >
+                                AutoGenerateColumns="false">
                                 <Columns>
                                     <asp:BoundField DataField="LEAVEDATE" HeaderText="Date"></asp:BoundField>
+                                    <asp:BoundField DataField="LEAVEDAY" HeaderText="Day"></asp:BoundField>
                                     <asp:BoundField DataField="LEAVETEXT" HeaderText="Leave Type"></asp:BoundField>
                                     <asp:BoundField DataField="ROSTER" HeaderText="Roster"></asp:BoundField>
                                 </Columns>
@@ -189,15 +206,17 @@
                             <%--<br>--%>
                             <asp:TextBox ID="txt_reason" TextMode="multiline" Columns="74" Rows="2" runat="server" CssClass="form-control" placeholder="Enter comments...."></asp:TextBox>
                             <asp:Label ID="alert" Visible="false" runat="server" CssClass="red" Text="Leave decline reason required"></asp:Label>
-                            <asp:Label ID="lblLeaveID" runat="server" Visible="false"></asp:Label>            
-                                           
+                            <asp:Label ID="lblLeaveID" runat="server" Visible="false"></asp:Label>
+
                         </div>
                         <div class="modal-footer">
                             <div class="row">
                                 <div class="col-md-6">
-                            <asp:Button ID="btn_appr" runat="server" CssClass="btn btn-sm btn-success left" Text="Approve" OnClick="btn_appr_Click" /></div>
+                                    <asp:Button ID="btn_appr" runat="server" CssClass="btn btn-sm btn-success left" Text="Approve" OnClick="btn_appr_Click" />
+                                </div>
                                 <div class="col-md-6">
-                            <asp:Button ID="btn_dec" runat="server" CssClass="btn btn-sm btn-danger right" Text="Decline" OnClick="btn_dec_Click"/></div>
+                                    <asp:Button ID="btn_dec" runat="server" CssClass="btn btn-sm btn-danger right" Text="Decline" OnClick="btn_dec_Click" />
+                                </div>
                             </div>
                             <%--<asp:Button ID="btn_save_cancel_reason" runat="server" Text="Save" CssClass="btn btn-primary" />--%><%-- OnClick="btn_save_cancel_reason_Click"--%>
                         </div>
@@ -216,10 +235,10 @@
 </asp:Content>
 
 <asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">
-         <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js" type="text/javascript"></script>--%>
-     <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>--%> 
+    <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js" type="text/javascript"></script>--%>
+    <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>--%>
 
-   <%-- <script type="text/javascript">
+    <%-- <script type="text/javascript">
         //$(document).ready(function () {
         //    var leave_id; var btn; var status;
         //    //$(".btn-info").click(function (e) {
@@ -332,12 +351,16 @@
         };
 
         $(document).ready(function () {
+            dtbl();
+        });
+
+        function dtbl() {
             $('.ApprleavelogDataTable').DataTable({
                 "sPaginationType": "full_numbers",
                 "lengthMenu": [5, 10, 25, 50, 75, 100],
                 "aaSortingFixed": [[0, 'asc']],
                 "bSort": true,
-                dom: 'Bfrltip',
+                //dom: 'Bfrltip',
                 "columnDefs": [{ "orderable": false, "targets": 0 }],
                 buttons: [
                     { extend: 'copyHtml5', text: 'Copy Data' },
@@ -353,7 +376,7 @@
                 ],
 
             });
-        });
+        }
 
     </script>
 </asp:Content>

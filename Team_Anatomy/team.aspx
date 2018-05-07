@@ -43,6 +43,7 @@
                                     <Columns>
                                         <asp:BoundField DataField="Employee_ID" HeaderText="Emp Code" />
                                         <asp:BoundField DataField="Name" HeaderText="Name" />
+                                        <asp:BoundField DataField="Designation" HeaderText="Designation" />
                                         <asp:BoundField DataField="Contact_Number" HeaderText="Contact Number" />
                                         <asp:BoundField DataField="EMAIL_ID" HeaderText="Email" />
                                         

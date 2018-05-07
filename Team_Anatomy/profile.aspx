@@ -292,31 +292,44 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <label for="ddlAddress_Location" class="col-sm-2 control-label">Location</label>
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-home"></i></span>
+                                        <asp:DropDownList ID="ddlAddress_Location" CssClass="form-control select2"  Style="width: 100%" runat="server"></asp:DropDownList>
+                                    </div>
+                                </div>
+                                <label for="ddlAddress_SubLocation" class="col-sm-2 control-label">Sub Location</label>
+                                <div class="col-sm-4">                                    
+                                    <div class="input-group">                                        
+                                        <span class="input-group-addon"><i class="fa fa-home"></i></span>
+                                        <asp:DropDownList ID="ddlAddress_SubLocation" CssClass="form-control select2"  Style="width: 100%" runat="server">                                            
+                                            <asp:ListItem Text="Please Select" Value=""></asp:ListItem>
+                                            <asp:ListItem Text="West" Value="West"></asp:ListItem>
+                                            <asp:ListItem Text="East" Value="East"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label for="tbAddress_City" class="col-sm-2 control-label">Address City</label>
-                                <div class="col-sm-10">
+                                <div class="col-sm-4">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-hotel"></i></span>
                                         <asp:TextBox ID="tbAddress_City" CssClass="form-control" runat="server"></asp:TextBox>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="tbAddress_Country" class="col-sm-2 control-label">Address Country</label>
-                                <div class="col-sm-10">
+                                <label for="ddlAddress_Pincode" class="col-sm-2 control-label">Pincode</label>
+                                <div class="col-sm-4">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-hotel"></i></span>
-                                        <asp:TextBox ID="tbAddress_Country" CssClass="form-control" runat="server"></asp:TextBox>
+                                        <asp:DropDownList ID="ddlAddress_Pincode" CssClass="form-control select2"  Style="width: 100%" runat="server"></asp:DropDownList>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="tbPermanent_Address_City" class="col-sm-2 control-label">Permanent Address City</label>
-                                <div class="col-sm-10">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-home"></i></span>
-                                        <asp:TextBox ID="tbPermanent_Address_City" CssClass="form-control" runat="server"></asp:TextBox>
-                                    </div>
+                                    <asp:RequiredFieldValidator ID="reqval" ControlToValidate="ddlAddress_Pincode" ErrorMessage="Please select a Pincode" runat="server" ForeColor="Red"></asp:RequiredFieldValidator>
+                                    <p id="pAddress_Pincode" class="link-muted">
+                                    </p>
                                 </div>
                             </div>
 

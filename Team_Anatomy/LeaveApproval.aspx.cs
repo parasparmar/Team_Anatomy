@@ -89,6 +89,8 @@ public partial class LeaveApproval : System.Web.UI.Page
     protected void ddlRepManager_SelectedIndexChanged(object sender, EventArgs e)
     {
         FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
+        ddlActionFilter.ClearSelection();
+        //ddlActionFilter.SelectedValue= 1.ToString();
     }
 
     public void FillLeaveRequests(int xEmpCode)
@@ -124,7 +126,7 @@ public partial class LeaveApproval : System.Web.UI.Page
         lblEmployeeID.Text = employeeid;
         string employeeName = row.Cells[1].Text.ToString();
         lblEmployeeName.Text = employeeName;
-        String Sql = "select CONVERT(VARCHAR,A.[LeaveDate],106) as LeaveDate, B.[LeaveText], E.StartTime as Roster ";
+        String Sql = "select CONVERT(VARCHAR,A.[LeaveDate],106) as LeaveDate, DATENAME(weekday,A.[LeaveDate]) as LeaveDay, B.[LeaveText], E.ShiftCode as Roster ";
         Sql += "from [WFMP].[tbl_datewise_leave] A ";
         Sql += "inner join [WFMP].[tblLeaveType] B ";
         Sql += "on A.[leave_type] = B.[LeaveID] ";
@@ -229,9 +231,9 @@ public partial class LeaveApproval : System.Web.UI.Page
             //FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
             ScriptManager.RegisterStartupScript(this, this.GetType(), "show", "toastA();", true);
             FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
-            //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave is approved.')", true);
-            //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave is approved.', 'Success')", true);
-            fillddlRepManager();
+        //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave is approved.')", true);
+        //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave is approved.', 'Success')", true);
+        //fillddlRepManager();--commented to prevent refreshing of RepMgrDropdown
 
         //System.Threading.Thread.Sleep(3000);
         //Page.Response.Redirect(Page.Request.Url.ToString(), true);
@@ -284,9 +286,9 @@ public partial class LeaveApproval : System.Web.UI.Page
         Email.Body += "<p>Leave Application details:</p> <br>";
         Email.Body += "<table style='border-collapse: collapse;width: 90%;border: 1px solid #000000;font-family: calibri;'><tr style='background-color: #f2f2f2'><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>Start Date</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>End Date</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>Leave Reason</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>Applied On</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>Link for Action</th></tr><tr style='background-color: #f2f2f2'><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + from_date+ "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>"+to_date+"</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>"+ reason +"</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>"+ appliedOn + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'><a href='http://iaccess/TA/LeaveApproval.aspx'>Leave Approval page</a></td></tr></table> </div>";
        // Email.Body += "<br> <p>Regards, <br> IAccess Support Team <br> PS: This is an automated triggered email. Please do not reply.</p>";
-        Email.Send();
+        //Email.Send();
         //}
-
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "dtblAdd1", "dtbl();", true); 
     }
     protected void btn_dec_Click(object sender, EventArgs e)
     {
@@ -353,7 +355,7 @@ public partial class LeaveApproval : System.Web.UI.Page
             FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
             
             //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Request Declined.', 'Success')", true);
-            fillddlRepManager();
+            //--fillddlRepManager();//---commented to prevent refreshing of RepMgrDropdown
 
         string strSQL1 = "CWFM_UMANG.[WFMP].[getEmployeeMgrs]";
 
@@ -394,6 +396,48 @@ public partial class LeaveApproval : System.Web.UI.Page
         Email.Body += "<p>Reason for Decline: '<b><i>"+ comments+"'</b></i></p>";
         Email.Body += "<p>Leave Application details:</p> <br>";
         Email.Body += "<table style='border-collapse: collapse;width: 100%;border: 1px solid #000000;'><tr style='background-color: #f2f2f2'><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: red;color: white;'>Start Date</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: red;color: white;'>End Date</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: red;color: white;'>Leave Reason</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: red;color: white;'>Applied On</th></tr><tr style='background-color: #f2f2f2'><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + from_date + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + to_date + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + reason + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + appliedOn + "</td></tr></table>";
-        Email.Send();
+        //Email.Send();
+
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "dtblAdd2", "dtbl();", true);
+    }
+
+    protected void ddlActionFilter_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        string levelstatus = ddlActionFilter.SelectedValue.ToString();
+
+        strSQL = "CWFM_UMANG.WFMP.GetEmployeeLeaveRequestes";
+
+        SqlCommand cmd = new SqlCommand(strSQL);
+        cmd.Parameters.AddWithValue("@EmpCode", ddlRepManager.SelectedValue.ToString());
+        DataTable dt1 = my.GetDataTableViaProcedure(ref cmd);
+        DataView view = new DataView(dt1);        
+        
+        switch (levelstatus)
+        {
+            case "1":               
+                break;
+
+            case "2":
+                view.RowFilter = "Level1_Action is null";
+                break;
+
+            case "3":
+                view.RowFilter = "Level2_Action ='Pending'";
+                break;
+
+            case "4":
+                view.RowFilter = "Level1_Action is not null";
+                break;
+
+            case "5":
+                view.RowFilter = "Level2_Action <>'Pending'";                
+                break;
+        }
+        //FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
+        view.RowStateFilter = DataViewRowState.CurrentRows;
+        gvApprLeaveLog.DataSource = view;
+        gvApprLeaveLog.DataBind();
+
+
     }
 }

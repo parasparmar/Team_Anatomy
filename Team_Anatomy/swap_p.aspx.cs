@@ -77,7 +77,7 @@ public partial class swap_p : System.Web.UI.Page
     {
         strSQL = "select distinct ryear as Year from CWFM_Umang.WFMP.tblRstWeeks";
         my.append_dropdown(ref ddlYear, strSQL, 0, 0);
-        ddlYear.SelectedIndex = ddlYear.Items.IndexOf(new ListItem(DateTime.Today.Year.ToString()));        
+        ddlYear.SelectedIndex = ddlYear.Items.IndexOf(new ListItem(DateTime.Today.Year.ToString()));
         ddlYear_SelectedIndexChanged(ddlYear, new EventArgs());
 
 
@@ -113,7 +113,7 @@ public partial class swap_p : System.Web.UI.Page
     }
     protected void ddlWeek_SelectedIndexChanged(object sender, EventArgs e)
     {
-        
+
         if (ddlWeek.SelectedValue.Length > 0 && ddlYear.SelectedValue != "0")
         {
 
@@ -146,8 +146,6 @@ public partial class swap_p : System.Web.UI.Page
         Pivot pvt = new Pivot(dtSwapRoster);
         dtSwapRoster = pvt.PivotData("ShiftCode", AggregateFunction.First, rowFields, columnFields);
         dtSwapRosterWFormattedDates = dtSwapRoster;
-
-
 
         DateTime colDate;
         int RowCount = dtSwapRosterWFormattedDates.Rows.Count;
@@ -201,7 +199,6 @@ public partial class swap_p : System.Web.UI.Page
     }
     protected void gvRoster_RowDataBound(object sender, GridViewRowEventArgs e)
     {
-
         if (e.Row.RowIndex > 0)
         {
             GridViewRow row = gvRoster.Rows[e.Row.RowIndex - 1];
@@ -328,7 +325,6 @@ public partial class swap_p : System.Web.UI.Page
             for (int i = 1; i < dtSwapRoster.Columns.Count; i++)
             {
                 Label h = e.Item.FindControl("h" + i) as Label;
-
                 if (i < 3)
                 {
                     h.Text = dtSwapRoster.Columns[i].ColumnName.ToString();
@@ -337,12 +333,9 @@ public partial class swap_p : System.Web.UI.Page
                 {
                     DateTime dtShift = Convert.ToDateTime(dtSwapRoster.Columns[i].ColumnName.ToString());
                     h.Text = dtShift.Date.ToString("ddd, dd-MMM-yyyy");
-
                 }
-
             }
         }
-
         if (e.Item.ItemType == ListItemType.Footer)
         {
             for (int i = 1; i < dtSwapRoster.Columns.Count; i++)
@@ -372,7 +365,6 @@ public partial class swap_p : System.Web.UI.Page
 
             }
         }
-
         if ((e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem) && e.Item.ItemIndex < 3)
         {
             for (int j = 1; j < dtSwapRoster.Columns.Count; j++)
@@ -399,7 +391,6 @@ public partial class swap_p : System.Web.UI.Page
                         ListItem li2 = new ListItem(SwappableShift);
                         ddl.Items.Add(li2);
                     }
-
                     ddl.SelectedValue = myShift;
 
                     // Before Label populated
@@ -420,7 +411,7 @@ public partial class swap_p : System.Web.UI.Page
         List<SwapShift> P = new List<SwapShift>();
         Label lblEmpCode1 = rptSwapStage2.Items[0].FindControl("ddl1") as Label;
         Label lblEmpCode2 = rptSwapStage2.Items[1].FindControl("ddl1") as Label;
-
+        WeekID = Convert.ToInt32(ddlWeek.SelectedValue);
         for (int j = 1; j <= 9; j++)
         {
             SwapShift me = new SwapShift();
@@ -476,6 +467,7 @@ public partial class swap_p : System.Web.UI.Page
     }
     private void fillgvSwapStatus()
     {
+        //TODO: 16-APR-2018 WFMP.Swap_getSwapStatus should be modified to take into account the new table structure.
         string strSQL = "WFMP.Swap_getSwapStatus";
         SqlCommand cmd = new SqlCommand(strSQL);
         cmd.Parameters.AddWithValue("@EmpCode", MyEmpID);
@@ -496,6 +488,7 @@ public partial class swap_p : System.Web.UI.Page
         foreach (GridViewRow r in gvSwapStatus.Rows)
         {
             int Id = Convert.ToInt32(r.Cells[0].Text);
+
             var swaps = from s in dt.AsEnumerable()
                         where s.Field<int>("Id") == Id
                         select s;
@@ -510,8 +503,8 @@ public partial class swap_p : System.Web.UI.Page
             Label lblSwapInformation = (Label)r.FindControl("lblSwapInformation");
 
             //Pending at or Completely approved.
-            int ApproverAction = t.Field<int>("ApproverAction");
-            int RepMgrAction = t.Field<int>("RepMgrAction");
+            int? ApproverAction = Convert.ToInt32(t["ApproverAction"].ToString());
+            int? RepMgrAction = Convert.ToInt32(t["RepMgrAction"].ToString());
 
             // if I am EmpCode1 
             if (EmpCode1 == MyEmpID)
@@ -603,225 +596,16 @@ public partial class swap_p : System.Web.UI.Page
     }
     protected void ddlRole_SelectedIndexChanged(object sender, EventArgs e)
     {
-
+        string Role = ddlRole.SelectedItem.Text.ToString();
+        if (Role == "Reporting_Manager")
+        {
+            // Any EmpCode in the team where the RepMgrCode = MyEmpID.
+            string strSQL = "select top 1 A.Employee_ID as EmpCode from WFMP.tblMaster A where A.RepMgrCode=" + MyEmpID;
+            int TeamMember = my.getSingleton(strSQL);
+            fillgvRoster(TeamMember, WeekID);
+        }
     }
 
-
-
-    //protected void hdShouldIProceed_ValueChanged(object sender, EventArgs e)
-    //{
-    //    if (hdShouldIProceed.Value == "1")
-    //    {
-    //        pnlEnableSubmission.Visible = true;
-    //    }
-    //    else
-    //    {
-    //        pnlEnableSubmission.Visible = false;
-    //    }
-    //}
 }
 
-class SwapShift
-{
-    public int ID { get; private set; }
-    public DateTime Date { get; set; }
-    public int EmpCode1 { get; set; }
-    public int ShiftID1 { get; set; }
-    public string ShiftCode1 { get; set; }
-    public int isWorkingShift1 { get; set; }
-    public int NewShiftID1 { get; set; }
-    public string NewShiftCode1 { get; set; }
-    public int isNewWorkingShift1 { get; set; }
-    public int EmpCode2 { get; set; }
-    public int ShiftID2 { get; set; }
-    public string ShiftCode2 { get; set; }
-    public int isWorkingShift2 { get; set; }
-    public int NewShiftID2 { get; set; }
-    public string NewShiftCode2 { get; set; }
-    public int isNewWorkingShift2 { get; set; }
-    public DateTime InitiatedOn { get; set; }
-    public int ActionByEmpCode2 { get; set; }
-    public DateTime? ActionByEmpCode2On { get; set; }
-    public int RepMgrCode { get; set; }
-    public int ActionByRepMgr { get; set; }
-    public DateTime? ActionByRepMgrOn { get; set; }
-    public int Active { get; set; }
 
-    public SwapShift() { }
-    public SwapShift(int ID)
-    {
-        string strSQL = "select * from WFMP.tblSwap A where id=@Id";
-        SqlCommand cmd = new SqlCommand(strSQL);
-        cmd.Parameters.AddWithValue("@Id", ID);
-        Helper my = new Helper();
-        DataTable dt = my.GetData(ref cmd);
-        if (dt != null && dt.Rows.Count > 0)
-        {
-            this.Date = Convert.ToDateTime(dt.Rows[0]["Date"].ToString());
-            this.EmpCode1 = Convert.ToInt32(dt.Rows[0]["EmpCode1"].ToString());
-            this.ShiftID1 = Convert.ToInt32(dt.Rows[0]["ShiftID1"].ToString());
-            this.isWorkingShift1 = Convert.ToInt32(dt.Rows[0]["isWorkingShift1"].ToString());
-            this.NewShiftID1 = Convert.ToInt32(dt.Rows[0]["NewShiftID1"].ToString());
-            this.isNewWorkingShift1 = Convert.ToInt32(dt.Rows[0]["isNewWorkingShift1"].ToString());
-            this.EmpCode2 = Convert.ToInt32(dt.Rows[0]["EmpCode2"].ToString());
-            this.ShiftID2 = Convert.ToInt32(dt.Rows[0]["ShiftID2"].ToString());
-            this.isWorkingShift2 = Convert.ToInt32(dt.Rows[0]["isWorkingShift2"].ToString());
-            this.NewShiftID2 = Convert.ToInt32(dt.Rows[0]["NewShiftID2"].ToString());
-            this.InitiatedOn = Convert.ToDateTime(dt.Rows[0]["InitiatedOn"].ToString());
-            this.ActionByEmpCode2 = Convert.ToInt32(dt.Rows[0]["ActionByEmpCode2"].ToString());
-            if (dt.Rows[0]["ActionByEmpCode2On"].ToString().Length > 0) { this.ActionByEmpCode2On = Convert.ToDateTime(dt.Rows[0]["ActionByEmpCode2On"].ToString()); }
-            this.RepMgrCode = Convert.ToInt32(dt.Rows[0]["RepMgrCode"].ToString());
-            if (dt.Rows[0]["ActionByRepMgrOn"].ToString().Length > 0) { this.ActionByRepMgrOn = Convert.ToDateTime(dt.Rows[0]["ActionByRepMgrOn"].ToString()); }
-            this.Active = Convert.ToInt32(dt.Rows[0]["Active"].ToString());
-        }
-
-    }
-    public bool ApproveSwap(int SenderEmpCode)
-    {
-        if (SenderEmpCode == this.EmpCode1) { return false; }
-        else if (SenderEmpCode == this.EmpCode2)
-        {
-            this.ActionByEmpCode2 = 1;
-            this.ActionByEmpCode2On = DateTime.Now;
-            Update(this);
-            return true;
-        }
-        else if (SenderEmpCode == this.RepMgrCode)
-        {
-            this.ActionByRepMgr = 1;
-            this.ActionByRepMgrOn = DateTime.Now;
-            Update(this);
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-    public bool DeclineSwap(int SenderEmpCode)
-    {
-        if (SenderEmpCode == this.EmpCode1)
-        {
-            return false;
-        }
-        else if (SenderEmpCode == this.EmpCode2)
-        {
-            this.ActionByEmpCode2 = 2;
-            this.ActionByEmpCode2On = DateTime.Now;
-            Update(this);
-            return true;
-        }
-        else if (SenderEmpCode == this.RepMgrCode)
-        {
-            this.ActionByRepMgr = 2;
-            this.ActionByRepMgrOn = DateTime.Now;
-            Update(this);
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-
-    }
-    public static int Save(SwapShift Me)
-    {
-        int rowsAffected = 0;
-        int originalHeadCount = Me.isWorkingShift1 + Me.isWorkingShift2;
-        int postSwapHeadCount = Me.isNewWorkingShift1 + Me.isNewWorkingShift2;
-
-
-
-        if (originalHeadCount == postSwapHeadCount && Me.NewShiftID1 == Me.ShiftID2 && Me.NewShiftID2 == Me.ShiftID1)
-        {
-            rowsAffected += Insert(Me);
-        }
-        return rowsAffected;
-    }
-    public static int Save(List<SwapShift> Entries)
-    {
-        int rowsAffected = 0;
-        foreach (SwapShift Me in Entries)
-        {
-            int originalHeadCount = Me.isWorkingShift1 + Me.isWorkingShift2;
-            int postSwapHeadCount = Me.isNewWorkingShift1 + Me.isNewWorkingShift2;
-            if (originalHeadCount == postSwapHeadCount && Me.ShiftID1 != Me.ShiftID2 && Me.NewShiftID1 == Me.ShiftID2 && Me.NewShiftID2 == Me.ShiftID1)
-            {
-                rowsAffected += Insert(Me);
-            }
-        }
-        return rowsAffected;
-    }
-    private static int Insert(SwapShift s)
-    {
-
-        int rowsAffected = 0;
-        Helper my = new Helper();
-        using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
-        {
-            cn.Open();
-            SqlCommand cmd = new SqlCommand("WFMP.Swap_Save2DB", cn);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@Date", s.Date);
-            cmd.Parameters.AddWithValue("@EmpCode1", s.EmpCode1);
-            cmd.Parameters.AddWithValue("@ShiftID1", s.ShiftID1);
-            cmd.Parameters.AddWithValue("@isWorkingShift1", s.isWorkingShift1);
-            cmd.Parameters.AddWithValue("@NewShiftID1", s.NewShiftID1);
-            cmd.Parameters.AddWithValue("@isNewWorkingShift1", s.isNewWorkingShift1);
-            cmd.Parameters.AddWithValue("@EmpCode2", s.EmpCode2);
-            cmd.Parameters.AddWithValue("@ShiftID2", s.ShiftID2);
-            cmd.Parameters.AddWithValue("@isWorkingShift2", s.isWorkingShift2);
-            cmd.Parameters.AddWithValue("@NewShiftID2", s.NewShiftID2);
-            cmd.Parameters.AddWithValue("@isNewWorkingShift2", s.isNewWorkingShift2);
-            cmd.Parameters.AddWithValue("@InitiatedOn", s.InitiatedOn);
-            cmd.Parameters.AddWithValue("@ActionByEmpCode2", s.ActionByEmpCode2);
-            cmd.Parameters.AddWithValue("@ActionByEmpCode2On", s.ActionByEmpCode2On);
-            cmd.Parameters.AddWithValue("@RepMgrCode", s.RepMgrCode);
-            cmd.Parameters.AddWithValue("@ActionByRepMgr", s.ActionByRepMgr);
-            cmd.Parameters.AddWithValue("@ActionByRepMgrOn", s.ActionByRepMgrOn);
-            cmd.Parameters.AddWithValue("@Operation", "INSERT_NEW_SWAP");
-
-            rowsAffected = cmd.ExecuteNonQuery();
-        }
-        return rowsAffected;
-    }
-    private static int Update(SwapShift s)
-    {
-        Helper my = new Helper();
-        int rowsAffected = 0;
-        SqlCommand cmd = new SqlCommand("WFMP.Swap_Save2DB");
-        cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@Date", s.Date);
-        cmd.Parameters.AddWithValue("@EmpCode1", s.EmpCode1);
-        cmd.Parameters.AddWithValue("@ShiftID1", s.ShiftID1);
-        cmd.Parameters.AddWithValue("@isWorkingShift1", s.isWorkingShift1);
-        cmd.Parameters.AddWithValue("@NewShiftID1", s.NewShiftID1);
-        cmd.Parameters.AddWithValue("@isNewWorkingShift1", s.isNewWorkingShift1);
-        cmd.Parameters.AddWithValue("@EmpCode2", s.EmpCode2);
-        cmd.Parameters.AddWithValue("@ShiftID2", s.ShiftID2);
-        cmd.Parameters.AddWithValue("@isWorkingShift2", s.isWorkingShift2);
-        cmd.Parameters.AddWithValue("@NewShiftID2", s.NewShiftID2);
-        cmd.Parameters.AddWithValue("@isNewWorkingShift2", s.isNewWorkingShift2);
-        cmd.Parameters.AddWithValue("@InitiatedOn", s.InitiatedOn);
-        cmd.Parameters.AddWithValue("@ActionByEmpCode2", s.ActionByEmpCode2);
-        cmd.Parameters.AddWithValue("@ActionByEmpCode2On", s.ActionByEmpCode2On);
-        cmd.Parameters.AddWithValue("@RepMgrCode", s.RepMgrCode);
-        cmd.Parameters.AddWithValue("@ActionByRepMgr", s.ActionByRepMgr);
-        cmd.Parameters.AddWithValue("@ActionByRepMgrOn", s.ActionByRepMgrOn);
-        cmd.Parameters.AddWithValue("@Operation", "UPDATE_SWAP");
-
-        rowsAffected = my.ExecuteDMLCommand(ref cmd, cmd.CommandText, "S");
-
-        // This will actually commit all approved swaps to the roster.
-        Commit2Roster();
-        return rowsAffected;
-
-    }
-    private static int Commit2Roster()
-    {
-        Helper my = new Helper();
-        SqlCommand cmd = new SqlCommand("WFMP.Swap_Commit2Roster");
-        my.ExecuteDMLCommand(ref cmd, "WFMP.Swap_Commit2Roster", "S");
-        return 0;
-    }
-}
