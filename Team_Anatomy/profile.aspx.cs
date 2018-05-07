@@ -95,10 +95,13 @@ public partial class profile : System.Web.UI.Page
             tbAddress_Line_1.Text = dr["Address1"].ToString();
             tbAddress_Line_2.Text = dr["Address2"].ToString();
             tbAddress_Landmark.Text = dr["Landmark"].ToString();
-            if (dr["Location"].ToString() != null) { ddlAddress_Location.Items.FindByValue(dr["Location"].ToString()).Selected = true; }
-            if (dr["SubLocation"].ToString() != null) { ddlAddress_SubLocation.Items.FindByValue(dr["SubLocation"].ToString()).Selected = true; }
+            if (dr["Location"].ToString() != null && dr["Location"].ToString().Length>0) { ddlAddress_Location.Items.FindByValue(dr["Location"].ToString()).Selected = true; }
+            else { ddlAddress_Location.SelectedValue = "0"; }
+            if (dr["SubLocation"].ToString() != null && dr["SubLocation"].ToString().Length > 0) { ddlAddress_SubLocation.Items.FindByValue(dr["SubLocation"].ToString()).Selected = true; }
+            else { ddlAddress_SubLocation.SelectedValue = "0"; }
             tbAddress_City.Text = dr["City"].ToString();
-            ddlAddress_Pincode.Items.FindByValue(dr["Pincode"].ToString());
+            if (dr["Pincode"].ToString() != null && dr["Pincode"].ToString().Length > 0) { ddlAddress_Pincode.Items.FindByValue(dr["Pincode"].ToString()); }
+            else { ddlAddress_Pincode.SelectedValue = "0"; }
 
 
 
@@ -197,7 +200,7 @@ public partial class profile : System.Web.UI.Page
         string Address1 = tbAddress_Line_1.Text;
         string Address2 = tbAddress_Line_2.Text;
         string Landmark = tbAddress_Landmark.Text;
-        int Location=0;
+        int Location = 0;
         if (ddlAddress_Location.SelectedValue != null) { Location = Convert.ToInt32(ddlAddress_Location.SelectedValue.ToString()); }
         string SubLocation = string.Empty;
         if (ddlAddress_SubLocation != null) { SubLocation = ddlAddress_SubLocation.SelectedValue.ToString(); }
@@ -208,7 +211,7 @@ public partial class profile : System.Web.UI.Page
         string EmergencyContactNo = tbEmergencyContactNo.Text;
         string Email_Personal = tbEmail_id.Text;
         bool Transport = tbTransport_User.SelectedItem.ToString() == "Yes" ? true : false;
-        
+
         string City = tbAddress_City.Text;
         int Qualification = Convert.ToInt32(tbQualification.SelectedValue.ToString());
 
