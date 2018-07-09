@@ -171,7 +171,7 @@ public partial class profile : System.Web.UI.Page
         }
         else
         {
-            Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "SomeOtherPage.aspx");
+            Response.Redirect(ViewState["PreviousPageUrl"] != null ? ViewState["PreviousPageUrl"].ToString() : "SomeOtherPage.aspx", true);
         }
 
 

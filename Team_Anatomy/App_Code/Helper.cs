@@ -18,6 +18,7 @@ public class Helper
     {
         EDCryptor xEDCryptor = new EDCryptor();
         string xString = ConfigurationManager.ConnectionStrings["constr"].ToString();
+        //string xString = ConfigurationManager.ConnectionStrings["constrProd"].ToString();
         xString = xEDCryptor.DeCrypt(xString);
         return xString;
     }
@@ -255,6 +256,27 @@ public class Helper
         };
 
     }
+
+    public int getSingleton(ref SqlCommand cmd)
+    {
+        cmd.Connection = open_db();
+        cmd.CommandType = CommandType.StoredProcedure;
+        var the_result = cmd.ExecuteScalar();
+        int result = 0;
+        close_conn();
+
+        if (Int32.TryParse(the_result.ToString(), out result))
+        {
+
+            return result;
+        }
+        else
+        {
+            return 0;
+        };
+        
+    }
+
     public string getFirstResult(string strSQL)
     {
         open_db();
@@ -263,6 +285,17 @@ public class Helper
         close_conn();
         return the_result;
     }
+
+    public string getFirstResult(ref SqlCommand cmd)
+    {
+        cmd.Connection = open_db();
+        cmd.CommandType = CommandType.StoredProcedure;
+        var the_result = Convert.ToString(cmd.ExecuteScalar());
+        close_conn();
+        return the_result;
+    }
+
+
     public void fill_dropdown(Control drp_name, string sp_name, string datatextfield, string datavaluefield, string defaultitem, string parameters, string tran_type)
     {
         open_db();
@@ -372,8 +405,8 @@ public class Helper
         }
         return isSQLInjection;
     }
-}
 
+}
 public class EmailSender
 {
     
@@ -386,7 +419,7 @@ public class EmailSender
     public string Body { get; set; }
     private string MailFormat = "html";
     private string From { get; set; }
-    public int EmailType { get; set; }
+    private int EmailType { get; set; }
     Helper my = new Helper();
     public EmailSender()
     {
@@ -457,10 +490,12 @@ public class EmailSender
     {
         int sentId = 0;
         string errorMessage = string.Empty;
-        if (RecipientsEmpId != null && Subject != null & Body != null)
+        if (InitiatorEmpId != 0 && RecipientsEmpId != null && Subject != null & Body != null)
+        //if (InitiatorEmpId != 0 && Subject != null & Body != null)
         {
             RecipientsEmpId = convertAndReplaceDelimitedEmpIDs2EmailIds(RecipientsEmpId);
-            string InitiatorEmailID = "Support_iAccess@sitel.com";
+            string InitiatorEmailID = "Support_IAccess@sitel.com";//EmailFromEmpID(InitiatorEmpId);
+            string signature = "<br> <p>Regards, <br> IAccess Support Team <br> PS: This is an automated triggered email. Please do not reply.</p>";
             if (CCsEmpId != null && CCsEmpId.Length > 0) { CCsEmpId = convertAndReplaceDelimitedEmpIDs2EmailIds(CCsEmpId); }
             if (BCCsEmpId != null && BCCsEmpId.Length > 0) { BCCsEmpId = convertAndReplaceDelimitedEmpIDs2EmailIds(BCCsEmpId); }
             try
@@ -474,9 +509,9 @@ public class EmailSender
 
                         cmd.Parameters.AddWithValue("@xrecipients", RecipientsEmpId);
                         cmd.Parameters.AddWithValue("@xcopy_recipients", CCsEmpId);
-                        cmd.Parameters.AddWithValue("@xblind_copy_recipients", BCCsEmpId);
+                        //cmd.Parameters.AddWithValue("@xblind_copy_recipients", BccEmailID);
                         cmd.Parameters.AddWithValue("@xsubject", Subject);
-                        cmd.Parameters.AddWithValue("@xbody", Body);
+                        cmd.Parameters.AddWithValue("@xbody", Body + signature);
                         cmd.Parameters.AddWithValue("@xbody_format", MailFormat);
                         cmd.Parameters.AddWithValue("@xfrom_address", InitiatorEmailID);
                         if (EmailType == 0)
@@ -493,7 +528,7 @@ public class EmailSender
                                 EmailType = (int)emailtype.Development;
                             }
                         }
-                        cmd.Parameters.AddWithValue("@xEmailType", EmailType);
+                        cmd.Parameters.AddWithValue("@xEmailType", 1);
                         sentId = cmd.ExecuteNonQuery();
                     }
                 }

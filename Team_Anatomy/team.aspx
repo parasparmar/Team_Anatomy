@@ -55,16 +55,7 @@
                                 </asp:GridView>
                             </div>
                         </div>
-                        <%--<asp:Panel CssClass="box-footer" ID="pnlActions" runat="server">
-                            <div class="input-group">
-                                <span class="input-group-btn">
-                                    <asp:Button ID="btnRHR" runat="server" CssClass="btn btn-primary btn-flat" Text="Initiate Referral to HR" />
-                                    <asp:Button ID="btnRes" runat="server" CssClass="btn btn-warning btn-flat" Text="Initiate Resignation" />
-                                    <asp:Button ID="btnAOS" runat="server" CssClass="btn btn-info btn-flat" Text="Initiate Abandonment of Service" />
-                                    
-                                </span>
-                            </div>
-                        </asp:Panel>--%>
+                        
                         <!-- /.box-footer-->
                     </div>
                     <!--tabcontent-->

@@ -97,31 +97,31 @@
                             <h4 class="box-title">View Leaves of Employees</h4>
                         </div>
                         <div class="box-body">
-                            
-                                <asp:Panel CssClass="col-md-6" ID="pnlAmIRvwMgr" Visible="true" runat="server">
-                                    <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <asp:DropDownList ID="ddlRepManager" runat="server" CssClass="col-md-6 form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlRepManager_SelectedIndexChanged">
-                                            <asp:ListItem Selected="True" Text="None" Value="0"></asp:ListItem>
-                                        </asp:DropDownList>
+
+                            <asp:Panel CssClass="col-md-6" ID="pnlAmIRvwMgr" Visible="true" runat="server">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <asp:DropDownList ID="ddlRepManager" runat="server" CssClass="col-md-6 form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlRepManager_SelectedIndexChanged">
+                                                <asp:ListItem Selected="True" Text="None" Value="0"></asp:ListItem>
+                                            </asp:DropDownList>
                                         </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <asp:DropDownList ID="ddlActionFilter" runat="server" CssClass="col-md-6 form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlActionFilter_SelectedIndexChanged">
+                                                <asp:ListItem Value="1" Text="All" runat="server"></asp:ListItem>
+                                                <asp:ListItem Value="2" Text="Level1 Pending" runat="server"></asp:ListItem>
+                                                <asp:ListItem Value="3" Text="Level2 Pending" runat="server"></asp:ListItem>
+                                                <asp:ListItem Value="4" Text="Level1 Actioned" runat="server"></asp:ListItem>
+                                                <asp:ListItem Value="5" Text="Level2 Actioned" runat="server"></asp:ListItem>
+                                            </asp:DropDownList>
                                         </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <asp:DropDownList ID="ddlActionFilter" runat="server" CssClass="col-md-6 form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlActionFilter_SelectedIndexChanged">
-                                            <asp:ListItem Value="1" Text="All" runat="server"></asp:ListItem>
-                                            <asp:ListItem Value="2" Text="Level1 Pending" runat="server"></asp:ListItem>
-                                            <asp:ListItem Value="3" Text="Level2 Pending" runat="server"></asp:ListItem>
-                                            <asp:ListItem Value="4" Text="Level1 Actioned" runat="server"></asp:ListItem>
-                                            <asp:ListItem Value="5" Text="Level2 Actioned" runat="server"></asp:ListItem>
-                                        </asp:DropDownList>
-                                         </div>
-                                        </div>
-                            </div>
-                            <!-- ddlRepManager-->
+                                    </div>
+                                </div>
+                                <!-- ddlRepManager-->
                             </asp:Panel>
-                                <!-- pnlAmIRvwMgr-->
+                            <!-- pnlAmIRvwMgr-->
                         </div>
 
                         <%--  <div class="box box-primary">--%>
@@ -190,7 +190,8 @@
                                 <span aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title" style="color: white">Leave Details for
                                 <asp:Label ID="lblEmployeeName" runat="server"></asp:Label>
-                                &nbsp Employee ID- <asp:Label ID="lblEmployeeID" runat="server"></asp:Label></h4>
+                                &nbsp Employee ID-
+                                <asp:Label ID="lblEmployeeID" runat="server"></asp:Label></h4>
                         </div>
                         <div class="modal-body">
                             <asp:GridView ID="gvdatewiseAppr" runat="server"
@@ -235,32 +236,6 @@
 </asp:Content>
 
 <asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">
-    <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js" type="text/javascript"></script>--%>
-    <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>--%>
-
-    <%-- <script type="text/javascript">
-        //$(document).ready(function () {
-        //    var leave_id; var btn; var status;
-        //    //$(".btn-info").click(function (e) {
-        //        //
-        //        //e.preventDefault();
-        //        ////alert("1");
-        //        ////btn = $(this);
-        //        //$(".modal").modal("show");//#modal-details
-        //        //leave_id = $(this).closest('tr').find('td:nth-child(12)').text(); 
-        //        //$("#lblLeaveID").val($(this).closest('tr').find('td:nth-child(12)').text());
-        //        //alert(leave_id);
-        //        //$("#modal-danger").css({ "display": "block" });
-        //        //alert("2");
-        //        //$("#modal-danger").css({ "display": "block" }); alert("2");
-        //    });
-        //});
-    </script>--%>
-    <%--<script>
-        function openmodal() {
-            $('.modal').modal('show');
-        }
-    </script>--%>
     <script type="text/javascript">
         function toastA() {
             toastr.success('Leave Approved');//, 'Success'
@@ -298,12 +273,6 @@
             $('.modal-backdrop').hide();
         }
         function pluginsInitializer() {
-            //var x = 1;
-            //$("#btn_proceed").click(function () {
-            //    $("#leave-box").css({ "display": "block" });
-            //});
-
-
             $("#gvApprLeaveLog tbody tr").each(function () {
                 $(this).find("th:nth-child(12)").hide();
                 $(this).find("th:nth-child(9)").hide();
@@ -313,15 +282,6 @@
                 $(this).find("td:nth-child(12)").hide();
                 $(this).find("td:nth-child(9)").hide();
             });
-
-            //$("#gvdatewiseAppr tbody tr").each(function () {
-            //    $(this).find("th:nth-child(4)").hide();
-            //});
-
-            //$("#gvdatewiseAppr tbody tr").each(function () {
-            //    $(this).find("td:nth-child(4)").hide();
-            //});
-
         }
 
 
@@ -337,46 +297,12 @@
             prm.add_endRequest(function (sender, e) {
                 if (sender._postBackSettings.panelsToUpdate != null) {
                     pluginsInitializer();
-
-                    $('.Datatable').DataTable({
-                        "sPaginationType": "full_numbers",
-                        "lengthMenu": [5, 10, 25, 50, 75, 100],
-                        "aaSortingFixed": [[0, 'asc']],
-                        "bSort": true,
-                        dom: 'Bfrltip',
-                        "columnDefs": [{ "orderable": false, "targets": 0 }],
-                    });
                 }
             });
         };
 
-        $(document).ready(function () {
-            dtbl();
-        });
 
-        function dtbl() {
-            $('.ApprleavelogDataTable').DataTable({
-                "sPaginationType": "full_numbers",
-                "lengthMenu": [5, 10, 25, 50, 75, 100],
-                "aaSortingFixed": [[0, 'asc']],
-                "bSort": true,
-                //dom: 'Bfrltip',
-                "columnDefs": [{ "orderable": false, "targets": 0 }],
-                buttons: [
-                    { extend: 'copyHtml5', text: 'Copy Data' },
-                    { extend: 'excelHtml5', text: 'Export to Excel' },
-                    { extend: 'csvHtml5', text: 'Export to CSV' },
-                    { extend: 'pdfHtml5', text: 'Export to PDF' },
-                ],
-                "columnDefs": [{
-                    "targets": [8], //Comma separated values
-                    "visible": false,
-                    "searchable": false
-                }
-                ],
 
-            });
-        }
 
     </script>
 </asp:Content>
