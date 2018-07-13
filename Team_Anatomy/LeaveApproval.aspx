@@ -1,11 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="LeaveApproval.aspx.cs" Inherits="LeaveApproval" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="headPlaceHolder" runat="Server">
-    <%--toastr--%>
-    <%--<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />--%>
-
-    <%--<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" rel="stylesheet"/>--%>
-
     <style>
         /*.example-modal .modal {
             position: relative;
@@ -100,14 +95,14 @@
 
                             <asp:Panel CssClass="col-md-6" ID="pnlAmIRvwMgr" Visible="true" runat="server">
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <asp:DropDownList ID="ddlRepManager" runat="server" CssClass="col-md-6 form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlRepManager_SelectedIndexChanged">
                                                 <asp:ListItem Selected="True" Text="None" Value="0"></asp:ListItem>
                                             </asp:DropDownList>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <asp:DropDownList ID="ddlActionFilter" runat="server" CssClass="col-md-6 form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlActionFilter_SelectedIndexChanged">
                                                 <asp:ListItem Value="1" Text="All" runat="server"></asp:ListItem>
@@ -118,43 +113,40 @@
                                             </asp:DropDownList>
                                         </div>
                                     </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <asp:DropDownList ID="ddlEmployee" runat="server" CssClass="col-md-6 form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlEmployee_SelectedIndexChanged">
+                                                <asp:ListItem Selected="True" Text="None" Value="0"></asp:ListItem>
+                                            </asp:DropDownList>
+                                        </div>
+                                    </div>
                                 </div>
                                 <!-- ddlRepManager-->
                             </asp:Panel>
                             <!-- pnlAmIRvwMgr-->
                         </div>
-
-                        <%--  <div class="box box-primary">--%>
+                    </div>
+                    <div class="box box-solid box-primary">
                         <div class="box-header with-border">
                             <h3 class="box-title">Employee Leave Log</h3>
                         </div>
                         <div class="box-body">
                             <div class="box-body">
                                 <asp:GridView ID="gvApprLeaveLog" runat="server"
-                                    CssClass="table table-bordered table-hover ApprleavelogDataTable" OnPreRender="gv_PreRender" AutoGenerateColumns="false">
-                                    <%--ApprleavelogDataTable OnPreRender="gv_PreRender" Datatable--%>
+                                    CssClass="table table-bordered table-hover table-condensed table-responsive datatable"
+                                    OnPreRender="gv_PreRender" AutoGenerateColumns="false">
                                     <Columns>
                                         <asp:BoundField DataField="ecn" HeaderText="Emp Code"></asp:BoundField>
-                                        <asp:BoundField DataField="name" HeaderText="Name"></asp:BoundField>
+                                        <asp:BoundField HeaderStyle-CssClass="apply-filter" DataField="name" HeaderText="Name"></asp:BoundField>
                                         <asp:BoundField DataField="from_date" HeaderText="From Date"></asp:BoundField>
                                         <asp:BoundField DataField="to_date" HeaderText="To Date"></asp:BoundField>
                                         <asp:BoundField DataField="leave_reason" HeaderText="Leave Reason"></asp:BoundField>
                                         <asp:BoundField DataField="applied_on" HeaderText="Applied On"></asp:BoundField>
                                         <asp:BoundField DataField="status" HeaderText="Status" HtmlEncode="false"></asp:BoundField>
-
-
-                                        <%--<asp:CommandField CancelText="cancel" DeleteText="" EditText="edit" InsertText="" NewText="" SelectText="select" ShowCancelButton="True" ShowEditButton="True" UpdateText="update" ButtonType="Button" HeaderText="Cancel">
-                                    <ControlStyle CssClass="btn btn-sm btn-danger"></ControlStyle>
-                                </asp:CommandField>--%>
                                         <asp:TemplateField HeaderText="Details">
                                             <ItemTemplate>
-                                                <asp:Button ID="btn_detail" runat="server" CssClass="btn btn-sm btn-info" Text="open" OnClick="btn_detail_Click" /><%--data-toggle="modal" data-target="#modal-default"  OnClick="btn_appr_Click"--%>
-                                                <%--<asp:ScriptManager runat="server"></asp:ScriptManager>--%>
+                                                <asp:Button ID="btn_detail" runat="server" CssClass="btn btn-sm btn-info" Text="open" OnClick="btn_detail_Click" />
                                             </ItemTemplate>
-                                            <%--<EditItemTemplate>
-                                <asp:Button ID="btn_Update" runat="server" Text="Update" CommandName="Update" />
-                                <asp:Button ID="btn_Cancel" runat="server" Text="Cancel" CommandName="Cancel" />
-                            </EditItemTemplate>--%>
                                         </asp:TemplateField>
                                         <asp:BoundField DataField="ID" HeaderText="ID"></asp:BoundField>
 
@@ -162,9 +154,8 @@
                                 </asp:GridView>
                             </div>
                         </div>
-
-                        <%--</div>--%>
                     </div>
+
                 </div>
                 <!--tabcontent-->
             </div>
@@ -195,8 +186,8 @@
                         </div>
                         <div class="modal-body">
                             <asp:GridView ID="gvdatewiseAppr" runat="server"
-                                CssClass="table table-bordered table-hover "
-                                AutoGenerateColumns="false">
+                                CssClass="table table-bordered table-hover table-condensed datatable"
+                                AutoGenerateColumns="false" OnPreRender="gv_PreRender">
                                 <Columns>
                                     <asp:BoundField DataField="LEAVEDATE" HeaderText="Date"></asp:BoundField>
                                     <asp:BoundField DataField="LEAVEDAY" HeaderText="Day"></asp:BoundField>
@@ -204,7 +195,6 @@
                                     <asp:BoundField DataField="ROSTER" HeaderText="Roster"></asp:BoundField>
                                 </Columns>
                             </asp:GridView>
-                            <%--<br>--%>
                             <asp:TextBox ID="txt_reason" TextMode="multiline" Columns="74" Rows="2" runat="server" CssClass="form-control" placeholder="Enter comments...."></asp:TextBox>
                             <asp:Label ID="alert" Visible="false" runat="server" CssClass="red" Text="Leave decline reason required"></asp:Label>
                             <asp:Label ID="lblLeaveID" runat="server" Visible="false"></asp:Label>
@@ -219,7 +209,6 @@
                                     <asp:Button ID="btn_dec" runat="server" CssClass="btn btn-sm btn-danger right" Text="Decline" OnClick="btn_dec_Click" />
                                 </div>
                             </div>
-                            <%--<asp:Button ID="btn_save_cancel_reason" runat="server" Text="Save" CssClass="btn btn-primary" />--%><%-- OnClick="btn_save_cancel_reason_Click"--%>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -228,14 +217,13 @@
             </div>
             <!---LHS Panel---->
         </ContentTemplate>
-        <%--  <Triggers>
-            <asp:PostBackTrigger ControlID="btnSubmit" />
-        </Triggers>--%>
     </asp:UpdatePanel>
 
 </asp:Content>
 
 <asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">
+    <link href="CDN/excel-bootstrap-table-filter/excel-bootstrap-table-filter-style.css" rel="stylesheet" />
+    <script src="CDN/excel-bootstrap-table-filter/excel-bootstrap-table-filter-bundle.min.js"></script>
     <script type="text/javascript">
         function toastA() {
             toastr.success('Leave Approved');//, 'Success'
@@ -282,15 +270,21 @@
                 $(this).find("td:nth-child(12)").hide();
                 $(this).find("td:nth-child(9)").hide();
             });
-        }
+            //$('.datatable').DataTable({
+            //    "sPaginationType": "full_numbers",
+            //    "lengthMenu": [25, 5, 10, 25, 50, 75, 100],
+            //    "bSort": true,
+            //    dom: "ftrip"
+            //});
 
+            $('.datatable').excelTableFilter({
+                columnSelector: '.apply-filter'                
+            });
+        }
 
         $(function () {
             pluginsInitializer();
         });
-
-
-
         //On UpdatePanel Refresh
         var prm = Sys.WebForms.PageRequestManager.getInstance();
         if (prm != null) {
@@ -300,10 +294,6 @@
                 }
             });
         };
-
-
-
-
     </script>
 </asp:Content>
 

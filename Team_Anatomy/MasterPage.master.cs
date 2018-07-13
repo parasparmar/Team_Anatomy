@@ -18,7 +18,6 @@ public partial class MasterPage : System.Web.UI.MasterPage
 
 
     DataTable dt = new DataTable();
-    private int myEmpID { get; set; }
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!Page.IsPostBack)
@@ -26,6 +25,8 @@ public partial class MasterPage : System.Web.UI.MasterPage
             intialize_me();
         }
     }
+    
+
     protected void intialize_me()
     {
         try
@@ -34,7 +35,6 @@ public partial class MasterPage : System.Web.UI.MasterPage
             if (dt != null)
             {
                 DataRow dr = dt.Rows[0];
-                myEmpID = dr["Employee_ID"].ToInt32();
                 lblName.Text = dr["First_Name"] + " " + dr["Last_Name"];
                 lblNameDesignation.Text = dr["First_Name"] + " " + dr["Last_Name"] + " - " + dr["DesignationId"];
                 lblDOJ.Text = Convert.ToDateTime(dr["DOJ"].ToString()).ToString("dd-MMM-yyyy");
@@ -54,16 +54,18 @@ public partial class MasterPage : System.Web.UI.MasterPage
     private void fillddlImpersonator()
     {
         string myNTID = PageExtensionMethods.getMyWindowsID();
+        
         if (PageExtensionMethods.AllowedIds().Contains<string>(myNTID))
         {
             pnlImpersonator.Visible = true;
             Helper my = new Helper();
-            string strSQL = "select ntname as EmpCode, dbo.getFullName(Employee_ID) as Name from WFMP.tblMaster WHERE isnull(dbo.getFullName(Employee_ID),'') <> '' order by 2,1";
+            string strSQL = "select Employee_ID as EmpCode, dbo.getFullName(Employee_ID) as Name from WFMP.tblMaster ";
             DataTable dt = my.GetData(strSQL);
             ddlImpersonator.DataSource = dt;
+            ddlImpersonator.DataBind();
             ddlImpersonator.DataValueField = "EmpCode";
             ddlImpersonator.DataTextField = "Name";
-            ddlImpersonator.DataBind();
+
         }
         else
         {
@@ -75,16 +77,14 @@ public partial class MasterPage : System.Web.UI.MasterPage
     protected void ddlImpersonator_SelectedIndexChanged(object sender, EventArgs e)
     {
         Helper my = new Helper();
-        string ntName = ddlImpersonator.SelectedValue.ToString();
-        if (!string.IsNullOrEmpty(ntName))
+        string searchString;
+        searchString = ddlImpersonator.SelectedValue.ToString();
+        string ntName = string.Empty;
+        int EmpCode;
+        if (Int32.TryParse(searchString, out EmpCode))
         {
-            Response.Redirect("index.aspx?q=" + ntName, false);
+            Response.Redirect("index.aspx?q=" + EmpCode, false);
         }
+        
     }
-
-    protected void test_Click(object sender, EventArgs e)
-    {
-
-    }
-
 }

@@ -21,7 +21,7 @@ public partial class LeaveApproval : System.Web.UI.Page
     Helper my;
     string strSQL;
     int MyEmpID;
-
+    public DataTable dtgvApprLeaveLog { get; set; }
     EmailSender Email = new EmailSender();
 
     protected void Page_Load(object sender, EventArgs e)
@@ -48,7 +48,8 @@ public partial class LeaveApproval : System.Web.UI.Page
             {
                 redirect2URL = ViewState["PreviousPageUrl"].ToString();
             }
-            else {
+            else
+            {
 
                 ViewState["PreviousPageUrl"] = Page.Request.Url.ToString();
             }
@@ -68,8 +69,7 @@ public partial class LeaveApproval : System.Web.UI.Page
 
     private void fillddlRepManager()
     {
-       strSQL = "CWFM_UMANG.WFMP.GetRepRevMgr";
-
+        strSQL = "WFMP.GetRepRevMgr";
         SqlCommand cmd = new SqlCommand(strSQL);
         cmd.Parameters.AddWithValue("@EmpCode", Convert.ToInt32(MyEmpID.ToString()));
         DataTable dt1 = my.GetDataTableViaProcedure(ref cmd);
@@ -90,17 +90,16 @@ public partial class LeaveApproval : System.Web.UI.Page
     {
         FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
         ddlActionFilter.ClearSelection();
-        //ddlActionFilter.SelectedValue= 1.ToString();
+
     }
 
     public void FillLeaveRequests(int xEmpCode)
     {
-        strSQL = "CWFM_UMANG.WFMP.GetEmployeeLeaveRequestes";
-
+        strSQL = "WFMP.GetEmployeeLeaveRequestes";
         SqlCommand cmd = new SqlCommand(strSQL);
         cmd.Parameters.AddWithValue("@EmpCode", xEmpCode);
-        DataTable dt1 = my.GetDataTableViaProcedure(ref cmd);
-        gvApprLeaveLog.DataSource = dt1;
+        dtgvApprLeaveLog = my.GetDataTableViaProcedure(ref cmd);
+        gvApprLeaveLog.DataSource = dtgvApprLeaveLog;
         gvApprLeaveLog.DataBind();
     }
 
@@ -195,42 +194,35 @@ public partial class LeaveApproval : System.Web.UI.Page
 
     protected void btn_appr_Click(object sender, EventArgs e)
     {
-        //if (txt_reason.Text.ToString() == string.Empty)
-        //{
-        //    ScriptManager.RegisterStartupScript(this, this.GetType(), "a", "Alert();", true);
-        //}
-        //else
-        //{
-            //string ival = lblLeaveID.Text .TrimEnd(char[,] trimChars).ToString();
-            string val = lblLeaveID.Text.ToString();
-            //char trim = (',');
-            string id = val;//.Trim(trim);//val.TrimEnd(trim);
-            string eval = lblEmployeeID.Text.ToString();
-            string empid = eval;//.Trim(trim);//.TrimEnd(trim);
-            string comment = txt_reason.Text.ToString();
-            string comments = comment;//.TrimEnd(trim);
-            SqlConnection con = new SqlConnection(my.getConnectionString());
-            con.Open();
 
-            String strSQL = "CWFM_UMANG.[WFMP].[UpdateApproval]";
-            SqlCommand cmd = new SqlCommand(strSQL, con);
-            cmd.CommandType = CommandType.StoredProcedure;
+        string val = lblLeaveID.Text.ToString();
+        string id = val;
+        string eval = lblEmployeeID.Text.ToString();
+        string empid = eval;
+        string comment = txt_reason.Text.ToString();
+        string comments = comment;
+        SqlConnection con = new SqlConnection(my.getConnectionString());
+        con.Open();
 
-            cmd.Parameters.AddWithValue("@ApproverID", MyEmpID);
-            cmd.Parameters.AddWithValue("@EmpID", Convert.ToInt32(empid.ToString()));
-            cmd.Parameters.AddWithValue("@id", Convert.ToInt32(id.ToString()));
-            cmd.Parameters.AddWithValue("@comments", comments);
+        String strSQL = "[WFMP].[UpdateApproval]";
+        SqlCommand cmd = new SqlCommand(strSQL, con);
+        cmd.CommandType = CommandType.StoredProcedure;
 
-            cmd.Connection = con;
-            int Rows = cmd.ExecuteNonQuery();
-            con.Close();
-            txt_reason.Text = String.Empty;
-            lblLeaveID.Text = String.Empty; 
-            lblEmployeeName.Text = "";
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "hideModal();", true);
-            //FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "show", "toastA();", true);
-            FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
+        cmd.Parameters.AddWithValue("@ApproverID", MyEmpID);
+        cmd.Parameters.AddWithValue("@EmpID", Convert.ToInt32(empid.ToString()));
+        cmd.Parameters.AddWithValue("@id", Convert.ToInt32(id.ToString()));
+        cmd.Parameters.AddWithValue("@comments", comments);
+
+        cmd.Connection = con;
+        int Rows = cmd.ExecuteNonQuery();
+        con.Close();
+        txt_reason.Text = String.Empty;
+        lblLeaveID.Text = String.Empty;
+        lblEmployeeName.Text = "";
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "hideModal();", true);
+        //FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "show", "toastA();", true);
+        FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
         //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave is approved.')", true);
         //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave is approved.', 'Success')", true);
         //fillddlRepManager();--commented to prevent refreshing of RepMgrDropdown
@@ -238,7 +230,7 @@ public partial class LeaveApproval : System.Web.UI.Page
         //System.Threading.Thread.Sleep(3000);
         //Page.Response.Redirect(Page.Request.Url.ToString(), true);
 
-        string strSQL2 = "CWFM_UMANG.[WFMP].[getEmployeeMgrs]";
+        string strSQL2 = "[WFMP].[getEmployeeMgrs]";
 
         SqlCommand cmdd = new SqlCommand(strSQL2);
         cmdd.Parameters.AddWithValue("@EmpCd", Convert.ToInt32(empid.ToString()));
@@ -248,7 +240,7 @@ public partial class LeaveApproval : System.Web.UI.Page
         int RevMgr = Convert.ToInt32(dtt.Rows[0]["RevMgrCode"].ToString());
 
 
-        string strSQL3 = "CWFM_UMANG.[WFMP].[getLeavedatesandLeavereason]";
+        string strSQL3 = "[WFMP].[getLeavedatesandLeavereason]";
 
         SqlCommand cmddd = new SqlCommand(strSQL3);
         cmddd.Parameters.AddWithValue("@id", Convert.ToInt32(id.ToString()));
@@ -270,30 +262,32 @@ public partial class LeaveApproval : System.Web.UI.Page
 
         Email.InitiatorEmpId = MyEmpID;
         if (MyEmpID == RepMgr)
-        { Email.RecipientsEmpId = RevMgr.ToString() ;
+        {
+            Email.RecipientsEmpId = RevMgr.ToString();
             Email.CCsEmpId = MyEmpID.ToString() + ";" + empid.ToString();
         }
         else if (MyEmpID == RevMgr)
-        { Email.RecipientsEmpId =  empid.ToString();
-            Email.CCsEmpId = MyEmpID.ToString() + ";"+ RepMgr.ToString();
+        {
+            Email.RecipientsEmpId = empid.ToString();
+            Email.CCsEmpId = MyEmpID.ToString() + ";" + RepMgr.ToString();
         }
         //Email.RecipientsEmpId = "931040";
         //Email.BCCsEmpId = MyEmpID.ToString();
-        
+
         Email.Subject = "Leave Request Approved";
         Email.Body = "<style>.xMailBody {font-family: calibri;}</style><div class='xMailBody'><strong>Hi, </strong>";
-        Email.Body += "<P>A leave application for "+ applied_By+ " has been approved by " + dt.Rows[0]["First_Name"].ToString()+ " " + dt.Rows[0]["Last_Name"].ToString() + " and it requires your action. </P>";
+        Email.Body += "<P>A leave application for " + applied_By + " has been approved by " + dt.Rows[0]["First_Name"].ToString() + " " + dt.Rows[0]["Last_Name"].ToString() + " and it requires your action. </P>";
         Email.Body += "<p>Leave Application details:</p> <br>";
-        Email.Body += "<table style='border-collapse: collapse;width: 90%;border: 1px solid #000000;font-family: calibri;'><tr style='background-color: #f2f2f2'><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>Start Date</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>End Date</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>Leave Reason</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>Applied On</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>Link for Action</th></tr><tr style='background-color: #f2f2f2'><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + from_date+ "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>"+to_date+"</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>"+ reason +"</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>"+ appliedOn + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'><a href='http://iaccess/TA/LeaveApproval.aspx'>Leave Approval page</a></td></tr></table> </div>";
-       // Email.Body += "<br> <p>Regards, <br> IAccess Support Team <br> PS: This is an automated triggered email. Please do not reply.</p>";
+        Email.Body += "<table style='border-collapse: collapse;width: 90%;border: 1px solid #000000;font-family: calibri;'><tr style='background-color: #f2f2f2'><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>Start Date</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>End Date</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>Leave Reason</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>Applied On</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: #4CAF50;color: white;'>Link for Action</th></tr><tr style='background-color: #f2f2f2'><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + from_date + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + to_date + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + reason + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + appliedOn + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'><a href='http://iaccess/TA/LeaveApproval.aspx'>Leave Approval page</a></td></tr></table> </div>";
+        // Email.Body += "<br> <p>Regards, <br> IAccess Support Team <br> PS: This is an automated triggered email. Please do not reply.</p>";
         //Email.Send();
         //}
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "dtblAdd1", "dtbl();", true); 
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "dtblAdd1", "dtbl();", true);
     }
     protected void btn_dec_Click(object sender, EventArgs e)
     {
-        
-        string val = lblLeaveID.Text .ToString();
+
+        string val = lblLeaveID.Text.ToString();
         char trim = (',');
         string id = val.TrimEnd(trim);
         string eval = lblEmployeeID.Text.ToString();
@@ -304,16 +298,17 @@ public partial class LeaveApproval : System.Web.UI.Page
         { //ClientScript.RegisterStartupScript(GetType(), "Message", "<SCRIPT type='text/javascript'>alert('Please enter decline reason');</script>");
             alert.Visible = true;
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
-           string abc = comments.TrimEnd(trim);
-           txt_reason.Text = abc;
-        //ScriptManager.RegisterStartupScript(this, this.GetType(), "Message", "<SCRIPT type='text/javascript'>alert('Please enter decline reason');</script>", false);
+            string abc = comments.TrimEnd(trim);
+            txt_reason.Text = abc;
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "Message", "<SCRIPT type='text/javascript'>alert('Please enter decline reason');</script>", false);
         }
 
-        else{
+        else
+        {
             SqlConnection con = new SqlConnection(my.getConnectionString());
             con.Open();
 
-            String strSQL = "CWFM_UMANG.[WFMP].[UpdateDecline]";
+            String strSQL = "[WFMP].[UpdateDecline]";
             SqlCommand cmd = new SqlCommand(strSQL, con);
             cmd.CommandType = CommandType.StoredProcedure;
 
@@ -350,14 +345,14 @@ public partial class LeaveApproval : System.Web.UI.Page
             //Page.Response.Redirect(Page.Request.Url.ToString(), true);
         }
         ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "hideModal();", true);
-            //FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
-            //
-            FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
-            
-            //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Request Declined.', 'Success')", true);
-            //--fillddlRepManager();//---commented to prevent refreshing of RepMgrDropdown
+        //FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
+        //
+        FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
 
-        string strSQL1 = "CWFM_UMANG.[WFMP].[getEmployeeMgrs]";
+        //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Request Declined.', 'Success')", true);
+        //--fillddlRepManager();//---commented to prevent refreshing of RepMgrDropdown
+
+        string strSQL1 = "[WFMP].[getEmployeeMgrs]";
 
         SqlCommand cmdd = new SqlCommand(strSQL1);
         cmdd.Parameters.AddWithValue("@EmpCd", Convert.ToInt32(empid.ToString()));
@@ -366,7 +361,7 @@ public partial class LeaveApproval : System.Web.UI.Page
         int RepMgr = Convert.ToInt32(dtt.Rows[0]["RepMgrCode"].ToString());
         int RevMgr = Convert.ToInt32(dtt.Rows[0]["RevMgrCode"].ToString());
 
-        string strSQL3 = "CWFM_UMANG.[WFMP].[getLeavedatesandLeavereason]";
+        string strSQL3 = "[WFMP].[getLeavedatesandLeavereason]";
 
         SqlCommand cmddd = new SqlCommand(strSQL3);
         cmddd.Parameters.AddWithValue("@id", Convert.ToInt32(id.ToString()));
@@ -392,8 +387,8 @@ public partial class LeaveApproval : System.Web.UI.Page
         Email.CCsEmpId = MyEmpID.ToString();
         Email.Subject = "Leave Request Declined";
         Email.Body = "<strong>Hi, </strong>";
-        Email.Body += "<P>Your below leave application has been Declined by " + dt.Rows[0]["First_Name"].ToString()+" " + dt.Rows[0]["Last_Name"].ToString() +"</P>";
-        Email.Body += "<p>Reason for Decline: '<b><i>"+ comments+"'</b></i></p>";
+        Email.Body += "<P>Your below leave application has been Declined by " + dt.Rows[0]["First_Name"].ToString() + " " + dt.Rows[0]["Last_Name"].ToString() + "</P>";
+        Email.Body += "<p>Reason for Decline: '<b><i>" + comments + "'</b></i></p>";
         Email.Body += "<p>Leave Application details:</p> <br>";
         Email.Body += "<table style='border-collapse: collapse;width: 100%;border: 1px solid #000000;'><tr style='background-color: #f2f2f2'><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: red;color: white;'>Start Date</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: red;color: white;'>End Date</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: red;color: white;'>Leave Reason</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: red;color: white;'>Applied On</th></tr><tr style='background-color: #f2f2f2'><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + from_date + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + to_date + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + reason + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + appliedOn + "</td></tr></table>";
         //Email.Send();
@@ -405,16 +400,16 @@ public partial class LeaveApproval : System.Web.UI.Page
     {
         string levelstatus = ddlActionFilter.SelectedValue.ToString();
 
-        strSQL = "CWFM_UMANG.WFMP.GetEmployeeLeaveRequestes";
+        strSQL = "WFMP.GetEmployeeLeaveRequestes";
 
         SqlCommand cmd = new SqlCommand(strSQL);
         cmd.Parameters.AddWithValue("@EmpCode", ddlRepManager.SelectedValue.ToString());
-        DataTable dt1 = my.GetDataTableViaProcedure(ref cmd);
-        DataView view = new DataView(dt1);        
-        
+        dtgvApprLeaveLog = my.GetDataTableViaProcedure(ref cmd);
+        DataView view = new DataView(dtgvApprLeaveLog);
+
         switch (levelstatus)
         {
-            case "1":               
+            case "1":
                 break;
 
             case "2":
@@ -430,14 +425,64 @@ public partial class LeaveApproval : System.Web.UI.Page
                 break;
 
             case "5":
-                view.RowFilter = "Level2_Action <>'Pending'";                
+                view.RowFilter = "Level2_Action <>'Pending'";
                 break;
         }
-        //FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
+
         view.RowStateFilter = DataViewRowState.CurrentRows;
         gvApprLeaveLog.DataSource = view;
         gvApprLeaveLog.DataBind();
 
+        ddlEmployee.DataSource = view.ToTable(true, "ECN", "NAME");
+        ddlEmployee.DataValueField = "ECN";
+        ddlEmployee.DataTextField = "NAME";
+        ddlEmployee.DataBind();
+        ddlEmployee.Items.Insert(0, new ListItem("All", "0"));
+    }
 
+    protected void ddlEmployee_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+        int ECN = ddlEmployee.SelectedValue.ToInt32();
+
+        string levelstatus = ddlActionFilter.SelectedValue.ToString();
+        strSQL = "WFMP.GetEmployeeLeaveRequestes";
+        SqlCommand cmd = new SqlCommand(strSQL);
+        cmd.Parameters.AddWithValue("@EmpCode", ddlRepManager.SelectedValue.ToString());
+        dtgvApprLeaveLog = my.GetDataTableViaProcedure(ref cmd);
+
+        if (ECN > 0)
+        {
+            DataView view = new DataView(dtgvApprLeaveLog);
+            string RowFilter = string.Empty;
+            switch (levelstatus)
+            {
+                case "1":
+                    break;
+
+                case "2":
+                    RowFilter = "Level1_Action is null";
+                    break;
+
+                case "3":
+                    RowFilter = "Level2_Action ='Pending'";
+                    break;
+
+                case "4":
+                    RowFilter = "Level1_Action is not null";
+                    break;
+
+                case "5":
+                    RowFilter = "Level2_Action <>'Pending'";
+                    break;
+            }
+            DataView dv = new DataView(dtgvApprLeaveLog, "ECN=" + ECN + " and " + RowFilter, "ECN", DataViewRowState.CurrentRows);
+            gvApprLeaveLog.DataSource = dv;
+        }
+        else
+        {
+            gvApprLeaveLog.DataSource = dtgvApprLeaveLog;
+        }
+        gvApprLeaveLog.DataBind();
     }
 }
