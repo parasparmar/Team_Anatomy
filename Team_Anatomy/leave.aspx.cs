@@ -21,7 +21,8 @@ public partial class leave : System.Web.UI.Page
     Helper my;
     string strsql;
     int MyEmpID;
-
+    string fdate { get; set; }
+    string tdate { get; set; }//imp
     EmailSender Email = new EmailSender();
 
     protected void Page_Load(object sender, EventArgs e)
@@ -84,7 +85,6 @@ public partial class leave : System.Web.UI.Page
 
 
     }
-
     private void fillgvLeaveDetails()
     {
         string received = reservation.Text;
@@ -103,9 +103,6 @@ public partial class leave : System.Web.UI.Page
         //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Key2", "pluginsInitializer()", true);
 
     }
-
-
-
     protected void gvLeaveDetails_RowDataBound(object sender, GridViewRowEventArgs e)
     {
 
@@ -132,11 +129,10 @@ public partial class leave : System.Web.UI.Page
             ddl.DataBind();
         }
     }
-
     private void fillgvLeaveLog()
     {
 
-        strsql = "CWFM_UMANG.[WFMP].[buildBadges]";
+        strsql = "WFMP.[buildBadges]";
 
         SqlCommand cmd = new SqlCommand(strsql);
         cmd.Parameters.AddWithValue("@ECN", Convert.ToInt32(MyEmpID.ToString()));
@@ -152,7 +148,6 @@ public partial class leave : System.Web.UI.Page
         ViewState["sortdr"] = "Asc";
 
     }
-
     private void clearfields()
     {
         ddl_leave_dropdown.ClearSelection();
@@ -160,7 +155,6 @@ public partial class leave : System.Web.UI.Page
         gvLeaveDetails.DataSource = null;
         gvLeaveDetails.DataBind();
     }
-
     protected void gvLeaveLog_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         GridView gv = (GridView)sender;
@@ -189,7 +183,7 @@ public partial class leave : System.Web.UI.Page
             DateTime fromdate = Convert.ToDateTime(fdate);
             DateTime today = DateTime.Today;
 
-            if ( today > fromdate || dt == 1 || stat2 == "declined")
+            if (today > fromdate || dt == 1 || stat2 == "declined")
             {
                 btn.CssClass = "btn btn-sm btn-danger disabled";
                 btn.Enabled = false;
@@ -205,7 +199,8 @@ public partial class leave : System.Web.UI.Page
             Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.warning('Not more than 2 Work-Offs can be applied in a week.Kindly rectify')", true);
 
         }
-        else {
+        else
+        {
             //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leaves Successfully applied')", true);
             string received = reservation.Text;
             string[] seperator = { " - " };
@@ -214,7 +209,7 @@ public partial class leave : System.Web.UI.Page
 
             SqlConnection con = new SqlConnection(my.getConnectionString());
             con.Open();
-            String strSQL = "CWFM_UMANG.WFMP.InsertLeaveRecords";
+            String strSQL = "WFMP.InsertLeaveRecords";
             SqlCommand cmd = new SqlCommand(strSQL, con);
             cmd.CommandType = CommandType.StoredProcedure;
             MyEmpID = Convert.ToInt32(dt.Rows[0]["Employee_Id"].ToString());
@@ -257,7 +252,7 @@ public partial class leave : System.Web.UI.Page
                     }
 
                 }
-                
+
                 string newFromDate;
                 string newToDate;
 
@@ -271,8 +266,8 @@ public partial class leave : System.Web.UI.Page
                 Email.Subject = "Leave Request";
                 Email.Body = "<strong>Hi, </strong>";
                 Email.Body += "<P>" + dt.Rows[0]["First_Name"].ToString() + " " + dt.Rows[0]["Last_Name"].ToString() + " has requested leave from " + newFromDate + " to " + newToDate; //+ " for given reason"+" ' "+ txt_leave_reason.Text.ToString()+ " '.<P>";
-                Email.Body += "<br> Reason: <i>"+ leavereason + "</i> <br>";
-               // Email.Send();
+                Email.Body += "<br> Reason: <i>" + leavereason + "</i> <br>";
+                // Email.Send();
                 Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave applied successfully.')", true);
 
                 fillgvLeaveLog();
@@ -289,7 +284,6 @@ public partial class leave : System.Web.UI.Page
             }
         }
     }
-
     private bool checkForMax2WorkOffs()
     {
         string received = reservation.Text;
@@ -343,10 +337,6 @@ public partial class leave : System.Web.UI.Page
         }
         return trueValue;
     }
-
-
-    string fdate { get; set; }
-    string tdate { get; set; }//imp
     protected void btn_Cancel_Click(object sender, EventArgs e)
     {
         //    
@@ -359,7 +349,6 @@ public partial class leave : System.Web.UI.Page
         fdate = row.Cells[0].Text.ToString();
         tdate = row.Cells[1].Text.ToString();
     }
-
     protected void btn_save_cancel_reason_Click(object sender, EventArgs e)
     {
 
@@ -375,10 +364,10 @@ public partial class leave : System.Web.UI.Page
         string CancelDate = date.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
 
-        String Sql = "UPDATE [WFMP].[tbl_leave_request]";
+        String Sql = "UPDATE WFMP.[tbl_leave_request]";
         Sql += "SET [cancel_reason]='" + cancel_reason + "', [CancelDate]='" + CancelDate + "'";
 
-        Sql += "WHERE [id] = '" + id + "'; exec [WFMP].[Leave_Cancel2Roster] '" + id + "'";
+        Sql += "WHERE [id] = '" + id + "'; exec WFMP.[Leave_Cancel2Roster] '" + id + "'";
 
         SqlCommand cmd = new SqlCommand(Sql, con);
         cmd.Connection = con;
@@ -422,7 +411,7 @@ public partial class leave : System.Web.UI.Page
     {
         Helper my = new Helper();
 
-        String strSQL = "CWFM_UMANG.WFMP.[getMinDateforLeaveRequest]";
+        String strSQL = "WFMP.[getMinDateforLeaveRequest]";
         SqlCommand cmd = new SqlCommand(strSQL);
         DataTable dtMinDate = my.GetDataTableViaProcedure(ref cmd);
         string minDate = dtMinDate.Rows[0]["minDate"].ToString();
@@ -446,7 +435,6 @@ public partial class leave : System.Web.UI.Page
             gv.FooterRow.TableSection = TableRowSection.TableFooter;
         }
     }
-
     protected void gvLeaveLog_Sorting(object sender, GridViewSortEventArgs e)
     {
         DataTable dtrslt = (DataTable)ViewState["dirState"];
@@ -467,7 +455,6 @@ public partial class leave : System.Web.UI.Page
         }
 
     }
-
     protected void gvLeaveLog_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         gvLeaveLog.PageIndex = e.NewPageIndex;

@@ -25,7 +25,7 @@ public partial class MasterPage : System.Web.UI.MasterPage
             intialize_me();
         }
     }
-    
+  
 
     protected void intialize_me()
     {

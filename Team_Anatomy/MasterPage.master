@@ -23,8 +23,6 @@
     <!-- DataTables -->
     <%--<link rel="stylesheet" href="AdminLTE/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">--%>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="AdminLTE/dist/css/AdminLTE.css">
     <!-- Select2 -->
     <link href="AdminLTE/bower_components/select2/dist/css/select2.min.css" rel="stylesheet" />
     <!-- AdminLTE Skins. Choose a skin from the css/ folder instead of downloading all of them to reduce the load. -->
@@ -33,8 +31,9 @@
     <link href="AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
     <link rel="stylesheet" href="AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
     <!----------Toastr----------------->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
-
+    <link href="CDN/toastr/toastr.min.css" rel="stylesheet" />
+    <!-- Theme style -->
+    <link rel="stylesheet" href="AdminLTE/dist/css/AdminLTE.css">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -47,6 +46,17 @@
 
 
     <style type="text/css">
+        .wrapper {
+            /*min-height:100%;*/
+            overflow: hidden;
+        }
+
+        .content-wrapper {
+            /*min-height:100%;*/
+            /*height: auto;*/
+            overflow: hidden; /*hidden*/
+            padding: 0.5%;
+        }
         /************************************************************************/
         /* PSEUDO-TOGGLE BUTTON MADE OF ASP.NET CHECKBOX AND CSS3*/
         div.divToggleButton input[type=checkbox] {
@@ -100,17 +110,11 @@
             font-weight: bold;
         }
         /************************************************************************/
-    </style>
 
-    <style type="text/css">
         /**Paras Modified 31-03-2017 */
         /*** Legacy Headers Styled as per current design ***/
         .content-header {
             color: #3c8dbc;
-        }
-
-        .content-wrapper {
-            padding: 0.5%;
         }
 
         .dropdown {
@@ -164,15 +168,7 @@
             /*min-height:100%;*/
             /*height: auto;*/
         }
-
-        .wrapper {
-            /*min-height:100%;*/
-            overflow: hidden;
-        }
-
-
         /*** FOOTER STYLES ***/
-
         .main-footer {
             font-size: 12px;
             color: #666;
@@ -290,12 +286,12 @@
 
                             <ul class="nav navbar-nav">
                                 <!-- Tasks: style can be found in dropdown.less -->
-                                
-                                    <asp:Panel ID="pnlImpersonator" runat="server" CssClass="col-md-3 col-xs-8 col-lg-2" style="width:250px">
-                                        <asp:DropDownList ID="ddlImpersonator" runat="server" Visible="false" CssClass="form-control" style="width:100%" OnSelectedIndexChanged="ddlImpersonator_SelectedIndexChanged">
-                                        </asp:DropDownList>
-                                    </asp:Panel>
-                                
+
+                                <asp:Panel ID="pnlImpersonator" runat="server" CssClass="col-md-3 col-xs-8 col-lg-2" Style="width: 250px">
+                                    <asp:DropDownList ID="ddlImpersonator" runat="server" Visible="false" CssClass="form-control" Style="width: 100%" OnSelectedIndexChanged="ddlImpersonator_SelectedIndexChanged">
+                                    </asp:DropDownList>
+                                </asp:Panel>
+
 
                                 <!-- User Account: style can be found in dropdown.less -->
                                 <li class="dropdown user user-menu">
@@ -415,12 +411,12 @@
                                     <i class="fa fa-exchange"></i><span>Shift Swaps</span>
                                 </a>
                             </li>
-							<li>
+                            <li>
                                 <a href="../pacman/index.aspx">
                                     <i class="fa fa-dollar"></i><span>PACMAN</span>
                                 </a>
                             </li>
-			    <li>
+                            <li>
                                 <a href="IntervalTracker.aspx">
                                     <i class="fa fa-sliders"></i><span>Interval Tracker</span>
                                 </a>
@@ -483,277 +479,261 @@
                 <!-- /.content -->
             </div>
             <!-- /.content-wrapper -->
-        </form>
+            <footer class="main-footer">
+                <div class="pull-left hidden-xs footer-left">
+                    <span>Support Email: <strong><a href="mailto:gurdeep.singh@sitel.com?cc=paras.parmar@sitel.com; komal.trivedi@sitel.com&amp;subject=TeamAnatomy%20Issue&amp;body=Hi%20Team%2C%0A%0AThis%20is%20my%20TeamAnatomy%20Issue%3A%20%0A%0APasted%20below%20is%20a%20screenshot%20of%20the%20same.">SPEA</a></strong></span>
+                </div>
+                <!--Support Footer-->
+                <div class="pull-right hidden-xs footer-right">
+                    <span>Designed, Maintained & Supported by: <strong><a href="http://www.sitel.com/">Strategic Planning and Executing Analytics</a></strong></span>
+                </div>
+                <!--Identity Footer-->
+            </footer>
+            <!-- Control Sidebar -->
+            <aside class="control-sidebar control-sidebar-dark">
+                <!-- Create the tabs -->
+                <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+                    <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
 
-        <footer class="main-footer">
-            <div class="pull-left hidden-xs footer-left">
-                <span>Support Email: <strong><a href="mailto:gurdeep.singh@sitel.com?cc=paras.parmar@sitel.com; komal.trivedi@sitel.com&amp;subject=TeamAnatomy%20Issue&amp;body=Hi%20Team%2C%0A%0AThis%20is%20my%20TeamAnatomy%20Issue%3A%20%0A%0APasted%20below%20is%20a%20screenshot%20of%20the%20same.">SPEA</a></strong></span>
-            </div>
-            <!--Support Footer-->
-            <div class="pull-right hidden-xs footer-right">
-                <span>Designed, Maintained & Supported by: <strong><a href="http://www.sitel.com/">Strategic Planning and Executing Analytics</a></strong></span>
-            </div>
-            <!--Identity Footer-->
-        </footer>
-        <!-- Control Sidebar -->
+                    <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <!-- Home tab content -->
+                    <div class="tab-pane" id="control-sidebar-home-tab">
+                        <h3 class="control-sidebar-heading">Recent Activity</h3>
+                        <ul class="control-sidebar-menu">
+                            <li>
+                                <a href="javascript:void(0)">
+                                    <i class="menu-icon fa fa-birthday-cake bg-red"></i>
 
-        <aside class="control-sidebar control-sidebar-dark">
-            <!-- Create the tabs -->
-            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-                <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+                                    <div class="menu-info">
+                                        <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
 
-                <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
-            </ul>
-            <!-- Tab panes -->
-            <div class="tab-content">
-                <!-- Home tab content -->
-                <div class="tab-pane" id="control-sidebar-home-tab">
-                    <h3 class="control-sidebar-heading">Recent Activity</h3>
-                    <ul class="control-sidebar-menu">
-                        <li>
-                            <a href="javascript:void(0)">
-                                <i class="menu-icon fa fa-birthday-cake bg-red"></i>
+                                        <p>Will be 23 on April 24th</p>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)">
+                                    <i class="menu-icon fa fa-user bg-yellow"></i>
 
-                                <div class="menu-info">
-                                    <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+                                    <div class="menu-info">
+                                        <h4 class="control-sidebar-subheading">Frodo Updated His Profile</h4>
 
-                                    <p>Will be 23 on April 24th</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)">
-                                <i class="menu-icon fa fa-user bg-yellow"></i>
+                                        <p>New phone +1(800)555-1234</p>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)">
+                                    <i class="menu-icon fa fa-envelope-o bg-light-blue"></i>
 
-                                <div class="menu-info">
-                                    <h4 class="control-sidebar-subheading">Frodo Updated His Profile</h4>
+                                    <div class="menu-info">
+                                        <h4 class="control-sidebar-subheading">Nora Joined Mailing List</h4>
 
-                                    <p>New phone +1(800)555-1234</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)">
-                                <i class="menu-icon fa fa-envelope-o bg-light-blue"></i>
+                                        <p>nora@example.com</p>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)">
+                                    <i class="menu-icon fa fa-file-code-o bg-green"></i>
 
-                                <div class="menu-info">
-                                    <h4 class="control-sidebar-subheading">Nora Joined Mailing List</h4>
+                                    <div class="menu-info">
+                                        <h4 class="control-sidebar-subheading">Cron Job 254 Executed</h4>
 
-                                    <p>nora@example.com</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)">
-                                <i class="menu-icon fa fa-file-code-o bg-green"></i>
+                                        <p>Execution time 5 seconds</p>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- /.control-sidebar-menu -->
 
-                                <div class="menu-info">
-                                    <h4 class="control-sidebar-subheading">Cron Job 254 Executed</h4>
-
-                                    <p>Execution time 5 seconds</p>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
-                    <!-- /.control-sidebar-menu -->
-
-                    <h3 class="control-sidebar-heading">Tasks Progress</h3>
-                    <ul class="control-sidebar-menu">
-                        <li>
-                            <a href="javascript:void(0)">
-                                <h4 class="control-sidebar-subheading">Custom Template Design
+                        <h3 class="control-sidebar-heading">Tasks Progress</h3>
+                        <ul class="control-sidebar-menu">
+                            <li>
+                                <a href="javascript:void(0)">
+                                    <h4 class="control-sidebar-subheading">Custom Template Design
                
                                         <span class="label label-danger pull-right">70%</span>
-                                </h4>
+                                    </h4>
 
-                                <div class="progress progress-xxs">
-                                    <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)">
-                                <h4 class="control-sidebar-subheading">Update Resume
+                                    <div class="progress progress-xxs">
+                                        <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)">
+                                    <h4 class="control-sidebar-subheading">Update Resume
                
                                         <span class="label label-success pull-right">95%</span>
-                                </h4>
+                                    </h4>
 
-                                <div class="progress progress-xxs">
-                                    <div class="progress-bar progress-bar-success" style="width: 95%"></div>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)">
-                                <h4 class="control-sidebar-subheading">Laravel Integration
+                                    <div class="progress progress-xxs">
+                                        <div class="progress-bar progress-bar-success" style="width: 95%"></div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)">
+                                    <h4 class="control-sidebar-subheading">Laravel Integration
                
                                         <span class="label label-warning pull-right">50%</span>
-                                </h4>
+                                    </h4>
 
-                                <div class="progress progress-xxs">
-                                    <div class="progress-bar progress-bar-warning" style="width: 50%"></div>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)">
-                                <h4 class="control-sidebar-subheading">Back End Framework
+                                    <div class="progress progress-xxs">
+                                        <div class="progress-bar progress-bar-warning" style="width: 50%"></div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)">
+                                    <h4 class="control-sidebar-subheading">Back End Framework
                
                                         <span class="label label-primary pull-right">68%</span>
-                                </h4>
+                                    </h4>
 
-                                <div class="progress progress-xxs">
-                                    <div class="progress-bar progress-bar-primary" style="width: 68%"></div>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
-                    <!-- /.control-sidebar-menu -->
+                                    <div class="progress progress-xxs">
+                                        <div class="progress-bar progress-bar-primary" style="width: 68%"></div>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- /.control-sidebar-menu -->
 
-                </div>
-                <!-- /.tab-pane -->
-                <!-- Stats tab content -->
-                <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
-                <!-- /.tab-pane -->
-                <!-- Settings tab content -->
-                <div class="tab-pane" id="control-sidebar-settings-tab">
-                    <form method="post">
-                        <h3 class="control-sidebar-heading">General Settings</h3>
+                    </div>
+                    <!-- /.tab-pane -->
+                    <!-- Stats tab content -->
+                    <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
+                    <!-- /.tab-pane -->
+                    <!-- Settings tab content -->
+                    <div class="tab-pane" id="control-sidebar-settings-tab">
+                        <div>
+                            <h3 class="control-sidebar-heading">General Settings</h3>
 
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Report panel usage
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Report panel usage
              
                                     <input type="checkbox" class="pull-right" checked>
-                            </label>
+                                </label>
 
-                            <p>
-                                Some information about this general settings option
+                                <p>
+                                    Some information about this general settings option
            
-                            </p>
-                        </div>
-                        <!-- /.form-group -->
+                                </p>
+                            </div>
+                            <!-- /.form-group -->
 
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Allow mail redirect
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Allow mail redirect
              
                                     <input type="checkbox" class="pull-right" checked>
-                            </label>
+                                </label>
 
-                            <p>
-                                Other sets of options are available
+                                <p>
+                                    Other sets of options are available
            
-                            </p>
-                        </div>
-                        <!-- /.form-group -->
+                                </p>
+                            </div>
+                            <!-- /.form-group -->
 
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Expose author name in posts
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Expose author name in posts
              
                                     <input type="checkbox" class="pull-right" checked>
-                            </label>
+                                </label>
 
-                            <p>
-                                Allow the user to show his name in blog posts
+                                <p>
+                                    Allow the user to show his name in blog posts
            
-                            </p>
-                        </div>
-                        <!-- /.form-group -->
+                                </p>
+                            </div>
+                            <!-- /.form-group -->
 
-                        <h3 class="control-sidebar-heading">Chat Settings</h3>
+                            <h3 class="control-sidebar-heading">Chat Settings</h3>
 
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Show me as online
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Show me as online
              
                                     <input type="checkbox" class="pull-right" checked>
-                            </label>
-                        </div>
-                        <!-- /.form-group -->
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
 
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Turn off notifications
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Turn off notifications
              
                                     <input type="checkbox" class="pull-right">
-                            </label>
-                        </div>
-                        <!-- /.form-group -->
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
 
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Delete chat history
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Delete chat history
              
                                     <a href="javascript:void(0)" class="text-red pull-right"><i class="fa fa-trash-o"></i></a>
-                            </label>
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
                         </div>
-                        <!-- /.form-group -->
-                    </form>
+                    </div>
+                    <!-- /.tab-pane -->
                 </div>
-                <!-- /.tab-pane -->
-            </div>
-        </aside>
-        <!-- /.control-sidebar -->
-        <!-- Add the sidebar's background. This div must be placed immediately after the control sidebar -->
-        <div class="control-sidebar-bg"></div>
+            </aside>
+            <!-- /.control-sidebar -->
+            <!-- Add the sidebar's background. This div must be placed immediately after the control sidebar -->
+            <div class="control-sidebar-bg"></div>
+            <!-- jQuery 3 -->
+            <script src="AdminLTE/bower_components/jquery/dist/jquery.js"></script>
+            <!-- Bootstrap 3.3.7 -->
+            <script src="AdminLTE/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+            <!-- DataTables -->
+            <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+            <link href="Sitel/cdn/cdn.datatables.net/buttons/1.3.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+            <script src="Sitel/cdn/cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
+            <script src="Sitel/cdn/cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
+            <script type="text/javascript" src="Sitel/jszip.js"></script>
+            <script type="text/javascript" src="CDN/pdfmake/pdfmake.min.js"></script>
+            <script type="text/javascript" src="CDN/pdfmake/vfs_fonts.js"></script>
+
+            <!-- date-range-picker -->
+            <script src="AdminLTE/bower_components/moment/min/moment.min.js"></script>
+            <script src="AdminLTE/bower_components/select2/dist/js/select2.full.js"></script>
+            <script src="AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+            <script src="AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+            <!-- SlimScroll -->
+            <script src="AdminLTE/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+            <!-- FastClick -->
+            <script src="AdminLTE/bower_components/fastclick/lib/fastclick.js"></script>
+            <!-- Toastr -->
+            <script src="CDN/toastr/toastr.min.js"></script>
+            <!-- AdminLTE App -->
+            <script src="AdminLTE/dist/js/adminlte.min.js"></script>
+            <!-- AdminLTE for demo purposes -->
+            <script src="AdminLTE/dist/js/demo.js"></script>
+            <script>
+                $(function () {
+                    $('.sidebar-menu').tree();
+                    $(".select2").select2();
+                });
+                $("#signout").click(function () {
+                    window.close();
+                });
+            </script>
+            <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+
+            <asp:ContentPlaceHolder ID="below_footer" runat="server">
+            </asp:ContentPlaceHolder>
+        </form>
     </div>
-    <!-- jQuery 3 -->
-    <script src="AdminLTE/bower_components/jquery/dist/jquery.js"></script>
-    <!-- Bootstrap 3.3.7 -->
-    <script src="AdminLTE/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <!-- DataTables -->
-    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-    <link href="Sitel/cdn/cdn.datatables.net/buttons/1.3.1/css/buttons.dataTables.min.css" rel="stylesheet" />
-    <script src="Sitel/cdn/cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
-    <script src="Sitel/cdn/cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
-    <script type="text/javascript" src="Sitel/jszip.js"></script>
-    <script type="text/javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
-    <script type="text/javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
-
-    <!-- date-range-picker -->
-    <script src="AdminLTE/bower_components/moment/min/moment.min.js"></script>
-    <script src="AdminLTE/bower_components/select2/dist/js/select2.full.js"></script>
-    <script src="AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
-
-    <script src="AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-    <!-- SlimScroll -->
-    <script src="AdminLTE/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-    <!-- FastClick -->
-    <script src="AdminLTE/bower_components/fastclick/lib/fastclick.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="AdminLTE/dist/js/adminlte.min.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="AdminLTE/dist/js/demo.js"></script>
-    <script>
-        $("#signout").click(function () {
-            window.close();
-        });
-
-        $(function () {
-            $('.sidebar-menu').tree();
-            $(".select2").select2();
-        });
-
-    </script>
-
-
-    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
-
-    <style type="text/css">
-        .content-wrapper {
-            /*min-height:100%;*/
-            /*height: auto;*/
-            overflow: hidden; /*hidden*/
-        }
-    </style>
-    <asp:ContentPlaceHolder ID="below_footer" runat="server">
-    </asp:ContentPlaceHolder>
-
-
 </body>
 </html>
 

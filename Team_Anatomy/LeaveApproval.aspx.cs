@@ -105,19 +105,11 @@ public partial class LeaveApproval : System.Web.UI.Page
 
     protected void btn_detail_Click(object sender, EventArgs e)
     {
-        alert.Visible = false;
-        //        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "none",
-        //"<script>$('.modal').modal('show');</script>", false);
 
-        //System.Text.StringBuilder sb = new System.Text.StringBuilder();
-        //sb.Append(@"<script>");
-        //sb.Append(@"$('.modal').modal('show');");
-        //sb.Append(@"</script>");
-        //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "mSlideScript", sb.ToString(), false);
         btn_dec.Enabled = false;
         btn_appr.Enabled = false;
         txt_reason.Text = String.Empty;
-        Button btn = (Button)sender;
+        LinkButton btn = (LinkButton)sender;
         GridViewRow row = (GridViewRow)btn.NamingContainer;
         string leaveid = row.Cells[8].Text.ToString();
         lblLeaveID.Text = leaveid;
@@ -125,18 +117,21 @@ public partial class LeaveApproval : System.Web.UI.Page
         lblEmployeeID.Text = employeeid;
         string employeeName = row.Cells[1].Text.ToString();
         lblEmployeeName.Text = employeeName;
-        String Sql = "select CONVERT(VARCHAR,A.[LeaveDate],106) as LeaveDate, DATENAME(weekday,A.[LeaveDate]) as LeaveDay, B.[LeaveText], E.ShiftCode as Roster ";
-        Sql += "from [WFMP].[tbl_datewise_leave] A ";
-        Sql += "inner join [WFMP].[tblLeaveType] B ";
-        Sql += "on A.[leave_type] = B.[LeaveID] ";
-        Sql += "inner join [WFMP].[tbl_leave_request] C on A.leave_batch_id=C.id ";
-        Sql += "left join [WFMP].[RosterMst] D on C.ecn=D.EmpCode and A.LeaveDate= D.rDate ";
-        Sql += "left join [WFMP].[tblShiftCode] E on E.ShiftID = D.ShiftID ";
-        Sql += "WHERE [leave_batch_id] = '" + leaveid + "'";
+        String Sql = @"select 
+                        CONVERT(VARCHAR
+                        , A.[LeaveDate],106) as LeaveDate
+                        , DATENAME(weekday,A.[LeaveDate]) as LeaveDay
+                        , B.[LeaveText]
+                        , E.ShiftCode as Roster 
+                    from [WFMP].[tbl_datewise_leave] A 
+                    inner join [WFMP].[tblLeaveType] B 
+                    on A.[leave_type] = B.[LeaveID] 
+                    inner join [WFMP].[tbl_leave_request] C on A.leave_batch_id=C.id 
+                    left join [WFMP].[RosterMst] D on C.ecn=D.EmpCode and A.LeaveDate= D.rDate 
+                    left join [WFMP].[tblShiftCode] E on E.ShiftID = D.ShiftID";
+        Sql += " WHERE [leave_batch_id] = '" + leaveid + "'";
         SqlCommand cmd = new SqlCommand(Sql);
-
         DataTable dt1 = my.GetData(Sql);
-
         cmd.Dispose();
         strSQL = "[WFMP].[fillModal]";
         cmd = new SqlCommand(strSQL);
@@ -173,11 +168,11 @@ public partial class LeaveApproval : System.Web.UI.Page
                 }
             }
         }
-
         gvdatewiseAppr.DataSource = dt1;
         gvdatewiseAppr.DataBind();
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
 
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
+        upModal.Update();
     }
     protected void gv_PreRender(object sender, EventArgs e)
     {
@@ -282,7 +277,7 @@ public partial class LeaveApproval : System.Web.UI.Page
         // Email.Body += "<br> <p>Regards, <br> IAccess Support Team <br> PS: This is an automated triggered email. Please do not reply.</p>";
         //Email.Send();
         //}
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "dtblAdd1", "dtbl();", true);
+        //ScriptManager.RegisterStartupScript(this, this.GetType(), "dtblAdd1", "dtbl();", true);
     }
     protected void btn_dec_Click(object sender, EventArgs e)
     {
@@ -393,7 +388,7 @@ public partial class LeaveApproval : System.Web.UI.Page
         Email.Body += "<table style='border-collapse: collapse;width: 100%;border: 1px solid #000000;'><tr style='background-color: #f2f2f2'><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: red;color: white;'>Start Date</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: red;color: white;'>End Date</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: red;color: white;'>Leave Reason</th><th style='text-align: left;padding: 8px;border: 1px solid #000000;background-color: red;color: white;'>Applied On</th></tr><tr style='background-color: #f2f2f2'><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + from_date + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + to_date + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + reason + "</td><td style='text-align: left;padding: 8px;border: 1px solid #000000;'>" + appliedOn + "</td></tr></table>";
         //Email.Send();
 
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "dtblAdd2", "dtbl();", true);
+        //ScriptManager.RegisterStartupScript(this, this.GetType(), "dtblAdd2", "dtbl();", true);
     }
 
     protected void ddlActionFilter_SelectedIndexChanged(object sender, EventArgs e)
@@ -455,29 +450,30 @@ public partial class LeaveApproval : System.Web.UI.Page
         {
             DataView view = new DataView(dtgvApprLeaveLog);
             string RowFilter = string.Empty;
+
             switch (levelstatus)
             {
                 case "1":
                     break;
 
                 case "2":
-                    RowFilter = "Level1_Action is null";
+                    view.RowFilter = "ECN=" + ECN + " and Level1_Action is null";
                     break;
 
                 case "3":
-                    RowFilter = "Level2_Action ='Pending'";
+                    view.RowFilter = "ECN=" + ECN + " and Level2_Action ='Pending'";
                     break;
 
                 case "4":
-                    RowFilter = "Level1_Action is not null";
+                    view.RowFilter = "ECN=" + ECN + " and Level1_Action is not null";
                     break;
 
                 case "5":
-                    RowFilter = "Level2_Action <>'Pending'";
+                    view.RowFilter = "ECN=" + ECN + " and Level2_Action <>'Pending'";
                     break;
             }
-            DataView dv = new DataView(dtgvApprLeaveLog, "ECN=" + ECN + " and " + RowFilter, "ECN", DataViewRowState.CurrentRows);
-            gvApprLeaveLog.DataSource = dv;
+            view.RowStateFilter = DataViewRowState.CurrentRows;
+            gvApprLeaveLog.DataSource = view;
         }
         else
         {
