@@ -53,7 +53,6 @@
         <li><a href="Summary.aspx"><i class="iconfa-home"></i>Home</a></li>
         <li class="active"><a href="leave.aspx"><i class="fa fa-plane"></i>Leave Request</a></li>
     </ol>
-
     <div class="pageheader">
         <div class="pageicon"><span class="fa fa-plane"></span></div>
         <div class="pagetitle">
@@ -64,9 +63,8 @@
     <!--pageheader-->
 </asp:Content>
 <asp:Content ID="Content5" ContentPlaceHolderID="The_Body" runat="Server">
-
-    <%--<asp:UpdatePanel ID="upnlOne" runat="server" UpdateMode="Always">
-        <ContentTemplate>--%>
+    <asp:UpdatePanel ID="upnlOne" runat="server" UpdateMode="Always">
+        <ContentTemplate>
             <div class="box box-solid box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">Apply Leave</h3>
@@ -106,15 +104,13 @@
                     <asp:Button ID="btn_proceed" CssClass="btn btn-primary pull-right" runat="server" Text="Proceed" OnClick="btn_proceed_Click" ValidationGroup="Proceed" /><%--CausesValidation="False" --%>
                 </div>
             </div>
-
             <div class="box box-solid box-primary" id="pnlLeaveBox">
                 <div class="box-header with-border">
                     <h3 class="box-title">Select Leave Type for each day</h3>
                 </div>
                 <div class="box-body">
                     <div class="box-body">
-                        <asp:GridView ID="gvLeaveDetails" runat="server" CssClass="table table-bordered table-hover Datatable" OnRowDataBound="gvLeaveDetails_RowDataBound" AutoGenerateColumns="false">
-
+                        <asp:GridView ID="gvLeaveDetails" runat="server" CssClass="table table-bordered table-hover datatable" OnRowDataBound="gvLeaveDetails_RowDataBound" AutoGenerateColumns="false">
                             <Columns>
                                 <asp:BoundField DataField="Date" HeaderText="Date" HeaderStyle-CssClass="mid"></asp:BoundField>
                                 <asp:BoundField DataField="day" HeaderText="day" HeaderStyle-CssClass="mid"></asp:BoundField>
@@ -133,7 +129,6 @@
                     <asp:Button ID="btn_submit" CssClass="btn btn-primary pull-right" runat="server" Text="Submit" OnClick="btn_submit_Click" CausesValidation="False" />
                 </div>
             </div>
-
             <div class="box box-solid box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">Leave Log</h3>
@@ -164,7 +159,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="modal" id="modal-danger">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -188,8 +182,8 @@
                 </div>
                 <!-- /.modal-dialog -->
             </div>
-        <%--</ContentTemplate>
-    </asp:UpdatePanel>--%>
+        </ContentTemplate>
+    </asp:UpdatePanel>
 </asp:Content>
 <asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">    
     <script src="CDN/toastr/toastr.min.js" type="text/javascript"></script>
@@ -296,7 +290,7 @@
 
                 //alert("startdate: "+startdate + " enddate: "+ enddate);
             });
-            $('.Datatable').DataTable({
+            $('.datatable').DataTable({
                 "sPaginationType": "full_numbers",
                 "lengthMenu": [5, 10, 25, 50, 75, 100],
                 "aaSortingFixed": [[0, 'asc']],
