@@ -1,33 +1,17 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="404.aspx.cs" Inherits="_404" %>
 
-
+<asp:Content ID="One" ContentPlaceHolderID="pageheader" runat="server"></asp:Content>
 <asp:Content ID="Content5" ContentPlaceHolderID="The_Body" runat="Server">
     <!-- Main content -->
     <section class="content">
         <div class="error-page">
-            <h2 class="headline text-yellow">404</h2>
-
-            <div class="error-content">
-                <h3><i class="fa fa-warning text-yellow"></i>Oops! Page not found.</h3>
-
+            <h2 class="headline text-yellow"><i class="fa fa-user-secret text-yellow"></i>Error Detected!</h2>
+            <div class="padding-10">    
+                <h3>Congratulations! You have found an Error Condition.</h3>
+                <p>Thank you for being our Error Detective.</p>
                 <p>
-                    We could not find the page you were looking for.
-            Meanwhile, you may <a href="../../index.html">return to dashboard</a> or try using the search form.
-         
+                    Please help us resolve it by taking a screenshot and mailing it to <a href="mailto:iaccess_support@sitel.com">iaccess_support@sitel.com</a>
                 </p>
-
-                <form class="search-form">
-                    <div class="input-group">
-                        <input type="text" name="search" class="form-control" placeholder="Search">
-
-                        <div class="input-group-btn">
-                            <button type="submit" name="submit" class="btn btn-warning btn-flat">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- /.input-group -->
-                </form>
             </div>
             <!-- /.error-content -->
         </div>
