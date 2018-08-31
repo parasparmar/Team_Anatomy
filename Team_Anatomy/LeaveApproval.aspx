@@ -54,7 +54,6 @@
         display:none;
         }*/
     </style>
-
 </asp:Content>
 
 <asp:Content ID="Content4" ContentPlaceHolderID="pageheader" runat="Server" ChildrenAsTriggers="false">
@@ -144,11 +143,9 @@
                         </div>
                     </div>
                 </div>
-
             </div>
             <!--tabcontent-->
             </div>
-
             <div class="modal" id="modal-details">
                 <div class="modal-dialog">
                     <asp:UpdatePanel ID="upModal" UpdateMode="Conditional" runat="server">
@@ -204,13 +201,15 @@
             <asp:AsyncPostBackTrigger ControlID="ddlRepManager" EventName="SelectedIndexChanged" />
             <asp:AsyncPostBackTrigger ControlID="ddlActionFilter" EventName="SelectedIndexChanged" />
             <asp:AsyncPostBackTrigger ControlID="ddlEmployee" EventName="SelectedIndexChanged" />
+            <asp:PostBackTrigger ControlID="btn_appr" />
+            <asp:PostBackTrigger ControlID="btn_dec" />
         </Triggers>
     </asp:UpdatePanel>
 </asp:Content>
 
 <asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">
-    <link href="CDN/excel-bootstrap-table-filter/excel-bootstrap-table-filter-style.css" rel="stylesheet" />
-    <script src="CDN/excel-bootstrap-table-filter/excel-bootstrap-table-filter-bundle.min.js"></script>
+    <link href="Sitel/cdn/excel-bootstrap-table-filter/excel-bootstrap-table-filter-style.css" rel="stylesheet" />
+    <script src="Sitel/cdn/excel-bootstrap-table-filter/excel-bootstrap-table-filter-bundle.min.js"></script>
 
     <script type="text/javascript">
         $(function () {
@@ -243,11 +242,11 @@
             $('.modal-backdrop').hide();
         }
         function hideModal() {
-            
+
             $('#modal-details').modal('hide');//#modal-details
             $('.modal-backdrop').hide();
             $('.modal-backdrop').hide();
-            
+
         }
         function hideModalBack() {
             $('.modal-backdrop').hide();
@@ -262,7 +261,7 @@
             $("#gvApprLeaveLog tbody tr").each(function () {
                 $(this).find("td:nth-child(12)").hide();
                 $(this).find("td:nth-child(9)").hide();
-            });           
+            });
             $('.datatable').excelTableFilter({
                 columnSelector: '.apply-filter'
             });

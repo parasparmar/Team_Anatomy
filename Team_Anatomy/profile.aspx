@@ -8,10 +8,6 @@
         }
     </style>
 </asp:Content>
-<%--<asp:Content ID="Content2" ContentPlaceHolderID="headmenu" runat="Server">
-</asp:Content>--%>
-<%--<asp:Content ID="Content3" ContentPlaceHolderID="leftmenu" runat="Server">
-</asp:Content>--%>
 <asp:Content ID="Content4" ContentPlaceHolderID="pageheader" runat="Server">
     <ol class="breadcrumb">
         <li><a href="index.aspx"><i class="iconfa-home"></i>Home</a></li>
@@ -33,7 +29,7 @@
             <!-- Profile Image -->
             <div class="box box-primary">
                 <div class="box-body box-profile">
-                    <asp:Image ID="imgbtnUserImage" CssClass="profile-user-img img-responsive img-circle cursor" runat="server" />
+                    <asp:Image ID="imgbtnUserImage" CssClass="profile-user-img img-responsive img-circle cursor" style="height:auto" runat="server" />
                     <h3 class="profile-username text-center">
                         <asp:Label ID="lblName" runat="server"></asp:Label>
                     </h3>

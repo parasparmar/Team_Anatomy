@@ -1,19 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Data;
+using System.Data.SqlClient;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Data;
-using System.Configuration;
-using System.Data.SqlClient;
-//using System.Globalization;
-using System.Security;
-using System.Security.Principal;
-using System.Net;
-using System.Web.Services;
-using System.Web.Script.Serialization;
-//using System.Threading.Tasks;
+
 
 public partial class LeaveApproval : System.Web.UI.Page
 {
@@ -50,19 +40,15 @@ public partial class LeaveApproval : System.Web.UI.Page
             }
             else
             {
-
                 ViewState["PreviousPageUrl"] = Page.Request.Url.ToString();
             }
-
             Response.Redirect(redirect2URL, false);
         }
 
         Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
         title.Text = "Leave Approval";
-
         if (!IsPostBack)
-        {
-            //MyEmpID = 923563;
+        {            
             fillddlRepManager();
         }
     }
@@ -77,12 +63,8 @@ public partial class LeaveApproval : System.Web.UI.Page
         ddlRepManager.DataTextField = "MgrName";
         ddlRepManager.DataValueField = "MgrID";
         ddlRepManager.DataBind();
-
-
         DropDownList v = (DropDownList)PageExtensionMethods.FindControlRecursive(Master, "ddlRepManager");
-
         v.SelectedIndex = v.Items.IndexOf(v.Items.FindByValue(MyEmpID.ToString()));
-
         FillLeaveRequests(Convert.ToInt32(MyEmpID.ToString()));
     }
 
@@ -117,22 +99,13 @@ public partial class LeaveApproval : System.Web.UI.Page
         lblEmployeeID.Text = employeeid;
         string employeeName = row.Cells[1].Text.ToString();
         lblEmployeeName.Text = employeeName;
-        String Sql = @"select 
-                        CONVERT(VARCHAR
-                        , A.[LeaveDate],106) as LeaveDate
-                        , DATENAME(weekday,A.[LeaveDate]) as LeaveDay
-                        , B.[LeaveText]
-                        , E.ShiftCode as Roster 
-                    from [WFMP].[tbl_datewise_leave] A 
-                    inner join [WFMP].[tblLeaveType] B 
-                    on A.[leave_type] = B.[LeaveID] 
-                    inner join [WFMP].[tbl_leave_request] C on A.leave_batch_id=C.id 
-                    left join [WFMP].[RosterMst] D on C.ecn=D.EmpCode and A.LeaveDate= D.rDate 
-                    left join [WFMP].[tblShiftCode] E on E.ShiftID = D.ShiftID";
-        Sql += " WHERE [leave_batch_id] = '" + leaveid + "'";
+
+        String Sql = "WFMP.getEmployeeLeaveRoster";
         SqlCommand cmd = new SqlCommand(Sql);
-        DataTable dt1 = my.GetData(Sql);
+        cmd.Parameters.AddWithValue("@LeaveId", leaveid);
+        DataTable dt1 = my.GetDataTableViaProcedure(ref cmd);
         cmd.Dispose();
+
         strSQL = "[WFMP].[fillModal]";
         cmd = new SqlCommand(strSQL);
         cmd.CommandType = CommandType.StoredProcedure;
