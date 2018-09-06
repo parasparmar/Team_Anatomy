@@ -41,7 +41,7 @@
   <![endif]-->
 
     <!-- Google Font -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <link href="Sitel/fonts/css.css" rel="stylesheet" />
 
 
     <style type="text/css">
@@ -551,8 +551,7 @@
                     window.close();
                 });
             </script>
-            <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
-
+            
             <asp:ContentPlaceHolder ID="below_footer" runat="server">
             </asp:ContentPlaceHolder>
         </form>

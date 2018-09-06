@@ -181,7 +181,7 @@
                                                     <asp:DropDownList ID="ddlSubSkillSet" runat="server"
                                                         CssClass="form-control select2" Style="width: 100%;"
                                                         OnSelectedIndexChanged="ddlSubSkillSet_SelectedIndexChanged"
-                                                         AutoPostBack="true">
+                                                        AutoPostBack="true">
                                                     </asp:DropDownList>
                                                 </div>
                                             </div>
@@ -215,10 +215,10 @@
                                                             <asp:BoundField DataField="RepMgr" HeaderText="Current Reporting Manager" />
                                                             <asp:BoundField DataField="Function" HeaderText="Function" />
                                                             <asp:BoundField DataField="Department" HeaderText="Department" />
-                                                            <asp:BoundField DataField="LOB" HeaderText="Line of Business" />     
+                                                            <asp:BoundField DataField="LOB" HeaderText="Line of Business" />
                                                             <asp:BoundField DataField="Skillset" HeaderText="Skill Set" />
-                                                            <asp:BoundField DataField="Subskillset" HeaderText="Sub-Skill Set" />                                                            
-                                                            
+                                                            <asp:BoundField DataField="Subskillset" HeaderText="Sub-Skill Set" />
+
                                                         </Columns>
                                                         <EmptyDataTemplate>
                                                             <h5>No Team Members found.</h5>
@@ -364,6 +364,7 @@
             $('#tbEffectiveDate').datepicker({
                 dateFormat: 'dd-mm-yy',
                 todayHighlight: true,
+                orientation:"bottom",
                 //Default: true,
                 //defaultDate: new Date(),//'now',
                 //defaultViewDate://'now',// or 'now'
@@ -372,7 +373,7 @@
 
             //Attach Events to 1. CheckAll, 2. TeamList, 3. Effective date and 4. Submit Button 
 
-           // $("#btnSubmit").attr('disabled', 'disabled');
+            // $("#btnSubmit").attr('disabled', 'disabled');
 
             //1. CheckAll : If CheckAll is checked, then check all employees in the TeamList except the ones who  are disabled.
             $("#cbCheckAll").change(function () {
@@ -395,7 +396,7 @@
 
             //2. TeamList : If even one id in TeamList is checked then isTeamListChecked = true.
             $('[id*="cbMyTeamListID"]').change(function () {
-                ToggleButton(checkIfTeamListHasBeenPopulated(),checkIfTeamListHasAtLeastOneCheck(), checkIfEffectiveDateValid());
+                ToggleButton(checkIfTeamListHasBeenPopulated(), checkIfTeamListHasAtLeastOneCheck(), checkIfEffectiveDateValid());
             });
 
             //3. Effective date : If tbEffectiveDate is filled then isEffectiveDateValid = true.
@@ -434,14 +435,14 @@
             }
             function checkIfTeamListHasBeenPopulated() {
                 var LeftGVRowCount = $("#gv_LeftHandSideTeamList >tbody >tr").length;
-               
+
                 var RightGVRowCount = $("#gv_RightHandSideTeamList >tbody >tr").length;
-               
+
                 if (LeftGVRowCount > 0 && RightGVRowCount > 0) {
-                
+
                     return true;
                 } else {
-                 
+
                     return false;
                 }
 

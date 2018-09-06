@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="LeaveApproval.aspx.cs" Inherits="LeaveApproval" %>
+﻿<%@ Page Title="Leave Approval" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="LeaveApproval.aspx.cs" Inherits="LeaveApproval" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="headPlaceHolder" runat="Server">
     <style>
@@ -73,8 +73,8 @@
 </asp:Content>
 
 <asp:Content ID="Content5" ContentPlaceHolderID="The_Body" runat="Server">
-    <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
-        <ContentTemplate>
+    <%--<asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
+        <ContentTemplate>--%>
             <div class="row">
                 <div class="col-md-12">
                     <!-- Custom Tabs -->
@@ -85,7 +85,7 @@
                         <div class="box-body">
                             <div class="row">
                                 <asp:Panel CssClass="col-md-12" ID="pnlAmIRvwMgr" Visible="true" runat="server">
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label for="ddlRepManager" aria-label="Reporting Manager List">Reporting Manager List</label>
                                         <div class="form-group">
                                             <asp:DropDownList ID="ddlRepManager" runat="server" CssClass="col-md-6 form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlRepManager_SelectedIndexChanged">
@@ -93,26 +93,42 @@
                                             </asp:DropDownList>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <label for="ddlActionFilter" aria-label="Filter Leaves Per Stage">Filter Leaves Per Stage</label>
+                                    <div class="col-md-2">
+                                        <label id="lblLevel1Filter" for="ddlLevel1Filter" aria-label="Filter Leaves Per Stage">Filter Leaves : Level 1</label>
                                         <div class="form-group">
-                                            <asp:DropDownList ID="ddlActionFilter" runat="server" CssClass="col-md-6 form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlActionFilter_SelectedIndexChanged">
+                                            <asp:DropDownList ID="ddlLevel1Filter" runat="server" CssClass="col-md-6 form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlLevel1Filter_SelectedIndexChanged">
                                                 <asp:ListItem Value="1" Text="All" runat="server"></asp:ListItem>
                                                 <asp:ListItem Value="2" Text="Level1 Pending" runat="server"></asp:ListItem>
-                                                <asp:ListItem Value="3" Text="Level2 Pending" runat="server"></asp:ListItem>
                                                 <asp:ListItem Value="4" Text="Level1 Actioned" runat="server"></asp:ListItem>
+                                            </asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label id="lblLevel2Filter"  for="ddlLevel2Filter" aria-label="Filter Leaves Per Stage">Filter Leaves : Level 2</label>
+                                        <div class="form-group">
+                                            <asp:DropDownList ID="ddlLevel2Filter" runat="server" CssClass="col-md-6 form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlLevel2Filter_SelectedIndexChanged">
+                                                <asp:ListItem Value="1" Text="All" runat="server"></asp:ListItem>
+                                                <asp:ListItem Value="3" Text="Level2 Pending" runat="server"></asp:ListItem>
                                                 <asp:ListItem Value="5" Text="Level2 Actioned" runat="server"></asp:ListItem>
                                             </asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <label for="ddlEmployee" aria-label="Filter Employees At This Stage">Filter Employees At This Stage</label>
+                                        <label id="lblEmployee"  for="ddlEmployee" aria-label="Filter Employees At This Stage">Filter Employees</label>
                                         <div class="form-group">
                                             <asp:DropDownList ID="ddlEmployee" runat="server" CssClass="col-md-6 form-control select2" Style="width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlEmployee_SelectedIndexChanged">
+                                                <asp:ListItem Value="1" Text="All" runat="server"></asp:ListItem>
                                             </asp:DropDownList>
                                         </div>
                                     </div>
+                                    <div class="col-md-2">
+                                        <label for="btnReset" aria-label="Reset Filters">Reset Filters</label>
+                                        <div class="form-group">
+                                            <asp:Button ID="btnReset" CssClass="btn btn-primary" runat="server" Text="Reset" OnClick="btnReset_Click" />
+                                        </div>
+                                    </div>
                                     <!-- ddlRepManager-->
+                                    <asp:HiddenField ID="hRowFilter" runat="server" Value='<%#rowFilter%>' />
                                 </asp:Panel>
                                 <!-- pnlAmIRvwMgr-->
                                 <div class="col-md-12">
@@ -145,7 +161,7 @@
                 </div>
             </div>
             <!--tabcontent-->
-            </div>
+           
             <div class="modal" id="modal-details">
                 <div class="modal-dialog">
                     <asp:UpdatePanel ID="upModal" UpdateMode="Conditional" runat="server">
@@ -196,15 +212,14 @@
                 </div>
                 <!-- /.modal-dialog -->
             </div>
-        </ContentTemplate>
+        <%--</ContentTemplate>
         <Triggers>
             <asp:AsyncPostBackTrigger ControlID="ddlRepManager" EventName="SelectedIndexChanged" />
-            <asp:AsyncPostBackTrigger ControlID="ddlActionFilter" EventName="SelectedIndexChanged" />
             <asp:AsyncPostBackTrigger ControlID="ddlEmployee" EventName="SelectedIndexChanged" />
             <asp:PostBackTrigger ControlID="btn_appr" />
             <asp:PostBackTrigger ControlID="btn_dec" />
         </Triggers>
-    </asp:UpdatePanel>
+    </asp:UpdatePanel>--%>
 </asp:Content>
 
 <asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">

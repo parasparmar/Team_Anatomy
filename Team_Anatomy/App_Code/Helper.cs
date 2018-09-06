@@ -9,10 +9,12 @@ using System.Web;
 using CD;
 using System.Collections.Specialized;
 using System.Text.RegularExpressions;
+using System.Data.Linq;
 
 public class Helper
 {
     public Helper() { }
+    
     private SqlConnection cn { get; set; }
     public string getConnectionString()
     {

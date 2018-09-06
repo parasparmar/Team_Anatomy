@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Data;
+using System.Data.Linq;
 using System.Data.SqlClient;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+
+
 
 
 public partial class LeaveApproval : System.Web.UI.Page
@@ -11,9 +14,10 @@ public partial class LeaveApproval : System.Web.UI.Page
     Helper my;
     string strSQL;
     int MyEmpID;
-    public DataTable dtgvApprLeaveLog { get; set; }
+    public DataTable dtLeaveLog { get; set; }
+    public string rowFilter { get; set; }
+    public bool isFiltered { get; set; }
     EmailSender Email = new EmailSender();
-
     protected void Page_Load(object sender, EventArgs e)
     {
         my = new Helper();
@@ -28,7 +32,6 @@ public partial class LeaveApproval : System.Web.UI.Page
             {
                 MyEmpID = Convert.ToInt32(dt.Rows[0]["Employee_Id"].ToString());
             }
-
         }
         catch (Exception Ex)
         {
@@ -48,11 +51,10 @@ public partial class LeaveApproval : System.Web.UI.Page
         Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
         title.Text = "Leave Approval";
         if (!IsPostBack)
-        {            
+        {
             fillddlRepManager();
         }
     }
-
     private void fillddlRepManager()
     {
         strSQL = "WFMP.GetRepRevMgr";
@@ -67,24 +69,38 @@ public partial class LeaveApproval : System.Web.UI.Page
         v.SelectedIndex = v.Items.IndexOf(v.Items.FindByValue(MyEmpID.ToString()));
         FillLeaveRequests(Convert.ToInt32(MyEmpID.ToString()));
     }
-
     protected void ddlRepManager_SelectedIndexChanged(object sender, EventArgs e)
     {
         FillLeaveRequests(Convert.ToInt32(ddlRepManager.SelectedValue.ToString()));
-        ddlActionFilter.ClearSelection();
-
+        ddlLevel1Filter.ClearSelection();
     }
-
-    public void FillLeaveRequests(int xEmpCode)
+    public void FillLeaveRequests(int EmpCode)
     {
-        strSQL = "WFMP.GetEmployeeLeaveRequestes";
-        SqlCommand cmd = new SqlCommand(strSQL);
-        cmd.Parameters.AddWithValue("@EmpCode", xEmpCode);
-        dtgvApprLeaveLog = my.GetDataTableViaProcedure(ref cmd);
-        gvApprLeaveLog.DataSource = dtgvApprLeaveLog;
-        gvApprLeaveLog.DataBind();
-    }
+        if (isFiltered == false)
+        {
+            strSQL = "WFMP.GetEmployeeLeaveRequestes";
+            SqlCommand cmd = new SqlCommand(strSQL);
+            cmd.Parameters.AddWithValue("@EmpCode", EmpCode);
+            dtLeaveLog = my.GetDataTableViaProcedure(ref cmd);
+            gvApprLeaveLog.DataSource = dtLeaveLog;
+            gvApprLeaveLog.DataBind();
 
+            DataView view = new DataView(dtLeaveLog);
+            view.RowFilter = rowFilter;
+            view.RowStateFilter = DataViewRowState.CurrentRows;
+
+            ddlEmployee.DataSource = view.ToTable(true, "ECN", "NAME");
+            ddlEmployee.DataValueField = "ECN";
+            ddlEmployee.DataTextField = "NAME";
+            ddlEmployee.DataBind();
+            ddlEmployee.Items.Insert(0, new ListItem("All", "1"));
+        }
+        else
+        {
+
+            applyLevelFilter();
+        }
+    }
     protected void btn_detail_Click(object sender, EventArgs e)
     {
 
@@ -159,7 +175,6 @@ public partial class LeaveApproval : System.Web.UI.Page
             gv.BorderWidth = Unit.Pixel(1);
         }
     }
-
     protected void btn_appr_Click(object sender, EventArgs e)
     {
 
@@ -363,95 +378,138 @@ public partial class LeaveApproval : System.Web.UI.Page
 
         //ScriptManager.RegisterStartupScript(this, this.GetType(), "dtblAdd2", "dtbl();", true);
     }
-
-    protected void ddlActionFilter_SelectedIndexChanged(object sender, EventArgs e)
+    private void applyLevelFilter()
     {
-        string levelstatus = ddlActionFilter.SelectedValue.ToString();
 
-        strSQL = "WFMP.GetEmployeeLeaveRequestes";
+        ddlLevel1Filter.SelectedValue = (Session["ddlLevel1Filter"] != null) ? Session["ddlLevel1Filter"].ToString() : "1";
+        ddlLevel2Filter.SelectedValue = (Session["ddlLevel2Filter"] != null) ? Session["ddlLevel2Filter"].ToString() : "1";
+        ddlEmployee.SelectedValue = (Session["ddlEmployee"] != null) ? Session["ddlEmployee"].ToString() : "1";
 
-        SqlCommand cmd = new SqlCommand(strSQL);
-        cmd.Parameters.AddWithValue("@EmpCode", ddlRepManager.SelectedValue.ToString());
-        dtgvApprLeaveLog = my.GetDataTableViaProcedure(ref cmd);
-        DataView view = new DataView(dtgvApprLeaveLog);
-
-        switch (levelstatus)
+        rowFilter = string.Empty;
+        DropDownList[] ddls = { ddlLevel1Filter, ddlLevel2Filter, ddlEmployee };
+        foreach (DropDownList d in ddls)
         {
-            case "1":
-                break;
+            if (rowFilter == string.Empty)
+            {
+                rowFilter = getRowFilter(d.SelectedValue);
 
-            case "2":
-                view.RowFilter = "Level1_Action is null";
-                break;
-
-            case "3":
-                view.RowFilter = "Level2_Action ='Pending'";
-                break;
-
-            case "4":
-                view.RowFilter = "Level1_Action is not null";
-                break;
-
-            case "5":
-                view.RowFilter = "Level2_Action <>'Pending'";
-                break;
+            }
+            else
+            {
+                if (d.SelectedIndex > 0)
+                {
+                    if (getRowFilter(d.SelectedValue) != string.Empty)
+                    {
+                        rowFilter += " and " + getRowFilter(d.SelectedValue);
+                    }
+                }
+            }
         }
 
+        strSQL = "WFMP.GetEmployeeLeaveRequestes";
+        SqlCommand cmd = new SqlCommand(strSQL);
+        cmd.Parameters.AddWithValue("@EmpCode", ddlRepManager.SelectedValue.ToString());
+        dtLeaveLog = my.GetDataTableViaProcedure(ref cmd);
+        DataView view = new DataView(dtLeaveLog);
+        view.RowFilter = rowFilter;
         view.RowStateFilter = DataViewRowState.CurrentRows;
         gvApprLeaveLog.DataSource = view;
         gvApprLeaveLog.DataBind();
 
-        ddlEmployee.DataSource = view.ToTable(true, "ECN", "NAME");
+        string EmpCode = string.Empty;
+        if (ddlEmployee.SelectedIndex > 0 && isFiltered)
+        {
+            EmpCode = ddlEmployee.SelectedValue;
+        }
+        //ddlEmployee.ClearSelection();
+        ddlEmployee.Items.Clear();
+        DataTable dtTemp = view.ToTable(true, "ECN", "NAME");
+        DataRow r = dtTemp.NewRow();
+        r["ECN"] = "1";
+        r["NAME"] = "All";
+        dtTemp.Rows.InsertAt(r, 0);
+        ddlEmployee.DataSource = dtTemp;
+
         ddlEmployee.DataValueField = "ECN";
         ddlEmployee.DataTextField = "NAME";
         ddlEmployee.DataBind();
-        ddlEmployee.Items.Insert(0, new ListItem("All", "0"));
-    }
+        //ddlEmployee.Items.Insert(0, new ListItem("All", "1"));
 
-    protected void ddlEmployee_SelectedIndexChanged(object sender, EventArgs e)
-    {
-
-        int ECN = ddlEmployee.SelectedValue.ToInt32();
-
-        string levelstatus = ddlActionFilter.SelectedValue.ToString();
-        strSQL = "WFMP.GetEmployeeLeaveRequestes";
-        SqlCommand cmd = new SqlCommand(strSQL);
-        cmd.Parameters.AddWithValue("@EmpCode", ddlRepManager.SelectedValue.ToString());
-        dtgvApprLeaveLog = my.GetDataTableViaProcedure(ref cmd);
-
-        if (ECN > 0)
+        if (EmpCode != string.Empty && isFiltered)
         {
-            DataView view = new DataView(dtgvApprLeaveLog);
-            string RowFilter = string.Empty;
-
-            switch (levelstatus)
-            {
-                case "1":
-                    break;
-
-                case "2":
-                    view.RowFilter = "ECN=" + ECN + " and Level1_Action is null";
-                    break;
-
-                case "3":
-                    view.RowFilter = "ECN=" + ECN + " and Level2_Action ='Pending'";
-                    break;
-
-                case "4":
-                    view.RowFilter = "ECN=" + ECN + " and Level1_Action is not null";
-                    break;
-
-                case "5":
-                    view.RowFilter = "ECN=" + ECN + " and Level2_Action <>'Pending'";
-                    break;
-            }
-            view.RowStateFilter = DataViewRowState.CurrentRows;
-            gvApprLeaveLog.DataSource = view;
+            ddlEmployee.SelectedValue = EmpCode;
         }
         else
         {
-            gvApprLeaveLog.DataSource = dtgvApprLeaveLog;
+            ddlEmployee.SelectedValue = "1";
         }
-        gvApprLeaveLog.DataBind();
+        ddlEmployee.DataBind();
+    }
+    private string getRowFilter(string i)
+    {
+        string r = string.Empty;
+        switch (i)
+        {
+            case "0":
+                r = string.Empty;
+                break;
+            case "1":
+                r = string.Empty;
+                break;
+            case "2":
+                r = "Level1_Action is null";
+                break;
+            case "3":
+                r = "Level2_Action ='Pending'";
+                break;
+            case "4":
+                r = "Level1_Action is not null";
+                break;
+            case "5":
+                r = "Level2_Action <>'Pending'";
+                break;
+            default:
+                r = "ECN = " + i.ToString();
+                break;
+        }
+
+        return r;
+    }
+    protected void ddlLevel1Filter_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (ddlLevel1Filter.SelectedValue == "1") { isFiltered = false; } else { isFiltered = true; }
+        Session["isFiltered"] = isFiltered;
+        Session["ddlLevel1Filter"] = ddlLevel1Filter.SelectedValue;
+        applyLevelFilter();
+    }
+    protected void ddlLevel2Filter_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (ddlLevel2Filter.SelectedValue == "1") { isFiltered = false; } else { isFiltered = true; }
+        Session["isFiltered"] = isFiltered;
+        Session["ddlLevel2Filter"] = ddlLevel2Filter.SelectedValue;
+        applyLevelFilter();
+    }
+    protected void ddlEmployee_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (ddlEmployee.SelectedValue == "1") { isFiltered = false; } else { isFiltered = true; }
+        Session["isFiltered"] = isFiltered;
+        Session["ddlEmployee"] = ddlEmployee.SelectedValue;
+        applyLevelFilter();
+    }
+    protected void btnReset_Click(object sender, EventArgs e)
+    {
+        isFiltered = false;
+        Session["isFiltered"] = isFiltered;
+        Session["ddlLevel1Filter"] = 1;
+        Session["ddlLevel2Filter"] = 1;
+        Session["ddlEmployee"] = 1;
+        if (ddlLevel1Filter.SelectedIndex > 0 || ddlLevel2Filter.SelectedIndex > 0 || ddlEmployee.SelectedIndex > 0)
+        {
+            ddlLevel1Filter.SelectedValue = "1";
+            ddlLevel2Filter.SelectedValue = "1";
+            ddlEmployee.SelectedValue = "1";
+            applyLevelFilter();
+        }
+        
     }
 }
