@@ -39,10 +39,10 @@ public partial class index : System.Web.UI.Page
         DataTable dt = new DataTable();
         if (myID != "IDNotFound")
         {
-            myID = "mchau006"; // pgora001 atike001 Pdsou014 vchoh001 mchau006 ykand001// RTA Vinod Chauhan sbodh001 vfern016  fjaya001 smerc021  vpere018 Pdsou014  nrodr058  mshai066
+            //myID = "mchau006"; // atike001 Pdsou014 vchoh001 mchau006 ykand001// RTA Vinod Chauhan sbodh001 vfern016  fjaya001 smerc021  vpere018 Pdsou014  nrodr058  mshai066
 
             SqlCommand cmd = new SqlCommand("WFMP.getEmployeeData");
-            //myID = "pgora001";//to login as other userk slall002  rshar030 nchan016 utiwa002  aansa012 paloz001 pjite001 g.001 adube010 utiwa002 avish001 vshir001
+            //myID = "ctirt002";//to login as other userk slall002  rshar030 nchan016 utiwa002  aansa012 paloz001 pjite001 g.001 adube010 utiwa002 avish001 vshir001
             cmd.Parameters.AddWithValue("@NT_ID", myID);
 
             try
@@ -52,7 +52,7 @@ public partial class index : System.Web.UI.Page
                 {
 
                     Session["dtEmp"] = dt;
-                    Response.Redirect("leaveapproval.aspx", false);
+                    Response.Redirect("profile.aspx", false);
                 }
                 else
                 {

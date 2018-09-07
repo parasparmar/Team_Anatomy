@@ -52,7 +52,7 @@ public partial class movement : System.Web.UI.Page
     protected void enableMovements(int EmpID)
     {
         Boolean isReportingManager = false;
-        string strSQL = "SELECT [IsReportingManager] FROM [CWFM_Umang].[WFMP].[tblMaster] where Employee_ID = " + EmpID;
+        string strSQL = "SELECT IsReportingManager FROM WFMP.tblMaster where Employee_ID = " + EmpID;
         using (SqlConnection cn = new SqlConnection(my.getConnectionString()))
         {
             cn.Open();
@@ -291,7 +291,7 @@ public partial class movement : System.Web.UI.Page
         if (dtEmp != null && dtEmp.Rows.Count > 0)
         {
             GridView v = (GridView)Page.FindControlRecursive(gvTeamList);
-            v.DataSource = my.GetData("Exec [WFMP].[Transfer_TeamList] " + EmpCode);
+            v.DataSource = my.GetData("Exec WFMP.Transfer_TeamList " + EmpCode);
             v.DataBind();
         }
         else
@@ -303,7 +303,7 @@ public partial class movement : System.Web.UI.Page
     {
         if (dtEmp != null && dtEmp.Rows.Count > 0)
         {
-            gvTeamList.DataSource = my.GetData("Exec [WFMP].[Transfer_TeamList] " + EmpCode);
+            gvTeamList.DataSource = my.GetData("Exec WFMP.Transfer_TeamList " + EmpCode);
             gvTeamList.DataBind();
         }
         else
@@ -317,7 +317,7 @@ public partial class movement : System.Web.UI.Page
     {
         if (dtEmp.Rows.Count > 0)
         {
-            gvTeamList.DataSource = my.GetData("Exec [WFMP].[Transfer_DepartmentList] " + EmpCode);
+            gvTeamList.DataSource = my.GetData("Exec WFMP.Transfer_DepartmentList " + EmpCode);
             gvTeamList.DataBind();
         }
         else
