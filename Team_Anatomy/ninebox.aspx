@@ -325,7 +325,6 @@
         $(function () {
             pluginsInitializer();
             $('#progress').show();
-
             var EMPCODE = $('#lblEmpID').text();
             $('[class*="mgrChart"]').each(function () {
                 var id = $(this).prop('id');
@@ -342,7 +341,6 @@
                     fillSkillSetBubble(EMPCODE, id);
                 }
             });
-
         });
         function fillChart(EmpCode, Period) {
             var params = '{"EMPCODE":"' + EmpCode + '", "Period":"' + Period + '"}';
@@ -360,19 +358,45 @@
                             //// With Fixed Color palette
                             var xDataSets = [];
                             for (var i = 0; i < responseData.d.length; i++) {
+
+                                var SPI = parseFloat(responseData.d[i]["SPI"]);
+                                var spiCounter = 0;
                                 var myColor = fixedColorPalette(i);
                                 var headerTitle = responseData.d[i]["Name"].toString() + " : " + responseData.d[i]["EmpCode"].toString() + " : " + responseData.d[i]["Period"].toString();
-                                xDataSets[i] = {
-                                    label: headerTitle,
-                                    backgroundColor: myColor,
-                                    borderColor: myColor,
-                                    borderWidth: 1,
-                                    data: [{
-                                        x: responseData.d[i]["Competency"],
-                                        y: responseData.d[i]["Performance"],
-                                        r: responseData.d[i]["Radius"],
-                                    }],
-                                };
+
+                                
+                                if (SPI !== undefined && SPI !== NaN && SPI == 0) {
+                                    xDataSets[i] = {
+                                        label: headerTitle,
+                                        backgroundColor: myColor,
+                                        borderColor: myColor,
+                                        borderWidth: 1,
+                                        data: [{
+                                            x: responseData.d[i]["Competency"],
+                                            y: responseData.d[i]["Performance"],
+                                            r: responseData.d[i]["Radius"],
+                                        }],
+                                    };
+                                } else {
+                                    // SPI is 1 for New Joinees and 2 for Promotees.
+                                 
+                                    spiCounter++;
+                                    xDataSets[i] = {
+                                        label: headerTitle,
+                                        backgroundColor: myColor,
+                                        borderColor: myColor,
+                                        borderWidth: 1,
+                                        data: [{
+                                            // These are shifted to the bottom right corner of the Chart. x lies in [90-100]
+                                            x: (90 + responseData.d[i]["Competency"] / 10),
+                                            // y lies in [0-30]
+                                            y: (spiCounter + 0.3 * parseFloat(responseData.d[i]["Performance"])),
+                                            r: responseData.d[i]["Radius"],
+                                        }],
+                                    };
+                                }
+
+
                             }
                             CreateNineBoxChart(xDataSets);
                         }
@@ -421,7 +445,7 @@
                                     beginAtZero: true,
                                     min: 0,
                                     max: 100,
-                                    stepSize: 33.33,
+                                    stepSize: 30,
                                     maxTicksLimit: 4
                                 },
                                 scaleLabel: {
@@ -434,7 +458,7 @@
                                     beginAtZero: true,
                                     min: 0,
                                     max: 100,
-                                    stepSize: 33.33,
+                                    stepSize: 30,
                                     maxTicksLimit: 4
                                 },
                                 scaleLabel: {
@@ -637,9 +661,12 @@
                         } else {
                             $('#mdUserImage').attr('src', 'Sitel/user_images/unknownPerson.jpg');
                         }
-                        $('#mdEmpName').text(d[0].Name + " : " + EmpCode + " : " + Period);
+                        var SPI = d[0].SPI;
+                        if (SPI == "1") { SPI = "SPI"; }
+                        else if (SPI == "2") { SPI = "Recent Promotion"; }
+                        $('#mdEmpName').text(d[0].Name + " : " + EmpCode + " : " + Period + " : " + SPI);
                         $('#mdRepMgr').text("Reports to : " + d[0].RepMgr + " : " + d[0].RepMgrCode);
-
+                        
                         $('#spanPacman').text('Performance Rating : ' + d[0].PacManRating);
                         $('#spanTest').text('Test Score : ' + d[0].TestScore);
                         $('#spanCompetency').text('Competency Score: ' + d[0].CompetencyRating);

@@ -369,10 +369,14 @@
                         <ul class="sidebar-menu" data-widget="tree">
                             <%--<li class="header">MAIN NAVIGATION</li>--%>
                             <li>
-                                <%-- <a href="http://iaccess">--%>
-                                <asp:HyperLink ID="home" runat="server" Text="~IA/index.aspx">
-                                    <i class="fa fa-home"></i><span>iAccess</span></asp:HyperLink>
-                                <%--</a>--%>
+                                <a href="../IA/index.aspx">
+                                    <i class="fa fa-home"></i><span>iAccess</span>
+                                </a>
+                            </li>
+			    <li>
+                                <a href="../Feedback/Feedback_Main.asp">
+                                    <i class="fa fa-pencil-square-o"></i><span>Feedback</span>
+                                </a>
                             </li>
                             <li>
                                 <a href="profile.aspx">
@@ -420,23 +424,23 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="swap_p.aspx">
-                                    <i class="fa fa-exchange"></i><span>Shift Swaps</span>
-                                </a>
-                            </li>
-                            <li>
                                 <a href="../pacman/index.aspx">
                                     <i class="fa fa-dollar"></i><span>PACMAN</span>
                                 </a>
                             </li>
-                            <li>
+			    <li>
                                 <a href="IntervalTracker.aspx">
                                     <i class="fa fa-sliders"></i><span>Interval Tracker</span>
                                 </a>
                             </li>
-							<li>
+			    <li>
                                 <a href="ninebox.aspx">
-                                    <i class="fa fa-bar-chart"></i><span>Nine Box</span>
+                                    <i class="fa fa-bar-chart"></i><span>9 Box</span>
+                                </a>
+                            </li>
+				<li>
+                                <a href="inputpage.aspx">
+                                    <i class="fa fa-comment-o"></i><span>Kronos vs BO</span>
                                 </a>
                             </li>
                         </ul>

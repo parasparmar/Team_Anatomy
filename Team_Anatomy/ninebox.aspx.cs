@@ -16,7 +16,7 @@ public partial class ninebox : System.Web.UI.Page
     Helper my;
     private string strSQL { get; set; }
     private int MyEmpID { get; set; }
-    
+
     private int[] AuthorizedIDs = new int[6] { 755882, 931040, 923563, 918031, 1092308, 798904 };
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -45,7 +45,7 @@ public partial class ninebox : System.Web.UI.Page
         if (!IsPostBack)
         {
             FillddlPeriod();
-            ddlPeriod.SelectedIndex = 1;            
+            ddlPeriod.SelectedIndex = 1;
             FillTeamList9box(MyEmpID);
             if (AuthorizedIDs.Contains<int>(MyEmpID))
             {
@@ -130,8 +130,8 @@ public partial class ninebox : System.Web.UI.Page
                       Period = dr["Period"].ToString(),
                       Performance = dr["PERFORMANCE"].ToString(),
                       Competency = dr["COMPETENCY"].ToString(),
-                      Radius = dr["RADIUS"].ToString()
-
+                      Radius = dr["RADIUS"].ToString(),
+                      SPI = dr["SPI"].ToString()
                   }).ToList();
 
         return myJSON;
@@ -155,8 +155,8 @@ public partial class ninebox : System.Web.UI.Page
                       Period = dr["Period"].ToString(),
                       Performance = dr["PERFORMANCE"].ToString(),
                       Competency = dr["COMPETENCY"].ToString(),
-                      Radius = dr["RADIUS"].ToString()
-
+                      Radius = dr["RADIUS"].ToString(),
+                      SPI = dr["SPI"].ToString()
                   }).ToList();
 
         return myJSON;
@@ -171,6 +171,7 @@ public partial class ninebox : System.Web.UI.Page
         public string Performance { get; set; }
         public string Competency { get; set; }
         public string Radius { get; set; }
+        public string SPI { get; set; }
     }
     protected void ddlMgr_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -197,6 +198,7 @@ public partial class ninebox : System.Web.UI.Page
                       RepMgrCode = dr["RepMgrCode"].ToString(),
                       RepMgr = dr["RepMgr"].ToString(),
                       Period = dr["Period"].ToString(),
+                      SPI = dr["SPI"].ToString(),
                       PacManRating = dr["PacManRating"].ToString(),
                       TestScore = dr["TestScore"].ToString(),
                       CompetencyRating = dr["CompetencyRating"].ToString(),
@@ -240,6 +242,7 @@ public partial class ninebox : System.Web.UI.Page
         public string RepMgrCode { get; set; }
         public string RepMgr { get; set; }
         public string Period { get; set; }
+        public string SPI { get; set; }
         public string PacManRating { get; set; }
         public string TestScore { get; set; }
         public string CompetencyRating { get; set; }
@@ -250,6 +253,7 @@ public partial class ninebox : System.Web.UI.Page
         public string RTA { get; set; }
         public string Scheduling { get; set; }
         public string WFC { get; set; }
+
         public string Total { get; set; }
     }
     public class NineBoxCompetency

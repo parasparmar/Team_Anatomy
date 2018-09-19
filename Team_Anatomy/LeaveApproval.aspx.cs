@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Data;
-using System.Data.Linq;
 using System.Data.SqlClient;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
-
-
 
 public partial class LeaveApproval : System.Web.UI.Page
 {
@@ -47,7 +43,7 @@ public partial class LeaveApproval : System.Web.UI.Page
             }
             Response.Redirect(redirect2URL, false);
         }
-
+       
         Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
         title.Text = "Leave Approval";
         if (!IsPostBack)
@@ -65,8 +61,9 @@ public partial class LeaveApproval : System.Web.UI.Page
         ddlRepManager.DataTextField = "MgrName";
         ddlRepManager.DataValueField = "MgrID";
         ddlRepManager.DataBind();
-        DropDownList v = (DropDownList)PageExtensionMethods.FindControlRecursive(Master, "ddlRepManager");
-        v.SelectedIndex = v.Items.IndexOf(v.Items.FindByValue(MyEmpID.ToString()));
+        ddlRepManager.SelectedValue = MyEmpID.ToString();
+        //DropDownList v = (DropDownList)PageExtensionMethods.FindControlRecursive(Master, "ddlRepManager");
+        //v.SelectedIndex = v.Items.IndexOf(v.Items.FindByValue(MyEmpID.ToString()));
         FillLeaveRequests(Convert.ToInt32(MyEmpID.ToString()));
     }
     protected void ddlRepManager_SelectedIndexChanged(object sender, EventArgs e)
@@ -76,6 +73,11 @@ public partial class LeaveApproval : System.Web.UI.Page
     }
     public void FillLeaveRequests(int EmpCode)
     {
+        if (Session["isFiltered"] != null)
+        {
+            isFiltered = Session["isFiltered"].ToBool();
+        }
+        
         if (isFiltered == false)
         {
             strSQL = "WFMP.GetEmployeeLeaveRequestes";
@@ -97,7 +99,6 @@ public partial class LeaveApproval : System.Web.UI.Page
         }
         else
         {
-
             applyLevelFilter();
         }
     }
@@ -432,6 +433,7 @@ public partial class LeaveApproval : System.Web.UI.Page
 
         ddlEmployee.DataValueField = "ECN";
         ddlEmployee.DataTextField = "NAME";
+        ddlEmployee.SelectedValue = null;
         ddlEmployee.DataBind();
         //ddlEmployee.Items.Insert(0, new ListItem("All", "1"));
 
