@@ -147,6 +147,60 @@ public class Pivot
         return dt;
     }
 
+    public DataTable DateWisePivotData(string DataField, AggregateFunction Aggregate, string[] RowFields, string[] ColumnFields)
+    {
+        DataTable dt = new DataTable();
+        string Separator = ".";
+        var RowList = _SourceTable.DefaultView.ToTable(true, RowFields).AsEnumerable().ToList();
+        for (int index = RowFields.Count() - 1; index >= 0; index--)
+            RowList = RowList.OrderBy(x => x.Field<object>(RowFields[index])).ToList();
+        // Gets the list of columns .(dot) separated.
+        var ColList = (from x in _SourceTable.AsEnumerable()
+                       select new
+                       {
+                           Name = ColumnFields.Select(n => x.Field<object>(n))
+                           .Aggregate((a, b) => a += Separator + b.ToString())
+                       })
+                           .Distinct();
+                           //.OrderBy(m => m.Name);
+
+        //dt.Columns.Add(RowFields);
+        foreach (string s in RowFields)
+            dt.Columns.Add(s);
+
+        foreach (var col in ColList) {
+            string dtColName = col.Name.ToString().ToDateTime().ToString("dd-MMMM-YY");
+            dt.Columns.Add(col.Name.ToString());  // Cretes the result columns.//
+        }
+        
+
+        foreach (var RowName in RowList)
+        {
+            DataRow row = dt.NewRow();
+            string strFilter = string.Empty;
+
+            foreach (string Field in RowFields)
+            {
+                row[Field] = RowName[Field];
+                strFilter += " and " + Field + " = '" + RowName[Field].ToString() + "'";
+            }
+            strFilter = strFilter.Substring(5);
+
+            foreach (var col in ColList)
+            {
+                string filter = strFilter;
+                string[] strColValues = col.Name.ToString().Split(Separator.ToCharArray(), StringSplitOptions.None);
+                for (int i = 0; i < ColumnFields.Length; i++)
+                    filter += " and " + ColumnFields[i] + " = '" + strColValues[i] + "'";
+                row[col.Name.ToString()] = GetData(filter, DataField, Aggregate);
+            }
+            dt.Rows.Add(row);
+        }
+        return dt;
+    }
+
+
+
     /// <summary>
     /// Retrives the data for matching RowField value and ColumnFields values with Aggregate function applied on them.
     /// </summary>

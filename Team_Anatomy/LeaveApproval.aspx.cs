@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
+using System.Text.RegularExpressions;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 public partial class LeaveApproval : System.Web.UI.Page
 {
@@ -43,7 +47,7 @@ public partial class LeaveApproval : System.Web.UI.Page
             }
             Response.Redirect(redirect2URL, false);
         }
-       
+
         Literal title = (Literal)PageExtensionMethods.FindControlRecursive(Master, "ltlPageTitle");
         title.Text = "Leave Approval";
         if (!IsPostBack)
@@ -77,7 +81,7 @@ public partial class LeaveApproval : System.Web.UI.Page
         {
             isFiltered = Session["isFiltered"].ToBool();
         }
-        
+
         if (isFiltered == false)
         {
             strSQL = "WFMP.GetEmployeeLeaveRequestes";
@@ -512,6 +516,121 @@ public partial class LeaveApproval : System.Web.UI.Page
             ddlEmployee.SelectedValue = "1";
             applyLevelFilter();
         }
-        
+
+    }
+    private string replaceHTMLTags(string tx) {
+
+        //Replace <span class="badge">X</span> with Nothing.
+        tx = tx.Replace("<span class=\"badge\">X</span>", string.Empty);
+
+        //Replace <span class="badge">1</span> with "L1 Approval Pending"                        
+        tx = tx.Replace("<span class=\"badge\">1</span>", "L1 Approval Pending; ");
+
+        //Replace with <span class="badge">2</span> with "L2 Approval Pending"
+        tx = tx.Replace("<span class=\"badge\">2</span>", "L2 Approval Pending; ");
+
+        //If contains class="badge bg-green" then replace '<span data-toggle="tooltip" title="' by "L1 " + Approved by Taranjit  Singh on 05 Sep 2018 09:35:35:143" class="badge bg-green">1</span>  
+
+        if (tx.Contains("<span data-toggle=\"tooltip\" title=\""))
+        {
+            // <span data-toggle="tooltip" title=" and " class="badge bg-green">1</span> means L1Approved : and text in title.
+            if (tx.Contains("class=\"badge bg-green\">1</span>"))
+            {
+                tx = tx.Replace("<span data-toggle=\"tooltip\" title=\"", "L1 : ");
+                tx = tx.Replace("\" class=\"badge bg-green\">1</span>", ";");
+            }
+            else if (tx.Contains("class=\"badge bg-red\">1</span>"))
+            {
+                // L1Declined
+                tx = tx.Replace("<span data-toggle=\"tooltip\" title=\"", "L1 : ");
+                tx = tx.Replace("\" class=\"badge bg-red\">1</span>", ";");
+            }
+            // <span data-toggle="tooltip" title=" and " class="badge bg-green">2</span> means L2Approved : and text in title.
+            if (tx.Contains("class=\"badge bg-green\">2</span>"))
+            {
+                tx = tx.Replace("<span data-toggle=\"tooltip\" title=\"", "L2 : ");
+                tx = tx.Replace("\" class=\"badge bg-green\">2</span>", ";");
+            }
+            else if (tx.Contains("class=\"badge bg-red\">2</span>"))
+            {
+                // L2Declined
+                tx = tx.Replace("<span data-toggle=\"tooltip\" title=\"", "L2 : ");
+                tx = tx.Replace("\" class=\"badge bg-red\">2</span>", ";");
+            }
+        }
+        return tx;
+    }
+    protected void btnDownloadFilteredData_Click(object sender, EventArgs e)
+    {
+        DataTable dt = new DataTable();
+        foreach (DataControlField col in gvApprLeaveLog.Columns)
+        {
+            dt.Columns.Add(col.HeaderText.ToString());
+        }
+        string tx = string.Empty;
+
+        foreach (GridViewRow row in gvApprLeaveLog.Rows)
+        {
+            DataRow dr = dt.NewRow();
+            for (int i = 0; i < gvApprLeaveLog.Columns.Count; i++)
+            {
+                tx = row.Cells[i].Text;
+                if (i == 6)
+                {
+                    tx = replaceHTMLTags(tx);
+                }
+                dr[i] = tx;
+            }
+            dt.Rows.Add(dr);
+        }
+
+        string FileName = "Leave Approval Data.xlsx";
+        string FilePath = Server.MapPath("Sitel//metric_downloads//" + FileName);
+        using (ExcelPackage pck = new ExcelPackage())
+        {
+            pck.Workbook.Properties.Author = "iaccess_support@sitel.com";
+            pck.Workbook.Properties.Title = "Leave Approval Data";
+            int validSheetCount = 0;
+            int lastRow = 0;
+            int recordCount = 0;
+            int columnCount = 0;
+
+
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                recordCount = dt.Rows.Count;
+                columnCount = dt.Columns.Count;
+
+
+                //Get the physical path to the file.
+                ExcelWorksheet ws = pck.Workbook.Worksheets.Add(FileName);
+                validSheetCount++;
+                lastRow = 0;
+                ws.Cells[lastRow + 1, 1].LoadFromDataTable(dt, true);
+                ws.Cells[2, 1, recordCount + 1, 1].Style.Numberformat.Format = "#";
+                ws.Cells[2, 3, recordCount + 1, 4].Style.Numberformat.Format = "dd-mmm-yyyy";
+                ws.Cells[2, 9, recordCount + 1, 9].Style.Numberformat.Format = "#";
+                ws.Cells[1, 1, recordCount, columnCount].AutoFitColumns(15);
+
+                pck.Save();
+                lastRow += recordCount;
+                //Send the CSV file as a Download.
+
+                //Response.Buffer = true;
+                //Response.AddHeader("content-disposition", "attachment;filename=" + FileName);
+                //Response.Charset = "";
+                //Response.ContentType = "application/text";
+                //Response.Output.Write(File.ReadAllText(FilePath));
+            }
+
+            if (validSheetCount > 0)
+            {
+                pck.SaveAs(Response.OutputStream);
+                Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                Response.AddHeader("content-disposition", "attachment;  filename=" + FileName);
+                File.Delete(FilePath);
+            }
+        }
     }
 }

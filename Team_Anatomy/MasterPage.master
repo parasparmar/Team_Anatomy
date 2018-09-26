@@ -403,11 +403,24 @@
                                     <i class="fa fa-plane"></i><span>Request Leave</span>
                                 </a>
                             </li>
-                            <li>
-                                <a href="LeaveApproval.aspx">
-                                    <i class="fa fa-toggle-on"></i><span>Approve/Deny Leave</span>
+                            
+
+                            
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-toggle-on"></i>
+                                    <span>LeaveApproval</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
                                 </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="LeaveApproval.aspx"><i class="fa fa-toggle-on"></i>Approve/Deny Leave</a></li>
+                                    <li><a href="LeaveList.aspx"><i class="fa fa-calendar"></i>Leave List</a></li>
+                                </ul>
                             </li>
+
+                            
                             <li>
                                 <a href="roster.aspx">
                                     <i class="fa fa-calendar-check-o"></i><span>My Team Roster</span>
