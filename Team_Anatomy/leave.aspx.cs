@@ -71,18 +71,18 @@ public partial class leave : System.Web.UI.Page
     }
     protected void reservation_TextChanged(object sender, EventArgs e)
     {
+        fillFromAndToDates();
+    }
+
+    private void fillFromAndToDates() {
         string[] received = reservation.Text.Split('-');
         FromDate = received[0].Trim().ToDateTime();
         ToDate = received[1].Trim().ToDateTime();
     }
     private void fillgvLeaveDetails()
     {
-        string[] received = reservation.Text.Split('-');
-        FromDate = received[0].Trim().ToDateTime();
-        ToDate = received[1].Trim().ToDateTime();
-        //strsql = "select CONVERT(VARCHAR,xDate,106) as Date,'' day,'' Leave,'' from [xGetdateBetween]('d','" + from_Date + "','" + end_Date + "') ";
+        fillFromAndToDates();
         // Switch with WFMP.getLeaveRoster 
-        //strsql = "Select Date, day, Leave, Blank, ShiftCode from(select CONVERT(VARCHAR, xDate, 106) as Date, '' day, '' Leave, '' as Blank from[xGetdateBetween]('d', '" + from_Date + "', '" + end_Date + "')) A left join(select C.ShiftCode, B.rDate from WFMP.RosterMST B inner join WFMP.tblShiftCode C on C.ShiftID = B.ShiftID where B.EmpCode ='" + MyEmpID + "') B on CONVERT(VARCHAR, A.Date, 106) = CONVERT(VARCHAR, B.rDate, 106)";
         SqlCommand cmd = new SqlCommand();
         cmd.CommandText = "WFMP.getLeaveRoster";
         cmd.Parameters.AddWithValue("@EmpCode", MyEmpID);
@@ -121,7 +121,7 @@ public partial class leave : System.Web.UI.Page
             }
 
             ddl.DataValueField = "LeaveId";
-            ddl.DataTextField = "LeaveText";            
+            ddl.DataTextField = "LeaveText";
             ddl.DataBind();
             if (gvr.Cells[3].Text == "WO" && ddl.Items.Contains(new ListItem("WO", "3")))
             {
@@ -135,12 +135,7 @@ public partial class leave : System.Web.UI.Page
         strsql = "WFMP.[buildBadges]";
 
         SqlCommand cmd = new SqlCommand(strsql);
-        cmd.Parameters.AddWithValue("@ECN", Convert.ToInt32(MyEmpID.ToString()));
-        //DataTable dt1 = my.GetDataTableViaProcedure(ref cmd);
-        //ddlRepManager.DataSource = dt1;
-        //ddlRepManager.DataTextField = "MgrName";
-        //ddlRepManager.DataValueField = "MgrID";
-        //ddlRepManager.DataBind();
+        cmd.Parameters.AddWithValue("@ECN", Convert.ToInt32(MyEmpID.ToString()));       
         DataTable dt = my.GetDataTableViaProcedure(ref cmd);
         gvLeaveLog.DataSource = dt;
         gvLeaveLog.DataBind();
@@ -191,12 +186,12 @@ public partial class leave : System.Web.UI.Page
         if (!checkForMax2WorkOffs())
         {
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Message", "<script>$(document).ready(function(){ $('#pnlLeaveBox').css({ 'display': 'block' });})</script>", false);
-            Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.warning('Not more than 2 Work-Offs can be applied in a week.Kindly rectify')", true);
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "toastr_message", "toastr.warning('Please check if you are applying for more than 2 Work-Offs in a week. Kindly reapply with appropriate changes to the leave types.')", true);
 
         }
         else
         {
-            //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leaves Successfully applied')", true);
+            //ScriptManager.RegisterStartupScript(this,this.GetType(), "toastr_message", "toastr.success('Leaves Successfully applied')", true);
             string received = reservation.Text;
             string[] seperator = { " - " };
             DateTime from_Date = Convert.ToDateTime(received.Split(seperator, StringSplitOptions.None).First<string>());
@@ -263,7 +258,7 @@ public partial class leave : System.Web.UI.Page
                 Email.Body += "<P>" + dt.Rows[0]["First_Name"].ToString() + " " + dt.Rows[0]["Last_Name"].ToString() + " has requested leave from " + newFromDate + " to " + newToDate; //+ " for given reason"+" ' "+ txt_leave_reason.Text.ToString()+ " '.<P>";
                 Email.Body += "<br> Reason: <i>" + leavereason + "</i> <br>";
                 Email.Send();
-                Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Leave applied successfully.')", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "toastr_message", "toastr.success('You have successfully applied for leave.')", true);
 
                 fillgvLeaveLog();
             }
@@ -272,7 +267,7 @@ public partial class leave : System.Web.UI.Page
                 int stop = Convert.ToInt32(dec);
                 if (stop == 1)
                 {
-                    Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.warning('Current Leave applied coincides with previous uncalled leave .Kindly Reapply.')", true);
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "toastr_message", "toastr.warning('These leaves overlap with previously applied leaves. Kindly reapply with appropriate changes to the leave dates.')", true);
                     clearfields();
                 }
 
@@ -346,76 +341,28 @@ public partial class leave : System.Web.UI.Page
     }
     protected void btn_save_cancel_reason_Click(object sender, EventArgs e)
     {
-
-        string cancel_reason = txt_cancel_reason.Text.ToString();
-        string id = (lblLeaveID.Value);
-        SqlConnection con = new SqlConnection(my.getConnectionString());
-        con.Open();
-        //string fdate = Row.Cells[0].Text.ToString();
-        //string tdate = row.Cells[1].Text.ToString();
-        DateTime from_date = Convert.ToDateTime(fdate);
-        DateTime to_date = Convert.ToDateTime(tdate);
-        DateTime date = DateTime.Now;
-        string CancelDate = date.ToString("yyyy-MM-dd HH:mm:ss.fff");
-
-
-        String Sql = "UPDATE WFMP.[tbl_leave_request]";
-        Sql += "SET [cancel_reason]='" + cancel_reason + "', [CancelDate]='" + CancelDate + "'";
-
-        Sql += "WHERE [id] = '" + id + "'; exec WFMP.[Leave_Cancel2Roster] '" + id + "'";
-
-        SqlCommand cmd = new SqlCommand(Sql, con);
-        cmd.Connection = con;
-
-        int Rows = cmd.ExecuteNonQuery();
-        con.Close();
+        SqlCommand cmd = new SqlCommand("WFMP.cancelLeaveRequest");
+        cmd.Parameters.AddWithValue("@EmpCode", MyEmpID);
+        cmd.Parameters.AddWithValue("@LeaveRequestID", lblLeaveID.Value);
+        cmd.Parameters.AddWithValue("@ReasonForCancellation", txt_cancel_reason.Text);
+        int Rows = my.ExecuteDMLCommand(ref cmd, "", "S");
         txt_cancel_reason.Text = String.Empty;
-
-        //Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Request Declined.', 'Success')", true);
         fillgvLeaveLog();
         if (Rows > 0)
         {
-            //System.Text.StringBuilder sb = new System.Text.StringBuilder();
-
-            //sb.Append(@"<script language='javascript'>");
-
-            //sb.Append(@"toast();");
-
-            //sb.Append(@"</script>");
-
-
-
-            //if (!ClientScript.IsStartupScriptRegistered("JSScript"))
-            //{
-
-            //    ClientScript.RegisterStartupScript(this.GetType(), "JSScript", sb.ToString());
-
-            //}
-            //ClientScript.RegisterClientScriptBlock(GetType(), "toast", "javascript: toast(); ");
-            //ClientScript.RegisterStartupScript(GetType(), "toast", "javascript: toast(); ", true);/////////
-
-            //ScriptManager.RegisterStartupScript(this, this.GetType(), "OpenPage", "<script>toastr.success('Have fun storming the castle!', 'Miracle Max Says');</script>", true);
-            //ScriptManager.RegisterStartupScript(this, this.GetType(), "Message", "toast();", true);
-            Page.ClientScript.RegisterStartupScript(this.GetType(), "toastr_message", "toastr.success('Cancellation is successfull.')", true);
-            //ScriptManager.RegisterStartupScript(this, this.GetType(), "Message", "<script>$(document).ready(function(){ $('.call').css({ 'display': 'block' });});</script>", false);
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "toastr_message", "toastr.success('Your leaves have been cancelled successfully.')", true);
         }
-
     }
+
     [WebMethod]
     public static string getDates()
     {
         Helper my = new Helper();
-
-        String strSQL = "WFMP.[getMinDateforLeaveRequest]";
+        String strSQL = "WFMP.getMinDateforLeaveRequest";
         SqlCommand cmd = new SqlCommand(strSQL);
         DataTable dtMinDate = my.GetDataTableViaProcedure(ref cmd);
-        string minDate = dtMinDate.Rows[0]["minDate"].ToString();
-        //JavaScriptSerializer js = new JavaScriptSerializer();
-
-        //return js.Serialize(minDate); 
+        string minDate = dtMinDate.Rows[0]["minDate"].ToString();      
         return (minDate);
-
-
     }
     protected void gv_PreRender(object sender, EventArgs e)
     {

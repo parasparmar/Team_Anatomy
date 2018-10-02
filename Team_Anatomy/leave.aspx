@@ -110,7 +110,8 @@
                 </div>
                 <div class="box-body">
                     <div class="box-body">
-                        <asp:GridView ID="gvLeaveDetails" runat="server" CssClass="table table-bordered table-hover datatable" OnRowDataBound="gvLeaveDetails_RowDataBound" AutoGenerateColumns="false">
+                        <asp:GridView ID="gvLeaveDetails" runat="server" CssClass="table table-bordered table-hover"
+                            OnRowDataBound="gvLeaveDetails_RowDataBound" AutoGenerateColumns="false">
                             <Columns>
                                 <asp:BoundField DataField="Date" HeaderText="Date" DataFormatString="{0:dd-MMM-yyyy}" HeaderStyle-CssClass="mid"></asp:BoundField>
                                 <asp:BoundField DataField="Day" HeaderText="Day" HeaderStyle-CssClass="mid"></asp:BoundField>
@@ -136,7 +137,10 @@
                 <div class="box-body">
                     <div class="box-body">
                         <asp:GridView ID="gvLeaveLog" runat="server"
-                            CssClass="table table-bordered table-hover " OnRowDataBound="gvLeaveLog_RowDataBound" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvLeaveLog_PageIndexChanging" AllowSorting="true" OnSorting="gvLeaveLog_Sorting"
+                            CssClass="table table-bordered table-hover"
+                            OnRowDataBound="gvLeaveLog_RowDataBound" AllowPaging="true"
+                            PageSize="10" OnPageIndexChanging="gvLeaveLog_PageIndexChanging"
+                            AllowSorting="true" OnSorting="gvLeaveLog_Sorting"
                             AutoGenerateColumns="false">
 
                             <Columns>
@@ -147,7 +151,7 @@
                                 <asp:BoundField DataField="Status" HeaderText="Status" HtmlEncode="false" HeaderStyle-CssClass="mid" SortExpression="Status"></asp:BoundField>
                                 <asp:TemplateField HeaderText="Cancel" HeaderStyle-CssClass="mid" SortExpression="Cancel">
                                     <ItemTemplate>
-                                        <asp:Button ID="btn_Cancel" runat="server" CssClass="btn btn-sm btn-danger" Text="cancel" OnClick="btn_Cancel_Click" AutoPostback="true" /><%----%>
+                                        <asp:Button ID="btn_Cancel" runat="server" CssClass="btn btn-sm btn-danger" Text="cancel" OnClick="btn_Cancel_Click" AutoPostback="true" />
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:BoundField DataField="ID" HeaderText="ID" HeaderStyle-CssClass="mid"></asp:BoundField>
@@ -185,8 +189,8 @@
         </ContentTemplate>
         <Triggers>
             <asp:AsyncPostBackTrigger ControlID="btn_proceed" EventName="Click" />
-            <asp:AsyncPostBackTrigger ControlID="btn_submit" EventName="Click" />            
-            <asp:AsyncPostBackTrigger ControlID ="btn_save_cancel_reason" EventName="Click" />
+            <asp:AsyncPostBackTrigger ControlID="btn_submit" EventName="Click" />
+            <asp:AsyncPostBackTrigger ControlID="btn_save_cancel_reason" EventName="Click" />
         </Triggers>
     </asp:UpdatePanel>
 </asp:Content>
@@ -224,53 +228,16 @@
                 });
             }
             var leave_id; var btn; var status;
-            $(".btn-danger").click(function (e) {                
-                e.preventDefault();                
+            $(".btn-danger").click(function (e) {
+                //e.preventDefault();                
                 btn = $(this);
                 $(".modal").modal("show");//.modal
                 leave_id = $(this).closest('tr').find('td:nth-child(7)').text();
                 $('#lblLeaveID').val(leave_id);
-                //alert(leave_id);
-                //$("#modal-danger").css({ "display": "block" });
-                //alert("2");
-                //$("#modal-danger").css({ "display": "block" }); alert("2");
+
 
             });
-            $("#btn_save_cancel_reason").click(function () {
-                var reason = $("#txt_cancel_reason").val();
-                if (reason.valueOf() == '') {
-                    alert("enter reason");
-                    return false;
-                }
-                else {
-                    status = 3;
-                    var dataToPass = "{'cancel_reason':'" + reason + "','id':'" + leave_id + "','status':'" + status + "'}";
-                    alert(dataToPass);
-                    $.ajax({
-                        method: "POST",
-                        url: "leave.aspx/CancelData",
-                        async: false,
-                        data: dataToPass,
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        success: function (Record) {
-                            //disable();
-                            //alert("done");
-                            $("#txt_cancel_reason").val("");
-                            //alert(btn.attr("class"));
-                            //btn.addClass("disabled");
-                            //$("#btn_Cancel").addClass("disabled");
-                        },
-                        error: function (Record) {
-                            alert("Error: " + Record.d);
-                        }
-                    });
-                    //function disable() {
-                    //$("#btn_Cancel").attr("class", "btn btn-sm btn-danger disabled");
-                    //}
-                    //alert(btn.attr("class"));
-                }
-            });
+
             $("#gvLeaveLog tbody tr").each(function () {
                 $(this).find("th:nth-child(7)").hide();
                 $(this).find("th:nth-child(8)").hide();
@@ -293,19 +260,25 @@
 
                 //alert("startdate: "+startdate + " enddate: "+ enddate);
             });
-            //$('.datatable').DataTable({
-            //    "sPaginationType": "full_numbers",
-            //    "lengthMenu": [5, 10, 25, 50, 75, 100],
-            //    "aaSortingFixed": [[0, 'asc']],
-            //    "bSort": true,
-            //    "destroy":true,
-            //    dom: 'Bfrltip'
-            //});
+            ////$('#gvLeaveLog').DataTable({
+            ////    "sPaginationType": "full_numbers",
+            ////    "lengthMenu": [5, 10, 25, 50, 75, 100],
+            ////    "aaSortingFixed": [[0, 'asc']],
+            ////    "bSort": true,
+            ////    dom: 'Bfrltip',
+            ////    "columnDefs": [{ "orderable": false, "targets": 0 }],
+            ////    buttons: [
+            ////        { extend: 'copyHtml5', text: 'Copy Data' },
+            ////        { extend: 'excelHtml5', text: 'Export to Excel' },
+            ////        { extend: 'csvHtml5', text: 'Export to CSV' },
+            ////        { extend: 'pdfHtml5', text: 'Export to PDF' },
+            ////    ]
+            ////});
         }
 
         //On UpdatePanel Refresh
         var prm = Sys.WebForms.PageRequestManager.getInstance();
-        if (prm != null) {
+        if (prm != null) {            
             prm.add_endRequest(function (sender, e) {
                 if (sender._postBackSettings.panelsToUpdate != null) {
                     pluginsInitializer();
