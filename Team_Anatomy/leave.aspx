@@ -63,7 +63,7 @@
     <!--pageheader-->
 </asp:Content>
 <asp:Content ID="Content5" ContentPlaceHolderID="The_Body" runat="Server">
-    <asp:UpdatePanel ID="upnlOne" runat="server" UpdateMode="Always">
+    <asp:UpdatePanel ID="upnlOne" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
             <div class="box box-solid box-primary">
                 <div class="box-header with-border">
@@ -79,7 +79,7 @@
                                         <i class="fa fa-calendar"></i>
                                     </div>
                                     <asp:TextBox ID="reservation" runat="server" CssClass="form-control pull-right" OnTextChanged="reservation_TextChanged"></asp:TextBox>
-                                    
+
                                 </div>
                                 <!-- /.input group -->
                             </div>
@@ -112,8 +112,8 @@
                     <div class="box-body">
                         <asp:GridView ID="gvLeaveDetails" runat="server" CssClass="table table-bordered table-hover datatable" OnRowDataBound="gvLeaveDetails_RowDataBound" AutoGenerateColumns="false">
                             <Columns>
-                                <asp:BoundField DataField="Date" HeaderText="Date" HeaderStyle-CssClass="mid"></asp:BoundField>
-                                <asp:BoundField DataField="day" HeaderText="day" HeaderStyle-CssClass="mid"></asp:BoundField>
+                                <asp:BoundField DataField="Date" HeaderText="Date" DataFormatString="{0:dd-MMM-yyyy}" HeaderStyle-CssClass="mid"></asp:BoundField>
+                                <asp:BoundField DataField="Day" HeaderText="Day" HeaderStyle-CssClass="mid"></asp:BoundField>
                                 <asp:TemplateField HeaderText="Select Leave" HeaderStyle-CssClass="mid">
                                     <ItemTemplate>
                                         <asp:DropDownList ID="ddlSelectLeave" CssClass="form-control" Style="width: 100%" runat="server"></asp:DropDownList>
@@ -174,7 +174,7 @@
                             <asp:HiddenField ID="lblLeaveID" runat="server"></asp:HiddenField>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>                            
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
                             <asp:Button ID="btn_save_cancel_reason" runat="server" Text="Save" CssClass="btn btn-primary" OnClick="btn_save_cancel_reason_Click" ValidationGroup="Save" /><%--CausesValidation="false"--%>
                         </div>
                     </div>
@@ -183,9 +183,14 @@
                 <!-- /.modal-dialog -->
             </div>
         </ContentTemplate>
+        <Triggers>
+            <asp:AsyncPostBackTrigger ControlID="btn_proceed" EventName="Click" />
+            <asp:AsyncPostBackTrigger ControlID="btn_submit" EventName="Click" />            
+            <asp:AsyncPostBackTrigger ControlID ="btn_save_cancel_reason" EventName="Click" />
+        </Triggers>
     </asp:UpdatePanel>
 </asp:Content>
-<asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">    
+<asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">
     <script src="CDN/toastr/toastr.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(function () {
@@ -219,10 +224,8 @@
                 });
             }
             var leave_id; var btn; var status;
-            $(".btn-danger").click(function (e) {
-                //
-                e.preventDefault();
-                //alert("1");
+            $(".btn-danger").click(function (e) {                
+                e.preventDefault();                
                 btn = $(this);
                 $(".modal").modal("show");//.modal
                 leave_id = $(this).closest('tr').find('td:nth-child(7)').text();
@@ -233,7 +236,7 @@
                 //$("#modal-danger").css({ "display": "block" }); alert("2");
 
             });
-            $("#btn_save_cancel_reason-----").click(function () {
+            $("#btn_save_cancel_reason").click(function () {
                 var reason = $("#txt_cancel_reason").val();
                 if (reason.valueOf() == '') {
                     alert("enter reason");
@@ -290,13 +293,14 @@
 
                 //alert("startdate: "+startdate + " enddate: "+ enddate);
             });
-            $('.datatable').DataTable({
-                "sPaginationType": "full_numbers",
-                "lengthMenu": [5, 10, 25, 50, 75, 100],
-                "aaSortingFixed": [[0, 'asc']],
-                "bSort": true,
-                dom: 'Bfrltip'
-            });
+            //$('.datatable').DataTable({
+            //    "sPaginationType": "full_numbers",
+            //    "lengthMenu": [5, 10, 25, 50, 75, 100],
+            //    "aaSortingFixed": [[0, 'asc']],
+            //    "bSort": true,
+            //    "destroy":true,
+            //    dom: 'Bfrltip'
+            //});
         }
 
         //On UpdatePanel Refresh

@@ -37,8 +37,8 @@ public class Pivot
         string Separator = ".";
         List<string> rowList = _Source.Select(x => x[rowField].ToString()).Distinct().ToList();
         // Gets the list of columns .(dot) separated.
-        var colList = _Source.Select(x =>(columnFields.Select(n => x[n]).Aggregate((a, b) => a += Separator + b.ToString())).ToString()).Distinct().OrderBy(m => m);
-        
+        var colList = _Source.Select(x => (columnFields.Select(n => x[n]).Aggregate((a, b) => a += Separator + b.ToString())).ToString()).Distinct().OrderBy(m => m);
+
         dt.Columns.Add(rowField);
         foreach (var colName in colList)
             dt.Columns.Add(colName);  // Cretes the result columns.//
@@ -59,7 +59,6 @@ public class Pivot
         }
         return dt;
     }
-
     public DataTable PivotData(string rowField, string dataField, AggregateFunction aggregate, bool showSubTotal, params string[] columnFields)
     {
         DataTable dt = new DataTable();
@@ -97,7 +96,6 @@ public class Pivot
         }
         return dt;
     }
-
     public DataTable PivotData(string DataField, AggregateFunction Aggregate, string[] RowFields, string[] ColumnFields)
     {
         DataTable dt = new DataTable();
@@ -133,7 +131,7 @@ public class Pivot
                 strFilter += " and " + Field + " = '" + RowName[Field].ToString() + "'";
             }
             strFilter = strFilter.Substring(5);
-            
+
             foreach (var col in ColList)
             {
                 string filter = strFilter;
@@ -146,7 +144,6 @@ public class Pivot
         }
         return dt;
     }
-
     public DataTable DateWisePivotData(string DataField, AggregateFunction Aggregate, string[] RowFields, string[] ColumnFields)
     {
         DataTable dt = new DataTable();
@@ -162,17 +159,18 @@ public class Pivot
                            .Aggregate((a, b) => a += Separator + b.ToString())
                        })
                            .Distinct();
-                           //.OrderBy(m => m.Name);
+        //.OrderBy(m => m.Name);
 
         //dt.Columns.Add(RowFields);
         foreach (string s in RowFields)
             dt.Columns.Add(s);
 
-        foreach (var col in ColList) {
+        foreach (var col in ColList)
+        {
             string dtColName = col.Name.ToString().ToDateTime().ToString("dd-MMMM-YY");
             dt.Columns.Add(col.Name.ToString());  // Cretes the result columns.//
         }
-        
+
 
         foreach (var RowName in RowList)
         {
@@ -198,9 +196,6 @@ public class Pivot
         }
         return dt;
     }
-
-
-
     /// <summary>
     /// Retrives the data for matching RowField value and ColumnFields values with Aggregate function applied on them.
     /// </summary>
@@ -242,7 +237,6 @@ public class Pivot
             return "#Error : " + ex.Message.ToString();
         }
     }
-
     private object GetAverage(object[] objList)
     {
         return objList.Count() == 0 ? null : (object)(Convert.ToDecimal(GetSum(objList)) / objList.Count());

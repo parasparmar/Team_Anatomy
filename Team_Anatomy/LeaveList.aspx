@@ -5,9 +5,15 @@
     <!-- iCheck for checkboxes and radio inputs -->
     <link rel="stylesheet" href="AdminLTE/plugins/iCheck/all.css">
     <link href="Sitel/cdn/yadcf/jquery.dataTables.yadcf.css" rel="stylesheet" />
-    <link href="CDN/cdn.datatables.net/1.10.15/css/fixedColumns.dataTables.min.css" rel="stylesheet" />
-    <link href="CDN/cdn.datatables.net/1.10.15/css/fixedHeader.dataTables.min.css" rel="stylesheet" />
+    <link href="Sitel/cdn/cdn.datatables.net/1.10.15/css/fixedColumns.dataTables.min.css" rel="stylesheet" />
+    <link href="Sitel/cdn/cdn.datatables.net/1.10.15/css/fixedHeader.dataTables.min.css" rel="stylesheet" />
+
     <style>
+        table thead tr th,
+        table tbody tr td{
+            font-size:11px !important;
+        }
+
         .border-between > [class*='col-']:before {
             background: #e3e3e3;
             bottom: 0;
@@ -44,6 +50,12 @@
             border-radius: 5%;
             background: -ms-linear-gradient(left, rgba(39,148,0,1) 0%, rgba(255,77,151,1) 0%, rgba(255,5,113,1) 0%, rgba(255,10,116,1) 0%, rgba(255,41,126,1) 0%, rgba(39,148,0,1) 0%, rgba(39,148,0,1) 100%);
         }
+
+        .bg-grey {
+            border-radius: 5%;
+            background-color:floralwhite;
+        }
+
     </style>
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="pageheader" runat="Server">
@@ -153,8 +165,8 @@
     <script src="AdminLTE/bower_components/select2/dist/js/select2.full.min.js"></script>
     <%--<script src="Sitel/cdn/yadcf/jquery.dataTables.yadcf.js"></script>--%>
     <script src="Sitel/plugins/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
-    <script src="CDN/cdn.datatables.net/1.10.15/js/dataTables.fixedColumns.min.js"></script>
-    <script src="CDN/cdn.datatables.net/1.10.15/js/dataTables.fixedHeader.min.js"></script>
+    <script src="Sitel/cdn/cdn.datatables.net/1.10.15/js/dataTables.fixedColumns.min.js"></script>
+    <script src="Sitel/cdn/cdn.datatables.net/1.10.15/js/dataTables.fixedHeader.min.js"></script>
 
     <script>
 
@@ -168,7 +180,7 @@
                     destroy: true,
                     //bJQueryUI: true,
                     fixedColumns: {
-                        leftColumns: 2
+                        leftColumns: 3
                     },
                     fixedHeader: {
                         header: true,
@@ -202,8 +214,9 @@
         $('td').each(function () {
             var myText = $(this).text();
 
-            if (myText == "Approved Leave" || myText == "Approved WO" ) { $(this).addClass("bg-green"); }
-            else if (myText == "Pending Leave" || myText == "L2 Pending Leave" || myText == "L2 Pending WO" || myText == "Pending WO" ) { $(this).addClass("bg-orange"); }
+            if (myText == "Approved Leave" || myText == "Approved WO") { $(this).addClass("bg-green"); }
+            else if (myText == "Pending Leave" || myText == "L2 Pending Leave" || myText == "L2 Pending WO" || myText == "Pending WO") { $(this).addClass("bg-orange"); }
+            else if (myText == "WO") { $(this).addClass("bg-grey"); }
         });
 
     </script>

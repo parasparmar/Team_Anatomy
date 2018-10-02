@@ -11,19 +11,28 @@ using System.Collections.Specialized;
 using System.Text.RegularExpressions;
 
 
-public class Helper
+public class Helper : IPartitionResolver
 {
     public Helper() { }
-    
+
     private SqlConnection cn { get; set; }
     public string getConnectionString()
     {
         EDCryptor xEDCryptor = new EDCryptor();
-        //string xString = ConfigurationManager.ConnectionStrings["constr"].ToString();
-        string xString = ConfigurationManager.ConnectionStrings["constrProd"].ToString();
+        string xString = ConfigurationManager.ConnectionStrings["constr"].ToString();
+        //string xString = ConfigurationManager.ConnectionStrings["constrProd"].ToString();
         xString = xEDCryptor.DeCrypt(xString);
         return xString;
     }
+
+    public void Initialize() { }
+
+    // The key is a SID (session identifier)
+    public String ResolvePartition(Object key)
+    {
+        return getConnectionString();
+    }
+
     public SqlConnection open_db()
     {
         cn = new SqlConnection(getConnectionString());
@@ -49,7 +58,7 @@ public class Helper
             cn.Dispose();
         }
     }
-    public int ExecuteDMLCommand(ref SqlCommand cmd, string sql_string="", string operation="E")
+    public int ExecuteDMLCommand(ref SqlCommand cmd, string sql_string = "", string operation = "E")
     {
         open_db();
         int returnValue = 0;
@@ -276,7 +285,7 @@ public class Helper
         {
             return 0;
         };
-        
+
     }
 
     public string getFirstResult(string strSQL)
@@ -411,7 +420,7 @@ public class Helper
 }
 public class EmailSender
 {
-    
+
     private string[] _recipientsEmailAddresses { get; set; }
     public int InitiatorEmpId { get; set; }
     public string RecipientsEmpId { get; set; }
@@ -421,11 +430,11 @@ public class EmailSender
     public string Body { get; set; }
     private string MailFormat = "html";
     private string From { get; set; }
-    public int EmailType { get; set; }
+    private int EmailType { get; set; }
     Helper my = new Helper();
     public EmailSender()
     {
-        
+
 
     }
 
@@ -521,7 +530,7 @@ public class EmailSender
                             Match mc = Regex.Match(whichServer, ipPattern);
                             //if (mc.Value == "10.252.252.121")
                             //{
-                                EmailType = (int)emailtype.Production;
+                            EmailType = (int)emailtype.Production;
                             //}
                             //else
                             //{

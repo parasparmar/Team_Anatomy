@@ -3,7 +3,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="headPlaceHolder" runat="server">
     <link href="Sitel/toastr/toastr.min.css" rel="stylesheet" />
     <style type="text/css">
-        .modal {
+        .modals {
             background: rgba(0,0,0,.7) !important;
         }
 
@@ -291,7 +291,7 @@
                 //data: JSON.stringify(repObj),
                 data: "{ 'xMonth': '" + $("#ddlMonth option:selected").val() + "', 'xMarket': '" + $("#ddlMarket option:selected").val() + "', 'xFacility': '" + $("#ddlFacility option:selected").val() + "', 'xAccount': '" + $("#ddlAccount option:selected").val() + "'}",
                 type: "POST",
-                async: false,
+                async: true,
                 contentType: "application/json;charset=utf-8",
                 //dataType: "json",
                 success: function (result) {
@@ -308,7 +308,7 @@
         });
 
         var BindDataTable = function (response) {
-
+            $('#progress').show();
             $("#divTable").show();
             $("#divTable").html("");
             $("#divTable").html(response);
@@ -360,7 +360,7 @@
                 //data: JSON.stringify(repObj),
                 data: "{ 'empcode': '" + empcode + "', 'month': '" + month + "', 'comments': '" + comments + "'}",
                 type: "POST",
-                async: false,
+                async: true,
                 contentType: "application/json;charset=utf-8",
                 //dataType: "json",
                 success: function (result) {
