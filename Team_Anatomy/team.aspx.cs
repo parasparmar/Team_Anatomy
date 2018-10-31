@@ -72,4 +72,21 @@ public partial class team : System.Web.UI.Page
     {
 
     }
+
+    private static int GetDaysUntilBirthday(DateTime birthday)
+    {
+        DateTime today = DateTime.Today;
+        DateTime next = birthday.AddYears(today.Year - birthday.Year);
+
+        if (next < today)
+        {
+            if (!DateTime.IsLeapYear(next.Year + 1))
+                next = next.AddYears(1);
+            else
+                next = new DateTime(next.Year + 1, birthday.Month, birthday.Day);
+        }
+
+        int numDays = (next - today).Days;
+        return numDays;
+    }
 }

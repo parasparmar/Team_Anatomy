@@ -20,74 +20,61 @@
         </div>
     </div>
     <!--pageheader-->
+    <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+
 </asp:Content>
 <asp:Content ID="Content5" ContentPlaceHolderID="The_Body" runat="Server">
-    <asp:UpdatePanel ID="UpdatePanel1" runat="server" EnableViewState="true" UpdateMode="Conditional">
-        <ContentTemplate>
-            <div class="row-fluid">
-                <div class="col-md-12">
-                    <!-- Custom Tabs -->
-                    <div class="box box-solid box-primary" style="height: auto;">
-                        <div class="box-header with-border">
-                            <h4 class="box-title">My Team List</h4>
-<%--                            <div class="box-tools pull-right">
-                                <button class="btn btn-box-tool" type="button" data-widget="collapse">
-                                    <i class="fa fa-minus"></i>
-                                </button>
-                            </div>--%>
-                        </div>
-                        <div class="box-body">
-                            <div class="form-group">
-                                <asp:GridView ID="gv_TeamList" runat="server" CssClass="table table-condensed table-responsive datatable display compact hover stripe" AutoGenerateColumns="false"
-                                    OnPreRender="gv_PreRender" ShowHeader="true" OnRowCommand="gv_TeamList_RowCommand" Style="border: none">
-                                    <Columns>
-                                        <asp:BoundField DataField="Employee_ID" HeaderText="Emp Code" />
-                                        <asp:BoundField DataField="Name" HeaderText="Name" />
-                                        <asp:BoundField DataField="Designation" HeaderText="Designation" />
-                                        <asp:BoundField DataField="Contact_Number" HeaderText="Contact Number" />
-                                        <asp:BoundField DataField="EMAIL_ID" HeaderText="Email" />
-                                        
-                                    </Columns>
-                                    <EmptyDataTemplate>
-                                        <h5>There are no Team Members are currently mapped to me.</h5>
-                                    </EmptyDataTemplate>
-
-                                </asp:GridView>
-                            </div>
-                        </div>
-                        
-                        <!-- /.box-footer-->
+    <div class="row-fluid">
+        <div class="col-md-12">
+            <div class="box box-widget widget-user-2" style="height: auto;">
+                <div class="widget-user-header bg-aqua-active">
+                    <div class="widget-user-image">
+                        <img class="img-circle" src="/Sitel/user_images/unknownPerson.jpg" alt="User Avatar">
                     </div>
-                    <!--tabcontent-->
+                    <h3 class="widget-user-username">Chetan Duggal</h3>
+                    <h5 class="widget-user-desc">Site Director - All My Reportees at Level 1</h5>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" type="button" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
                 </div>
-                <!-- /.col -->
-            </div>
-        </ContentTemplate>
-        <Triggers>
-        </Triggers>
-    </asp:UpdatePanel>
-    <asp:Panel ID="pnlModal" runat="server" CssClass="modal modal-primary fade" Visible="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title"></h4>
+                <div class="box-body">
+                    <div class="form-group">
+                        <asp:GridView ID="gv_TeamList" runat="server" CssClass="table table-condensed table-responsive datatable display compact hover stripe" AutoGenerateColumns="false"
+                            OnPreRender="gv_PreRender" ShowHeader="true" OnRowCommand="gv_TeamList_RowCommand" Style="border: none">
+                            <Columns>
+                                <asp:TemplateField>
+                                    <ItemTemplate>
+                                        <div class="widget-user-image">
+                                            <img class="img-circle" src="http://iaccess.nac.sitel-world.net/TA/Sitel/user_images/<%#Eval("userimage")%>" alt="User Avatar">
+                                        </div>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:BoundField DataField="Employee_ID" HeaderText="Emp Code" />
+                                <asp:BoundField DataField="Name" HeaderText="Name" />
+                                <asp:BoundField DataField="Designation" HeaderText="Designation" />
+                                <asp:BoundField DataField="Contact_Number" HeaderText="Contact Number" />
+                                <asp:BoundField DataField="EMAIL_ID" HeaderText="Email" />
+                            </Columns>
+                            <EmptyDataTemplate>
+                                <h5>There are no Team Members are currently mapped to me.</h5>
+                            </EmptyDataTemplate>
+                        </asp:GridView>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <p>
-                        <asp:Label ID="lblResult" runat="server"></asp:Label>&hellip;
-                    </p>
-                </div>
-                <div class="modal-footer">
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </asp:Panel>
 
+                <!-- /.box-footer-->
+            </div>
+            <!--tabcontent-->
+        </div>
+        <!-- /.col -->
+    </div>
 </asp:Content>
 <asp:Content ID="Content6" ContentPlaceHolderID="below_footer" runat="Server">
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    $(document).ready( function () {
+    $('#gv_TeamList').DataTable();
+} );
 </asp:Content>
 
