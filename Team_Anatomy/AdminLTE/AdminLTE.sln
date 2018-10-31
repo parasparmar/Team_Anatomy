@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2020
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "AdminLTE(1)", ".", "{6CD171F6-6043-419A-A8E5-87F8ECD1A2D3}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_64552"
+		Debug.AspNetCompiler.PhysicalPath = "..\AdminLTE\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_64552\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_64552"
+		Release.AspNetCompiler.PhysicalPath = "..\AdminLTE\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_64552\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "64552"
+		SlnRelativePath = "..\AdminLTE\"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6CD171F6-6043-419A-A8E5-87F8ECD1A2D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CD171F6-6043-419A-A8E5-87F8ECD1A2D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B1B17BFD-FCDE-48D3-9D63-AD779342F962}
+	EndGlobalSection
+EndGlobal

@@ -352,14 +352,7 @@
                 });
             });
         }
-
-
-
-
-
-
-
-
+        
         $(function () {
             pluginsInitializer();
 

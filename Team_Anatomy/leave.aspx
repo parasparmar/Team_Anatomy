@@ -201,6 +201,7 @@
             pluginsInitializer();
         });
         function pluginsInitializer() {
+            //debugger;
             var date;
             var startdate = Thedate();
             var value;
@@ -229,13 +230,11 @@
             }
             var leave_id; var btn; var status;
             $(".btn-danger").click(function (e) {
-                //e.preventDefault();                
+                e.preventDefault();                
                 btn = $(this);
-                $(".modal").modal("show");//.modal
+                $(".modal").modal("show");
                 leave_id = $(this).closest('tr').find('td:nth-child(7)').text();
                 $('#lblLeaveID').val(leave_id);
-
-
             });
 
             $("#gvLeaveLog tbody tr").each(function () {

@@ -53,7 +53,7 @@ public partial class profile : System.Web.UI.Page
             lblContactNumber.Text = dr["Contact_Number"].ToString();
             if (dr["UserImage"] != null && dr["UserImage"].ToString().Length > 0)
             {
-                imgbtnUserImage.ImageUrl = "sitel/user_images/" + dr["UserImage"].ToString();
+                imgbtnUserImage.ImageUrl = "http://iaccess.nac.sitel-world.net/TA/Sitel/user_images/" + dr["UserImage"].ToString();
 
             }
             lblSupervisor.Text = dr["RepMgrName"].ToString();

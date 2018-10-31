@@ -38,7 +38,7 @@ public partial class MasterPage : System.Web.UI.MasterPage
                 lblName.Text = dr["First_Name"] + " " + dr["Last_Name"];
                 lblNameDesignation.Text = dr["First_Name"] + " " + dr["Last_Name"] + " - " + dr["DesignationId"];
                 lblDOJ.Text = Convert.ToDateTime(dr["DOJ"].ToString()).ToString("dd-MMM-yyyy");
-                string UserImageURI = "~/Sitel/user_images/" + dr["UserImage"];
+                string UserImageURI = "http://iaccess.nac.sitel-world.net/TA/Sitel/user_images/" + dr["UserImage"];
                 mediumUserImage.ImageUrl = UserImageURI;
                 smallUserImage.ImageUrl = UserImageURI;
                 fillddlImpersonator();

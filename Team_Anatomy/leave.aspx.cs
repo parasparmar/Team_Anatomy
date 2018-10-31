@@ -74,7 +74,8 @@ public partial class leave : System.Web.UI.Page
         fillFromAndToDates();
     }
 
-    private void fillFromAndToDates() {
+    private void fillFromAndToDates()
+    {
         string[] received = reservation.Text.Split('-');
         FromDate = received[0].Trim().ToDateTime();
         ToDate = received[1].Trim().ToDateTime();
@@ -135,7 +136,7 @@ public partial class leave : System.Web.UI.Page
         strsql = "WFMP.[buildBadges]";
 
         SqlCommand cmd = new SqlCommand(strsql);
-        cmd.Parameters.AddWithValue("@ECN", Convert.ToInt32(MyEmpID.ToString()));       
+        cmd.Parameters.AddWithValue("@ECN", Convert.ToInt32(MyEmpID.ToString()));
         DataTable dt = my.GetDataTableViaProcedure(ref cmd);
         gvLeaveLog.DataSource = dt;
         gvLeaveLog.DataBind();
@@ -347,11 +348,9 @@ public partial class leave : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@ReasonForCancellation", txt_cancel_reason.Text);
         int Rows = my.ExecuteDMLCommand(ref cmd, "", "S");
         txt_cancel_reason.Text = String.Empty;
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "hide_modal", "$('body').removeClass('modal-open'); $('.modal-backdrop').remove();", true);
         fillgvLeaveLog();
-        if (Rows > 0)
-        {
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "toastr_message", "toastr.success('Your leaves have been cancelled successfully.')", true);
-        }
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "toastr_message", "toastr.success('Your leaves have been cancelled successfully.')", true);
     }
 
     [WebMethod]
@@ -361,7 +360,7 @@ public partial class leave : System.Web.UI.Page
         String strSQL = "WFMP.getMinDateforLeaveRequest";
         SqlCommand cmd = new SqlCommand(strSQL);
         DataTable dtMinDate = my.GetDataTableViaProcedure(ref cmd);
-        string minDate = dtMinDate.Rows[0]["minDate"].ToString();      
+        string minDate = dtMinDate.Rows[0]["minDate"].ToString();
         return (minDate);
     }
     protected void gv_PreRender(object sender, EventArgs e)
