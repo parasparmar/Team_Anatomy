@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Sql;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
-using System.Data;
-using System.Data.SqlClient;
-using System.Data.Sql;
 
 public partial class team : System.Web.UI.Page
 {
+    public DataTable dtMyTeam;
+    public IEnumerable<DataRow> eTeam { get; set; }
+    public int[] distinctRMs { get; set; }
     protected void Page_Load(object sender, EventArgs e)
     {
         fillTeamList();
@@ -23,15 +27,30 @@ public partial class team : System.Web.UI.Page
         try
         {
             DataTable dt = Session["dtEmp"] as DataTable;
-            if (dt.Rows.Count > 0)
+            if (dt != null && dt.Rows.Count > 0)
             {
                 Helper my = new Helper();
                 DataRow dr = dt.Rows[0];
                 int EmpCode = Convert.ToInt32(dr["Employee_Id"].ToString());
+                SqlCommand cmd = new SqlCommand("[WFMP].[TeamList]");
+                cmd.Parameters.AddWithValue("@RepMgrCode", EmpCode);
+                dtMyTeam = my.GetDataTableViaProcedure(ref cmd);
+                eTeam = dtMyTeam.AsEnumerable();
+                List<DistinctReportingManagers> DRMList = new List<DistinctReportingManagers>();
+                DRMList.AddRange(
+                    eTeam.Where(m => m["ReporteeLevel"].ToString() == "1")
+                    .Select(t => new DistinctReportingManagers(
+                    t["Name"].ToString(),
+                    t["Employee_ID"].ToInt32(),
+                    t["userimage"].ToString(),
+                    t["Designation"].ToString(),
+                    t["ReporteeLevel"].ToInt32()
+                )).Distinct());
 
-                DataTable dtMyTeam = my.GetData("Exec [WFMP].[TeamList] " + EmpCode);
-                gv_TeamList.DataSource = dtMyTeam;
-                gv_TeamList.DataBind();
+                rptrL1TabHeaders.DataSource = DRMList;
+                rptrL1TabContents.DataSource = DRMList;
+                rptrL1TabHeaders.DataBind();
+                rptrL1TabContents.DataBind();
             }
             else
             {
@@ -81,12 +100,58 @@ public partial class team : System.Web.UI.Page
         if (next < today)
         {
             if (!DateTime.IsLeapYear(next.Year + 1))
+            {
                 next = next.AddYears(1);
+            }
             else
+            {
                 next = new DateTime(next.Year + 1, birthday.Month, birthday.Day);
+            }
         }
 
         int numDays = (next - today).Days;
         return numDays;
     }
+
+
+
+    protected void rptrL1TabContents_ItemDataBound(object sender, RepeaterItemEventArgs e)
+    {
+        //if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+        if (e.Item.ItemType == ListItemType.Item)
+        {
+            DistinctReportingManagers rm = e.Item.DataItem as DistinctReportingManagers;
+            int empCode = rm.Employee_ID;
+
+            GridView v = e.Item.Controls[1] as GridView;
+            if (v != null)
+            {
+                //DataRow[] drows = dtMyTeam.AsEnumerable().Where(t => t["RepMgrCode"].ToString() == empCode.ToString()).Distinct().ToArray();
+                DataView dv = new DataView(dtMyTeam, "RepMgrCode = " + empCode, "Name Asc", DataViewRowState.CurrentRows);
+                v.DataSource = dv;
+                v.DataBind();
+            }
+        }
+    }
+}
+
+
+class DistinctReportingManagers
+{
+
+
+    public DistinctReportingManagers(string name, int employee_id, string Userimage, string designation, int reporteelevel)
+    {
+        this.Name = name;
+        this.Employee_ID = employee_id;
+        this.userimage = Userimage;
+        this.Designation = designation;
+        this.ReporteeLevel = reporteelevel;
+    }
+
+    public string Name { get; set; }
+    public int Employee_ID { get; set; }
+    public string userimage { get; set; }
+    public string Designation { get; set; }
+    public int ReporteeLevel { get; set; }
 }

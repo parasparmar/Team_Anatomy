@@ -52,7 +52,7 @@ public partial class index : System.Web.UI.Page
                 {
 
                     Session["dtEmp"] = dt;
-                    Response.Redirect("team.aspx", false);
+                    Response.Redirect("ninebox_one.aspx", false);
                 }
                 else
                 {
