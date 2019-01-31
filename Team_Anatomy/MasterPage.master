@@ -1,6 +1,6 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPage" ClientIDMode="Static" %>
 
-<!DOCTYPE html5 lang="en">
+<!DOCTYPE html5>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head id="head" runat="server">
